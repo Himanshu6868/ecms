@@ -110,7 +110,7 @@ as $$
     and t.deleted_at is null
   where tm.team_id = target_team_id
   group by tm.user_id
-  order by open_count asc, tm.hierarchy_level asc
+  order by open_count asc, min(tm.hierarchy_level) asc
   limit 1;
 $$;
 

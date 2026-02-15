@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth";
 import { dbQuery, supabase } from "@/lib/db";
 import { ChatMessage, Ticket } from "@/types/domain";
+import { FadeIn } from "@/components/ui/motion";
+import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 
 export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -30,29 +32,39 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
       return;
     }
     await supabase.from("chat_messages").insert({ ticket_id: routeParams.id, sender_id: activeSession.user.id, message });
+    revalidatePath(`/tickets/${routeParams.id}`);
   }
 
   return (
-    <main className="space-y-4">
-      <h1 className="text-2xl font-semibold">Ticket {ticketResult.data.id}</h1>
-      <p>Status: {ticketResult.data.status}</p>
-      <p>Priority: {ticketResult.data.priority}</p>
-      <section className="space-y-2 rounded border bg-white p-4">
-        <h2 className="font-semibold">Chat</h2>
-        <form action={postMessage} className="flex gap-2">
-          <input name="message" className="flex-1 rounded border px-3 py-2" maxLength={2000} required />
-          <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-white">
+    <main className="space-y-5">
+      <FadeIn className="surface-3d space-y-3 p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="[font-family:var(--font-space)] text-xl font-semibold tracking-tight md:text-2xl">Ticket #{ticketResult.data.id.slice(0, 8)}</h1>
+          <p className="status-chip">{ticketResult.data.status}</p>
+        </div>
+        <div className="grid gap-2 text-sm text-soft sm:grid-cols-2">
+          <p>Priority: {ticketResult.data.priority}</p>
+          <p>SLA: {new Date(ticketResult.data.sla_deadline).toLocaleString()}</p>
+        </div>
+      </FadeIn>
+
+      <section className="surface space-y-3 p-4 md:p-5">
+        <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Activity Chat</h2>
+        <form action={postMessage} className="flex flex-col gap-2 sm:flex-row">
+          <input name="message" className="input-clean flex-1" maxLength={2000} required placeholder="Send an update to this ticket" />
+          <button type="submit" className="btn-brand">
             Send
           </button>
         </form>
         <ul className="space-y-2">
           {(chatResult.error ? [] : chatResult.data).map((msg) => (
-            <li key={msg.id} className="rounded bg-zinc-100 p-2">
-              <p className="text-xs text-zinc-500">{msg.sender_id}</p>
-              <p>{msg.message}</p>
+            <li key={msg.id} className="glass p-3">
+              <p className="text-xs text-soft">{msg.sender_id}</p>
+              <p className="mt-1 text-sm">{msg.message}</p>
             </li>
           ))}
         </ul>
+        {!chatResult.error && chatResult.data.length === 0 ? <p className="text-soft text-sm">No chat activity yet.</p> : null}
       </section>
     </main>
   );

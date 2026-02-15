@@ -7,7 +7,9 @@ export const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE
 
 type QueryResult<T> = { data: T; error: null } | { data: null; error: Error };
 
-export async function dbQuery<T>(executor: () => Promise<{ data: T | null; error: { message: string } | null }>): Promise<QueryResult<T>> {
+export async function dbQuery<T>(
+  executor: () => PromiseLike<{ data: T | null; error: { message: string } | null }>,
+): Promise<QueryResult<T>> {
   const { data, error } = await executor();
   if (error || !data) {
     return { data: null, error: new Error(error?.message ?? "Database operation failed") };

@@ -10,7 +10,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const result = await dbQuery<User>(() => supabase.from("users").select("*").eq("email", parsed.data.email).single());
+  const email = parsed.data.email.trim().toLowerCase();
+  const result = await dbQuery<User>(() => supabase.from("users").select("*").eq("email", email).single());
   if (result.error) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }

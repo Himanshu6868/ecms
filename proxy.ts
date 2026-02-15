@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 
 const protectedRoutes = ["/dashboard", "/tickets", "/admin"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   if (!protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))) {
     return NextResponse.next();
   }

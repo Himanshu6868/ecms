@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FadeIn, HoverLift } from "@/components/ui/motion";
 
 export function TicketCreateForm() {
   const [status, setStatus] = useState<string | null>(null);
@@ -27,28 +28,53 @@ export function TicketCreateForm() {
   }
 
   return (
-    <form action={submit} className="space-y-3 rounded border bg-white p-4">
-      <label className="block text-sm">Description</label>
-      <textarea name="description" required minLength={8} className="w-full rounded border p-2" />
-      <label className="block text-sm">Priority</label>
-      <select name="priority" className="w-full rounded border p-2" defaultValue="MEDIUM">
-        <option>LOW</option>
-        <option>MEDIUM</option>
-        <option>HIGH</option>
-        <option>CRITICAL</option>
-      </select>
-      <label className="block text-sm">Latitude</label>
-      <input name="latitude" type="number" step="0.000001" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Longitude</label>
-      <input name="longitude" type="number" step="0.000001" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Address</label>
-      <input name="address" type="text" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Zone UUID</label>
-      <input name="zoneId" type="text" className="w-full rounded border p-2" required />
-      <button className="rounded bg-blue-600 px-4 py-2 text-white" type="submit">
-        Submit
-      </button>
-      {status ? <p className="text-sm">{status}</p> : null}
-    </form>
+    <HoverLift className="surface-3d p-4 md:p-6">
+      <FadeIn>
+        <form action={submit} className="space-y-4">
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Description</label>
+            <textarea name="description" required minLength={8} className="input-clean min-h-24" placeholder="Describe the issue with context and urgency." />
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Priority</label>
+              <select name="priority" className="input-clean" defaultValue="MEDIUM">
+                <option>LOW</option>
+                <option>MEDIUM</option>
+                <option>HIGH</option>
+                <option>CRITICAL</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Zone UUID</label>
+              <input name="zoneId" type="text" className="input-clean" required />
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Latitude</label>
+              <input name="latitude" type="number" step="0.000001" className="input-clean" required />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Longitude</label>
+              <input name="longitude" type="number" step="0.000001" className="input-clean" required />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Address</label>
+            <input name="address" type="text" className="input-clean" required />
+          </div>
+
+          <button className="btn-brand w-full sm:w-auto" type="submit">
+            Submit Ticket
+          </button>
+
+          {status ? <p className="glass px-3 py-2 text-sm text-soft">{status}</p> : null}
+        </form>
+      </FadeIn>
+    </HoverLift>
   );
 }

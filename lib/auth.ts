@@ -17,8 +17,9 @@ export const authConfig: NextAuthConfig = {
         if (!parsed.success) {
           return null;
         }
+        const email = parsed.data.email.trim().toLowerCase();
         const result = await dbQuery<User>(() =>
-          supabase.from("users").select("*").eq("email", parsed.data.email).single(),
+          supabase.from("users").select("*").eq("email", email).single(),
         );
         if (result.error) {
           return null;

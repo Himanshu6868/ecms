@@ -10,9 +10,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const result = await dbQuery<User>(() => supabase.from("users").select("*").eq("email", parsed.data.email).single());
+  const email = parsed.data.email.trim().toLowerCase();
+  let result = await dbQuery<User>(() => supabase.from("users").select("*").eq("email", email).single());
+
   if (result.error) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const fallbackName = email.split("@")[0] || "Customer";
+    result = await dbQuery<User>(() =>
+      supabase
+        .from("users")
+        .insert({ name: fallbackName, email, role: "CUSTOMER" })
+        .select("*")
+        .single(),
+    );
+  }
+
+  if (result.error) {
+    return NextResponse.json({ error: "Unable to initialize user" }, { status: 500 });
   }
 
   if (result.data.otp_retry_count >= 5) {
