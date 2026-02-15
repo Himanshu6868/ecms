@@ -18,30 +18,46 @@ export default async function AdminPage() {
   }
 
   const analytics = await dbQuery<Analytics[]>(() => supabase.rpc("ticket_status_analytics"));
+  const ticketMetrics = analytics.error ? [] : analytics.data;
 
   return (
     <main className="space-y-6">
-      <h1 className="text-2xl font-semibold">Admin Panel</h1>
+      <header className="space-y-2">
+        <h1 className="text-3xl font-semibold tracking-tight">Admin Dashboard</h1>
+        <p className="text-sm text-[var(--text-muted)]">Monitor routing rules, SLA coverage, and ticket status trends.</p>
+      </header>
+
       <section className="grid gap-4 md:grid-cols-2">
-        <article className="rounded border bg-white p-4">
+        <article className="rounded-2xl border border-[var(--border-soft)] bg-[var(--brand-green-soft)] p-5">
           <h2 className="font-semibold">SLA Rules</h2>
-          <p className="text-sm text-zinc-600">Priority-based SLA is enforced server-side in ticket service.</p>
+          <p className="mt-2 text-sm text-zinc-700">Priority-based SLA is enforced server-side in the ticket service.</p>
         </article>
-        <article className="rounded border bg-white p-4">
+        <article className="rounded-2xl border border-[var(--border-soft)] bg-white p-5">
           <h2 className="font-semibold">Area Mappings</h2>
-          <p className="text-sm text-zinc-600">Zone routing is managed via areas.zone_code and teams.area_id.</p>
+          <p className="mt-2 text-sm text-zinc-700">Zone routing is managed via areas.zone_code and teams.area_id.</p>
         </article>
       </section>
-      <section className="rounded border bg-white p-4">
-        <h2 className="mb-3 font-semibold">Ticket Analytics</h2>
-        <ul className="space-y-2 text-sm">
-          {(analytics.error ? [] : analytics.data).map((item) => (
-            <li key={item.status} className="flex justify-between border-b pb-1">
-              <span>{item.status}</span>
-              <span>{item.count}</span>
-            </li>
-          ))}
-        </ul>
+
+      <section className="rounded-2xl border border-[var(--border-soft)] bg-white p-5">
+        <h2 className="mb-4 font-semibold">Ticket Analytics</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead>
+              <tr className="border-b border-[var(--border-soft)] text-left text-zinc-600">
+                <th className="px-3 py-2 font-medium">Status</th>
+                <th className="px-3 py-2 font-medium">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ticketMetrics.map((item) => (
+                <tr key={item.status} className="border-b border-[var(--border-soft)] last:border-b-0">
+                  <td className="px-3 py-3 font-medium">{item.status}</td>
+                  <td className="px-3 py-3">{item.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   );

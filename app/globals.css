@@ -1,5 +1,52 @@
 @import "tailwindcss";
 
+:root {
+  --brand-green: #a3d9a5;
+  --brand-green-strong: #7bcf85;
+  --brand-green-soft: #edf8ee;
+  --text-primary: #1f2937;
+  --text-muted: #4b5563;
+  --border-soft: #d8e8d9;
+}
+
 body {
   min-height: 100vh;
+  background: linear-gradient(160deg, #f6fbf6 0%, #ffffff 55%, #eef8ef 100%);
+  color: var(--text-primary);
+}
+
+.app-shell {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--border-soft);
+  border-radius: 1rem;
+  box-shadow: 0 12px 30px rgba(82, 122, 85, 0.08);
+}
+
+.brand-button {
+  background: var(--brand-green);
+  color: #12311a;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.brand-button:hover {
+  background: var(--brand-green-strong);
+  transform: translateY(-1px);
+}
+
+.brand-input,
+.brand-select,
+.brand-textarea {
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: 0.75rem;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.brand-input:focus,
+.brand-select:focus,
+.brand-textarea:focus {
+  border-color: var(--brand-green-strong);
+  box-shadow: 0 0 0 4px rgba(163, 217, 165, 0.35);
 }

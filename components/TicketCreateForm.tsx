@@ -27,28 +27,57 @@ export function TicketCreateForm() {
   }
 
   return (
-    <form action={submit} className="space-y-3 rounded border bg-white p-4">
-      <label className="block text-sm">Description</label>
-      <textarea name="description" required minLength={8} className="w-full rounded border p-2" />
-      <label className="block text-sm">Priority</label>
-      <select name="priority" className="w-full rounded border p-2" defaultValue="MEDIUM">
-        <option>LOW</option>
-        <option>MEDIUM</option>
-        <option>HIGH</option>
-        <option>CRITICAL</option>
-      </select>
-      <label className="block text-sm">Latitude</label>
-      <input name="latitude" type="number" step="0.000001" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Longitude</label>
-      <input name="longitude" type="number" step="0.000001" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Address</label>
-      <input name="address" type="text" className="w-full rounded border p-2" required />
-      <label className="block text-sm">Zone UUID</label>
-      <input name="zoneId" type="text" className="w-full rounded border p-2" required />
-      <button className="rounded bg-blue-600 px-4 py-2 text-white" type="submit">
-        Submit
+    <form action={submit} className="space-y-5 rounded-2xl border border-[var(--border-soft)] bg-white p-5 md:p-6">
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Description</label>
+        <textarea
+          name="description"
+          required
+          minLength={8}
+          className="brand-textarea min-h-28 w-full px-3 py-2.5"
+          placeholder="Describe the issue clearly..."
+        />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Priority</label>
+          <select name="priority" className="brand-select w-full px-3 py-2.5" defaultValue="MEDIUM">
+            <option>LOW</option>
+            <option>MEDIUM</option>
+            <option>HIGH</option>
+            <option>CRITICAL</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Zone UUID</label>
+          <input name="zoneId" type="text" className="brand-input w-full px-3 py-2.5" required />
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Latitude</label>
+          <input name="latitude" type="number" step="0.000001" className="brand-input w-full px-3 py-2.5" required />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Longitude</label>
+          <input name="longitude" type="number" step="0.000001" className="brand-input w-full px-3 py-2.5" required />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Address</label>
+        <input name="address" type="text" className="brand-input w-full px-3 py-2.5" required />
+      </div>
+
+      <button className="brand-button rounded-xl px-5 py-2.5" type="submit">
+        Submit Ticket
       </button>
-      {status ? <p className="text-sm">{status}</p> : null}
+
+      {status ? <p className="text-sm text-[var(--text-muted)]">{status}</p> : null}
     </form>
   );
 }

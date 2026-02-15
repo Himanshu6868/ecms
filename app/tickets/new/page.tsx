@@ -9,8 +9,13 @@ export default async function NewTicketPage() {
   }
 
   return (
-    <main className="max-w-2xl space-y-4">
-      <h1 className="text-2xl font-semibold">Create Ticket</h1>
+    <main className="space-y-5">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-semibold tracking-tight">Create Ticket</h1>
+        <p className="text-sm text-[var(--text-muted)]">
+          Submit issue details, select priority, and provide location data for accurate routing.
+        </p>
+      </header>
       <TicketCreateForm />
     </main>
   );

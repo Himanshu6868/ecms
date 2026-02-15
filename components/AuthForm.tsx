@@ -26,19 +26,47 @@ export function AuthForm() {
   };
 
   return (
-    <div className="space-y-4 rounded-lg border p-6">
-      <h1 className="text-xl font-semibold">OTP Login</h1>
-      <label className="block text-sm font-medium">Email</label>
-      <input className="w-full rounded border px-3 py-2" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <button className="rounded bg-blue-600 px-4 py-2 text-white" type="button" onClick={requestOtp}>
+    <div className="app-shell w-full space-y-5 p-6 md:p-8">
+      <div className="space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">Login</h2>
+        <p className="text-sm text-[var(--text-muted)]">Use OTP authentication to continue securely.</p>
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">Email</label>
+        <input
+          className="brand-input w-full px-3 py-2.5"
+          type="email"
+          placeholder="name@company.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+
+      <button className="brand-button w-full rounded-xl px-4 py-2.5" type="button" onClick={requestOtp}>
         Generate OTP
       </button>
-      <label className="block text-sm font-medium">OTP</label>
-      <input className="w-full rounded border px-3 py-2" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} />
-      <button className="rounded bg-green-600 px-4 py-2 text-white" type="button" onClick={doSignIn}>
+
+      <div className="space-y-2">
+        <label className="block text-sm font-medium">One-Time Password</label>
+        <input
+          className="brand-input w-full px-3 py-2.5"
+          type="text"
+          placeholder="Enter code"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+        />
+      </div>
+
+      <button className="brand-button w-full rounded-xl px-4 py-2.5" type="button" onClick={doSignIn}>
         Sign In
       </button>
-      {status ? <p className="text-sm text-zinc-700">{status}</p> : null}
+
+      {status ? (
+        <p className="rounded-lg bg-[var(--brand-green-soft)] px-3 py-2 text-sm text-emerald-900" role="status">
+          {status}
+        </p>
+      ) : null}
     </div>
   );
 }
