@@ -34,9 +34,9 @@ export function AuthForm() {
     <HoverLift className="surface-3d p-6 md:p-8">
       <FadeIn className="space-y-5">
         <div className="space-y-2">
-          <p className="status-chip inline-flex">SECURE ACCESS</p>
-          <h1 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">OTP Login</h1>
-          <p className="text-soft text-sm">Generate a one-time passcode and use it to enter your dashboard.</p>
+          <p className="status-chip inline-flex">LOGIN</p>
+          <h2 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">Welcome back</h2>
+          <p className="text-soft text-sm">Use your work email to request a one-time passcode and sign in.</p>
         </div>
 
         <div className="space-y-2">
@@ -48,14 +48,14 @@ export function AuthForm() {
           <button className="btn-muted" type="button" onClick={requestOtp}>
             Generate OTP
           </button>
-          <input className="input-clean" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} placeholder="Enter 6-digit OTP" />
+          <input className="input-clean" type="text" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} placeholder="6-digit OTP" />
         </div>
 
         <button className="btn-brand w-full" type="button" onClick={doSignIn}>
           Sign In
         </button>
 
-        {status ? <p className="glass px-3 py-2 text-sm text-soft">{status}</p> : null}
+        {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
       </FadeIn>
     </HoverLift>
   );
