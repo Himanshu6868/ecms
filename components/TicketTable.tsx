@@ -1,6 +1,21 @@
 import { Ticket } from "@/types/domain";
 import Link from "next/link";
 
+function priorityClasses(priority: Ticket["priority"]): string {
+  switch (priority) {
+    case "LOW":
+      return "border-emerald-200 bg-emerald-50 text-emerald-800";
+    case "MEDIUM":
+      return "border-amber-200 bg-amber-50 text-amber-800";
+    case "HIGH":
+      return "border-orange-200 bg-orange-50 text-orange-800";
+    case "CRITICAL":
+      return "border-rose-200 bg-rose-50 text-rose-800";
+    default:
+      return "border-brand-200 bg-brand-50 text-ink-900";
+  }
+}
+
 export function TicketTable({ tickets }: { tickets: Ticket[] }) {
   if (!tickets.length) {
     return (
@@ -14,12 +29,16 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <Link key={ticket.id} href={`/tickets/${ticket.id}`} className="surface-3d block p-4">
+          <Link key={ticket.id} href={`/tickets/${ticket.id}`} className="surface-3d block border-l-4 border-l-brand-300 p-4">
             <div className="flex items-start justify-between gap-3">
               <p className="font-semibold text-brand-700">#{ticket.id.slice(0, 8)}</p>
               <p className="status-chip">{ticket.status}</p>
             </div>
-            <p className="mt-2 text-sm text-soft">Priority: {ticket.priority}</p>
+            <div className="mt-2">
+              <span className={`inline-flex rounded-full border px-2 py-1 text-xs font-semibold ${priorityClasses(ticket.priority)}`}>
+                {ticket.priority}
+              </span>
+            </div>
             <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
           </Link>
         ))}
@@ -42,7 +61,11 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
                   <Link href={`/tickets/${ticket.id}`}>#{ticket.id.slice(0, 8)}</Link>
                 </td>
                 <td className="px-4 py-3">{ticket.status}</td>
-                <td className="px-4 py-3">{ticket.priority}</td>
+                <td className="px-4 py-3">
+                  <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${priorityClasses(ticket.priority)}`}>
+                    {ticket.priority}
+                  </span>
+                </td>
                 <td className="px-4 py-3">{new Date(ticket.sla_deadline).toLocaleString()}</td>
               </tr>
             ))}

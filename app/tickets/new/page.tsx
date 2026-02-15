@@ -1,7 +1,9 @@
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { TicketCreateForm } from "@/components/TicketCreateForm";
-import { FadeIn } from "@/components/ui/motion";
+import { FadeIn, HoverLift } from "@/components/ui/motion";
+import { auth } from "@/lib/auth";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function NewTicketPage() {
   const session = await auth();
@@ -10,29 +12,76 @@ export default async function NewTicketPage() {
   }
 
   return (
-    <main className="space-y-6">
-      <FadeIn className="space-y-2">
-        <p className="status-chip inline-flex">NEW TICKET</p>
-        <h1 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">Ticket Creation</h1>
-        <p className="text-soft text-sm md:text-base">Capture issue details once and let routing plus SLA policies handle the rest.</p>
+    <main className="mx-auto w-full max-w-[1400px] space-y-6 px-2 py-2 sm:px-4 sm:py-3 md:space-y-7 md:px-6 md:py-4">
+      <FadeIn className="space-y-3">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+          <div className="justify-self-start">
+            <Link
+              href="/dashboard"
+              className="group inline-flex items-center gap-2 rounded-xl bg-brand-100/70 px-4 py-2 text-sm font-semibold text-ink-900"
+            >
+              <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+              Back to Dashboard
+            </Link>
+          </div>
+          <p className="status-chip inline-flex justify-self-center">NEW TICKET</p>
+          <div />
+        </div>
+        <div className="text-center">
+          <h1 className="[font-family:var(--font-space)] text-3xl font-semibold tracking-tight md:text-4xl">
+            Ticket Creation
+          </h1>
+          <p className="text-soft mx-auto max-w-3xl text-sm md:text-base">
+            Capture issue details once and let routing plus SLA policies handle
+            assignment and escalation automatically.
+          </p>
+        </div>
       </FadeIn>
 
-      <section className="grid gap-5 xl:grid-cols-[1.4fr_0.6fr]">
+      <section className="grid gap-6 xl:grid-cols-[1.45fr_0.55fr]">
         <TicketCreateForm />
 
-        <aside className="space-y-4">
-          <article className="surface p-4">
-            <h2 className="text-base font-semibold">Submission tips</h2>
-            <ul className="text-soft mt-2 space-y-1 text-sm">
-              <li>• Include clear impact in the description.</li>
-              <li>• Verify coordinates for field requests.</li>
-              <li>• Use HIGH/CRITICAL only for urgent issues.</li>
+        <aside className="space-y-4 xl:pt-1">
+          <HoverLift className="surface p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
+              Submission Quality
+            </h2>
+            <ul className="text-soft mt-3 space-y-2 text-sm">
+              <li>- Mention impact and urgency in one sentence.</li>
+              <li>- Capture browser location before submit.</li>
+              <li>- Use HIGH/CRITICAL only when SLA risk is immediate.</li>
             </ul>
-          </article>
-          <article className="surface p-4">
-            <h2 className="text-base font-semibold">SLA guidance</h2>
-            <p className="text-soft mt-2 text-sm">Priority and area decide assignment queue and escalation timers automatically.</p>
-          </article>
+          </HoverLift>
+
+          <HoverLift className="surface p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
+              Routing Logic
+            </h2>
+            <p className="text-soft mt-2 text-sm">
+              User area mapping drives team queue assignment. Location is
+              captured automatically from the browser.
+            </p>
+          </HoverLift>
+
+          <HoverLift className="surface-3d p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
+              SLA Window
+            </h2>
+            <div className="mt-3 space-y-2 text-sm">
+              <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
+                <span>LOW/MEDIUM</span>
+                <span className="font-semibold">24-48h</span>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
+                <span>HIGH</span>
+                <span className="font-semibold">8h</span>
+              </div>
+              <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
+                <span>CRITICAL</span>
+                <span className="font-semibold">4h</span>
+              </div>
+            </div>
+          </HoverLift>
         </aside>
       </section>
     </main>

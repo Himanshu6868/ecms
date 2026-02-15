@@ -11,6 +11,7 @@ create table users (
   name text not null,
   email text not null unique,
   role role_enum not null default 'CUSTOMER',
+  reports_to uuid null,
   area_id uuid null,
   otp_hash text null,
   otp_expires_at timestamptz null,
@@ -19,6 +20,8 @@ create table users (
   created_at timestamptz not null default now(),
   deleted_at timestamptz null
 );
+
+alter table users add constraint fk_users_reports_to foreign key (reports_to) references users(id) on delete set null;
 
 create table areas (
   id uuid primary key default gen_random_uuid(),

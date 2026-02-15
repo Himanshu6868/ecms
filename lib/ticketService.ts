@@ -1,10 +1,12 @@
 import { dbQuery, supabase } from "@/lib/db";
 import { assertTransition } from "@/lib/stateMachine";
 import { Ticket, TicketPriority, TicketStatus, User } from "@/types/domain";
+import { INTERNAL_ACTOR_ROLES_BY_EMAIL, normalizeEmail } from "@/lib/internalActors";
 
 function deadlineByPriority(priority: TicketPriority): Date {
   const now = Date.now();
-  const hours = { LOW: 72, MEDIUM: 24, HIGH: 8, CRITICAL: 2 }[priority];
+  // Short SLA windows for local/testing flows.
+  const hours = { LOW: 0.5, MEDIUM: 0.25, HIGH: 0.1, CRITICAL: 0.05 }[priority];
   return new Date(now + hours * 60 * 60 * 1000);
 }
 
@@ -16,6 +18,32 @@ export async function deriveAreaByZone(zoneId: string): Promise<string> {
     throw new Error("Area not found for provided zone");
   }
   return areaResult.data.id;
+}
+
+async function resolveAreaIdForUser(user: User): Promise<string> {
+  if (user.area_id) {
+    return user.area_id;
+  }
+
+  const existingAreas = await dbQuery<Array<{ id: string }>>(() =>
+    supabase.from("areas").select("id").order("created_at", { ascending: true }).limit(1),
+  );
+
+  if (!existingAreas.error && existingAreas.data.length > 0) {
+    return existingAreas.data[0].id;
+  }
+
+  const createdArea = await dbQuery<{ id: string }>(() =>
+    supabase
+      .from("areas")
+      .insert({ name: "Unassigned Intake", zone_code: "AUTO_DEFAULT" })
+      .select("id")
+      .single(),
+  );
+  if (createdArea.error) {
+    throw new Error("Unable to resolve default area for ticket creation");
+  }
+  return createdArea.data.id;
 }
 
 export async function selectTeamAndAgent(areaId: string): Promise<{ teamId: string | null; agentId: string | null }> {
@@ -35,18 +63,94 @@ export async function selectTeamAndAgent(areaId: string): Promise<{ teamId: stri
   return { teamId, agentId: workloadResult.data[0].user_id };
 }
 
+async function getOpenCountByAgent(agentIds: string[]): Promise<Record<string, number>> {
+  if (agentIds.length === 0) {
+    return {};
+  }
+
+  const openStatuses: TicketStatus[] = ["CREATED", "ASSIGNED", "IN_PROGRESS", "SLA_BREACHED", "ESCALATED", "REASSIGNED", "REOPENED"];
+  const openTickets = await dbQuery<Array<{ assigned_agent_id: string | null }>>(() =>
+    supabase.from("tickets").select("assigned_agent_id").in("assigned_agent_id", agentIds).in("status", openStatuses).is("deleted_at", null),
+  );
+
+  const counts: Record<string, number> = {};
+  for (const id of agentIds) {
+    counts[id] = 0;
+  }
+  if (openTickets.error) {
+    return counts;
+  }
+
+  for (const ticket of openTickets.data) {
+    if (ticket.assigned_agent_id && counts[ticket.assigned_agent_id] !== undefined) {
+      counts[ticket.assigned_agent_id] += 1;
+    }
+  }
+
+  return counts;
+}
+
+async function selectNextEscalationAgent(teamId: string, currentAgentId: string | null): Promise<string | null> {
+  let currentLevel = 0;
+  if (currentAgentId) {
+    const currentMember = await dbQuery<{ hierarchy_level: number }>(() =>
+      supabase.from("team_members").select("hierarchy_level").eq("team_id", teamId).eq("user_id", currentAgentId).single(),
+    );
+    if (!currentMember.error) {
+      currentLevel = currentMember.data.hierarchy_level;
+    }
+  }
+
+  const candidates = await dbQuery<Array<{ user_id: string; hierarchy_level: number }>>(() =>
+    supabase
+      .from("team_members")
+      .select("user_id, hierarchy_level")
+      .eq("team_id", teamId)
+      .gt("hierarchy_level", currentLevel)
+      .order("hierarchy_level", { ascending: true }),
+  );
+  if (candidates.error || candidates.data.length === 0) {
+    return null;
+  }
+
+  const nextLevel = candidates.data[0].hierarchy_level;
+  const nearestCandidates = candidates.data.filter((candidate) => candidate.hierarchy_level === nextLevel);
+  const counts = await getOpenCountByAgent(nearestCandidates.map((candidate) => candidate.user_id));
+
+  nearestCandidates.sort((a, b) => (counts[a.user_id] ?? 0) - (counts[b.user_id] ?? 0));
+  return nearestCandidates[0].user_id;
+}
+
+async function topLevelAdminId(): Promise<string | null> {
+  const configuredAdminEmail = Object.entries(INTERNAL_ACTOR_ROLES_BY_EMAIL).find(([, role]) => role === "ADMIN")?.[0];
+  if (configuredAdminEmail) {
+    const admin = await dbQuery<{ id: string }>(() =>
+      supabase.from("users").select("id").eq("email", normalizeEmail(configuredAdminEmail)).eq("role", "ADMIN").single(),
+    );
+    if (!admin.error) {
+      return admin.data.id;
+    }
+  }
+
+  const fallback = await dbQuery<{ id: string }>(() =>
+    supabase.from("users").select("id").eq("role", "ADMIN").order("created_at", { ascending: true }).limit(1).single(),
+  );
+
+  return fallback.error ? null : fallback.data.id;
+}
+
 export async function createTicket(input: {
   customerId: string;
   createdBy: string;
   description: string;
   priority: TicketPriority;
-  location: { latitude: number; longitude: number; address: string; zoneId: string };
+  location: { latitude: number; longitude: number; address: string };
 }): Promise<Ticket> {
   const userResult = await dbQuery<User>(() => supabase.from("users").select("*").eq("id", input.customerId).single());
   if (userResult.error || !userResult.data.otp_verified_at) {
     throw new Error("OTP verification required before ticket creation");
   }
-  const areaId = await deriveAreaByZone(input.location.zoneId);
+  const areaId = await resolveAreaIdForUser(userResult.data);
   const routing = await selectTeamAndAgent(areaId);
 
   const payload = {
@@ -72,18 +176,20 @@ export async function createTicket(input: {
     latitude: input.location.latitude,
     longitude: input.location.longitude,
     address: input.location.address,
-    zone_id: input.location.zoneId,
+    zone_id: areaId,
   });
 
   return ticketResult.data;
 }
 
-export async function transitionTicket(ticketId: string, next: TicketStatus): Promise<Ticket> {
+export async function transitionTicket(ticketId: string, next: TicketStatus, options?: { force?: boolean }): Promise<Ticket> {
   const currentResult = await dbQuery<Ticket>(() => supabase.from("tickets").select("*").eq("id", ticketId).single());
   if (currentResult.error) {
     throw currentResult.error;
   }
-  assertTransition(currentResult.data.status, next);
+  if (!options?.force) {
+    assertTransition(currentResult.data.status, next);
+  }
   const updatedResult = await dbQuery<Ticket>(() =>
     supabase.from("tickets").update({ status: next, updated_at: new Date().toISOString() }).eq("id", ticketId).select("*").single(),
   );
@@ -106,16 +212,16 @@ export async function runSlaMonitor(): Promise<number> {
 
   for (const ticket of data as Ticket[]) {
     const fromAgent = ticket.assigned_agent_id;
-    await transitionTicket(ticket.id, "SLA_BREACHED");
-    await transitionTicket(ticket.id, "ESCALATED");
+    const ticketTeamId = ticket.assigned_team_id ?? (await selectTeamAndAgent(ticket.area_id)).teamId;
+    const nextInHierarchy = ticketTeamId ? await selectNextEscalationAgent(ticketTeamId, fromAgent) : null;
+    const agentId = nextInHierarchy ?? (await topLevelAdminId());
 
     const nextLevel = ticket.escalation_level + 1;
-    const { teamId, agentId } = await selectTeamAndAgent(ticket.area_id);
 
     await supabase
       .from("tickets")
       .update({
-        assigned_team_id: teamId,
+        assigned_team_id: ticketTeamId,
         assigned_agent_id: agentId,
         escalation_level: nextLevel,
         status: "REASSIGNED",

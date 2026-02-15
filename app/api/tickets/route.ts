@@ -5,6 +5,16 @@ import { dbQuery, supabase } from "@/lib/db";
 import { paginationSchema, ticketCreateSchema } from "@/lib/validations";
 import { Ticket } from "@/types/domain";
 
+function isExternalScoped(role: string, isInternal: boolean): boolean {
+  if (role === "CUSTOMER") {
+    return true;
+  }
+  if (role === "AGENT") {
+    return !isInternal;
+  }
+  return !isInternal;
+}
+
 export async function GET(request: Request) {
   const session = await auth();
   if (!session?.user) {
@@ -20,7 +30,9 @@ export async function GET(request: Request) {
   const to = from + pager.pageSize - 1;
 
   const query = supabase.from("tickets").select("*").order("created_at", { ascending: false }).range(from, to);
-  const guarded = session.user.role === "CUSTOMER" ? query.eq("customer_id", session.user.id) : query;
+  const guarded = isExternalScoped(session.user.role, session.user.isInternal)
+    ? query.or(`customer_id.eq.${session.user.id},created_by.eq.${session.user.id}`)
+    : query;
 
   const result = await dbQuery<Ticket[]>(() => guarded);
 

@@ -32,7 +32,7 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
   const maxCount = Math.max(1, ...analytics.map((entry) => entry.count));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7 md:space-y-8">
       <FadeIn className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="status-chip inline-flex">ADMIN DASHBOARD</p>
@@ -41,7 +41,7 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
         </div>
       </FadeIn>
 
-      <motion.section variants={container} initial="hidden" animate="show" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <motion.section variants={container} initial="hidden" animate="show" className="grid gap-4 md:gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <motion.div variants={item}>
           <HoverLift className="surface-3d p-4">
             <p className="text-soft text-xs uppercase">Total Tickets</p>
@@ -68,7 +68,7 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
         </motion.div>
       </motion.section>
 
-      <section className="surface space-y-4 p-4 md:p-5">
+      <section className="surface space-y-5 p-5 md:p-6">
         <div className="flex flex-wrap gap-2">
           <button className="btn-muted text-sm">Date Range</button>
           <button className="btn-muted text-sm">Status</button>

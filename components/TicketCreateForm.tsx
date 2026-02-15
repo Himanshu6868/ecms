@@ -1,80 +1,176 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import { FadeIn, HoverLift } from "@/components/ui/motion";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+function getErrorMessage(error: unknown): string {
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (error && typeof error === "object") {
+    const typed = error as { formErrors?: unknown; fieldErrors?: Record<string, unknown> };
+
+    if (Array.isArray(typed.formErrors) && typed.formErrors.length > 0) {
+      const first = typed.formErrors[0];
+      if (typeof first === "string") {
+        return first;
+      }
+    }
+
+    if (typed.fieldErrors && typeof typed.fieldErrors === "object") {
+      for (const value of Object.values(typed.fieldErrors)) {
+        if (Array.isArray(value) && value.length > 0 && typeof value[0] === "string") {
+          return value[0];
+        }
+      }
+    }
+  }
+
+  return "Failed to create ticket";
+}
 
 export function TicketCreateForm() {
   const [status, setStatus] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("MEDIUM");
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
 
-  async function submit(formData: FormData) {
+  const descriptionHint = useMemo(() => `${description.trim().length}/5000`, [description]);
+
+  function detectLocation() {
+    if (!navigator.geolocation) {
+      setStatus("Geolocation is not supported in this browser.");
+      return;
+    }
+
+    setIsLocating(true);
+    setStatus(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoords({
+          latitude: Number(position.coords.latitude.toFixed(6)),
+          longitude: Number(position.coords.longitude.toFixed(6)),
+        });
+        setStatus("Location captured successfully.");
+        setIsLocating(false);
+      },
+      () => {
+        setStatus("Unable to fetch location. Please allow location access.");
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!coords) {
+      setStatus("Please capture your location before submitting.");
+      return;
+    }
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const payload = {
       description: String(formData.get("description")),
       priority: String(formData.get("priority")),
       location: {
-        latitude: Number(formData.get("latitude")),
-        longitude: Number(formData.get("longitude")),
-        address: String(formData.get("address")),
-        zoneId: String(formData.get("zoneId")),
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        address: `Auto-detected (${coords.latitude}, ${coords.longitude})`,
       },
     };
 
-    const res = await fetch("/api/tickets", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const json = (await res.json()) as { id?: string; error?: string };
-    setStatus(res.ok ? `Created ticket ${json.id ?? ""}` : json.error ?? "Failed to create ticket");
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const res = await fetch("/api/tickets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = (await res.json()) as { id?: string; error?: unknown };
+      if (!res.ok) {
+        setStatus(getErrorMessage(json.error));
+        return;
+      }
+      setStatus(`Ticket created successfully: ${json.id?.slice(0, 8) ?? ""}`);
+      form.reset();
+      setDescription("");
+      setCoords(null);
+    } catch {
+      setStatus("Unable to submit ticket right now. Try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <HoverLift className="surface-3d p-4 md:p-6">
+    <HoverLift className="surface-3d p-5 sm:p-6 md:p-8">
       <FadeIn>
-        <form action={submit} className="space-y-5">
+        <form onSubmit={submit} className="space-y-6 md:space-y-7">
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Issue description</label>
-            <textarea name="description" required minLength={8} className="input-clean min-h-28" placeholder="Describe the issue, impact, and any immediate workaround." />
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="description">Issue description</Label>
+              <span className="text-soft text-xs">{descriptionHint}</span>
+            </div>
+            <Textarea
+              id="description"
+              name="description"
+              required
+              minLength={8}
+              maxLength={5000}
+              className="min-h-36"
+              placeholder="Describe what happened, business impact, and any temporary workaround already tried."
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Priority</label>
-              <select name="priority" className="input-clean" defaultValue="MEDIUM">
-                <option>LOW</option>
-                <option>MEDIUM</option>
-                <option>HIGH</option>
-                <option>CRITICAL</option>
-              </select>
+              <Label htmlFor="priority">Priority</Label>
+              <input name="priority" type="hidden" value={priority} />
+              <Select value={priority} onValueChange={setPriority}>
+                <SelectTrigger id="priority">
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="LOW">LOW</SelectItem>
+                  <SelectItem value="MEDIUM">MEDIUM</SelectItem>
+                  <SelectItem value="HIGH">HIGH</SelectItem>
+                  <SelectItem value="CRITICAL">CRITICAL</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
-              <label className="block text-sm font-medium">Zone UUID</label>
-              <input name="zoneId" type="text" className="input-clean" required placeholder="Area mapping id" />
+              <Label>Location</Label>
+              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-brand-200 bg-white p-3">
+                <Button type="button" variant="secondary" onClick={detectLocation} disabled={isLocating}>
+                  {isLocating ? "Fetching..." : "Use Current Location"}
+                </Button>
+                <p className="text-soft text-sm">
+                  {coords ? `${coords.latitude}, ${coords.longitude}` : "No location captured yet"}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Latitude</label>
-              <input name="latitude" type="number" step="0.000001" className="input-clean" required />
-            </div>
-            <div className="space-y-2">
-              <label className="block text-sm font-medium">Longitude</label>
-              <input name="longitude" type="number" step="0.000001" className="input-clean" required />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium">Address</label>
-            <input name="address" type="text" className="input-clean" required placeholder="Street, city, landmark" />
-          </div>
-
-          <div className="flex flex-wrap justify-end gap-3">
-            <button className="btn-muted" type="button">
-              Save Draft
-            </button>
-            <button className="btn-brand" type="submit">
-              Submit Ticket
-            </button>
+          <div className="flex flex-wrap justify-end gap-3 border-t border-brand-200/80 pt-4">
+            <Button variant="secondary" type="reset">
+              Clear Form
+            </Button>
+            <Button className="min-w-36" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting..." : "Submit Ticket"}
+            </Button>
           </div>
 
           {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}

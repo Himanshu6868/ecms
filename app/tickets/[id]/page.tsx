@@ -5,6 +5,31 @@ import { FadeIn } from "@/components/ui/motion";
 import { revalidatePath } from "next/cache";
 import { notFound, redirect } from "next/navigation";
 
+function isExternalScoped(role: string, isInternal: boolean): boolean {
+  if (role === "CUSTOMER") {
+    return true;
+  }
+  if (role === "AGENT") {
+    return !isInternal;
+  }
+  return !isInternal;
+}
+
+function priorityClasses(priority: Ticket["priority"]): string {
+  switch (priority) {
+    case "LOW":
+      return "border-emerald-200 bg-emerald-50 text-emerald-800";
+    case "MEDIUM":
+      return "border-amber-200 bg-amber-50 text-amber-800";
+    case "HIGH":
+      return "border-orange-200 bg-orange-50 text-orange-800";
+    case "CRITICAL":
+      return "border-rose-200 bg-rose-50 text-rose-800";
+    default:
+      return "border-brand-200 bg-brand-50 text-ink-900";
+  }
+}
+
 export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user) {
@@ -16,6 +41,14 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
   if (ticketResult.error) {
     notFound();
   }
+  const ticket = ticketResult.data;
+  if (
+    isExternalScoped(session.user.role, session.user.isInternal) &&
+    ticket.customer_id !== session.user.id &&
+    ticket.created_by !== session.user.id
+  ) {
+    notFound();
+  }
 
   const chatResult = await dbQuery<ChatMessage[]>(() =>
     supabase.from("chat_messages").select("*").eq("ticket_id", routeParams.id).order("created_at", { ascending: false }).limit(30),
@@ -25,6 +58,13 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
     "use server";
     const activeSession = await auth();
     if (!activeSession?.user) {
+      return;
+    }
+    if (
+      isExternalScoped(activeSession.user.role, activeSession.user.isInternal) &&
+      ticket.customer_id !== activeSession.user.id &&
+      ticket.created_by !== activeSession.user.id
+    ) {
       return;
     }
     const message = String(formData.get("message") ?? "").trim();
@@ -39,12 +79,17 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
     <main className="space-y-5">
       <FadeIn className="surface-3d space-y-3 p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="[font-family:var(--font-space)] text-xl font-semibold tracking-tight md:text-2xl">Ticket #{ticketResult.data.id.slice(0, 8)}</h1>
-          <p className="status-chip">{ticketResult.data.status}</p>
+          <h1 className="[font-family:var(--font-space)] text-xl font-semibold tracking-tight md:text-2xl">Ticket #{ticket.id.slice(0, 8)}</h1>
+          <p className="status-chip">{ticket.status}</p>
         </div>
         <div className="grid gap-2 text-sm text-soft sm:grid-cols-2">
-          <p>Priority: {ticketResult.data.priority}</p>
-          <p>SLA: {new Date(ticketResult.data.sla_deadline).toLocaleString()}</p>
+          <p>
+            Priority:{" "}
+            <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${priorityClasses(ticket.priority)}`}>
+              {ticket.priority}
+            </span>
+          </p>
+          <p>SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
         </div>
       </FadeIn>
 

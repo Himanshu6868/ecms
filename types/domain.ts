@@ -20,6 +20,7 @@ export interface User {
   name: string;
   email: string;
   role: Role;
+  reports_to: string | null;
   area_id: string | null;
   otp_hash: string | null;
   otp_expires_at: string | null;
