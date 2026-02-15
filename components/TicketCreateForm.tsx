@@ -30,10 +30,10 @@ export function TicketCreateForm() {
   return (
     <HoverLift className="surface-3d p-4 md:p-6">
       <FadeIn>
-        <form action={submit} className="space-y-4">
+        <form action={submit} className="space-y-5">
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Description</label>
-            <textarea name="description" required minLength={8} className="input-clean min-h-24" placeholder="Describe the issue with context and urgency." />
+            <label className="block text-sm font-medium">Issue description</label>
+            <textarea name="description" required minLength={8} className="input-clean min-h-28" placeholder="Describe the issue, impact, and any immediate workaround." />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -48,7 +48,7 @@ export function TicketCreateForm() {
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium">Zone UUID</label>
-              <input name="zoneId" type="text" className="input-clean" required />
+              <input name="zoneId" type="text" className="input-clean" required placeholder="Area mapping id" />
             </div>
           </div>
 
@@ -65,14 +65,19 @@ export function TicketCreateForm() {
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">Address</label>
-            <input name="address" type="text" className="input-clean" required />
+            <input name="address" type="text" className="input-clean" required placeholder="Street, city, landmark" />
           </div>
 
-          <button className="btn-brand w-full sm:w-auto" type="submit">
-            Submit Ticket
-          </button>
+          <div className="flex flex-wrap justify-end gap-3">
+            <button className="btn-muted" type="button">
+              Save Draft
+            </button>
+            <button className="btn-brand" type="submit">
+              Submit Ticket
+            </button>
+          </div>
 
-          {status ? <p className="glass px-3 py-2 text-sm text-soft">{status}</p> : null}
+          {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
         </form>
       </FadeIn>
     </HoverLift>

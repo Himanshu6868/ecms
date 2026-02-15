@@ -1,22 +1,21 @@
-# Modern Light Green + White Interface Proposal
+# ECMS UI/UX Design Blueprint (Light Green + White)
 
-## Shared Design System
+## Global Design Language
 
-- **Primary color:** `#A3D9A5` (light green)
-- **Background:** `#FFFFFF`
-- **Surface alt:** `#F6FBF6`
-- **Text primary:** `#1F2937`
-- **Text secondary:** `#4B5563`
-- **Border:** `#DDEBDD`
-- **Success:** `#2E7D32`
-- **Error:** `#C62828`
+- **Primary brand color:** `#A3D9A5`
+- **Primary background:** `#FFFFFF`
+- **Soft background:** `#F6FBF6`
+- **Borders:** `#DDEBDD`
+- **Text:** `#1F2937` (primary), `#4B5563` (secondary)
+- **Button hover:** `#8BCB8E`
 
-### Core component tokens
+### Shared component standards
 
-- **Radius:** 12px (cards), 10px (inputs/buttons)
-- **Shadow:** `0 6px 20px rgba(31,41,55,0.08)`
+- **Buttons:** 10–12px radius, semibold label, subtle lift on hover
+- **Inputs:** 10–12px radius, 1px soft border, 4px green focus ring
+- **Cards/Surfaces:** white panel + gentle shadow + soft green border
 - **Spacing scale:** 4, 8, 12, 16, 24, 32
-- **Typography:** Inter / system sans
+- **Typography:** Inter / system sans; clear hierarchy
 
 ---
 
@@ -24,57 +23,49 @@
 
 ### Layout description
 
-- Centered split layout on desktop (`40/60`): left side branding/illustration, right side login card.
-- Tablet collapses to single-column with branding banner on top and form below.
-- Vertical rhythm with 24px spacing between sections.
+- Desktop split layout (`2 columns`):
+  - Left: brand value proposition and feature chips
+  - Right: authentication card
+- Tablet and below: stacks into single-column flow with form prioritized.
 
 ### Component overview
 
-- Top-left logo and app name.
-- Login card includes: title, subtitle, email field, password field, remember me, forgot link, sign-in button.
-- Optional SSO button and divider.
-- Footer with support/contact link.
+- Branding card with heading/subheading and three capability chips.
+- Login card with:
+  - Email field
+  - OTP request button
+  - OTP input
+  - Primary sign-in CTA
+  - Inline status/validation message
 
 ### Color usage
 
-- App background white.
-- Branding panel uses a subtle gradient from `#FFFFFF` to `#F6FBF6`.
-- Primary button and focused input ring use `#A3D9A5`.
-- Hover state for button darkens to `#8BCB8E`.
-- Error text/border in red with accessible contrast.
+- Page base: white to very soft green gradient (`#FFFFFF` → `#F6FBF6`).
+- Form card: white, soft border (`#DDEBDD`).
+- Primary CTA: `#A3D9A5`, hover `#8BCB8E`.
+- Focus ring: translucent `#A3D9A5`.
 
 ### Typography and spacing
 
-- H1: 28/32 semibold.
-- Form labels: 14/20 medium.
-- Body/help text: 14/20 regular.
-- Form stack gap: 16px, section gap: 24px.
+- Hero title: 36–48px desktop, 30px tablet.
+- Form title: 24–30px.
+- Labels/body: 14–16px.
+- Vertical spacing: 16–24px.
 
-### Interaction/UX details
+### Interaction / UX details
 
-- Visible focus ring: 2px green outline + 2px offset.
-- Inline validation below each field.
-- Disable submit and show spinner during auth request.
-- Keyboard-first flow: Enter submits, tab order logical.
+- Focus-visible input ring for keyboard users.
+- OTP status shown inline in a clearly separated message block.
+- Buttons sized for touch and pointer interaction.
+- Logical tab order (email → request otp → otp → sign in).
 
-### Tailwind snippet (key section)
+### Tailwind snippet
 
 ```tsx
-<div className="min-h-screen grid md:grid-cols-2 bg-white">
-  <aside className="hidden md:flex items-center justify-center bg-gradient-to-br from-white to-[#F6FBF6] p-10">
-    <div className="max-w-sm">
-      <h1 className="text-3xl font-semibold text-gray-800">Support Portal</h1>
-      <p className="mt-3 text-gray-600">Track, create, and resolve tickets faster.</p>
-    </div>
-  </aside>
-
-  <main className="flex items-center justify-center p-6 md:p-12">
-    <form className="w-full max-w-md bg-white border border-[#DDEBDD] rounded-xl shadow-[0_6px_20px_rgba(31,41,55,0.08)] p-6 space-y-4">
-      <input className="w-full rounded-lg border border-[#DDEBDD] px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A3D9A5]" />
-      <button className="w-full rounded-lg bg-[#A3D9A5] hover:bg-[#8BCB8E] text-gray-900 font-medium py-2.5">Sign in</button>
-    </form>
-  </main>
-</div>
+<main className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-br from-white to-[#F6FBF6]">
+  <section className="surface p-8">Brand content</section>
+  <section className="surface-3d p-8 max-w-lg mx-auto">Auth form</section>
+</main>
 ```
 
 ---
@@ -83,58 +74,50 @@
 
 ### Layout description
 
-- Dashboard shell with top navbar + optional left sidebar.
-- Main area uses a two-column grid on desktop:
-  - Left (8 cols): ticket form
-  - Right (4 cols): tips/SLA/preview panel
-- Tablet collapses to single column.
+- Primary content uses responsive two-panel layout:
+  - Left: full ticket form
+  - Right: contextual guidance cards (tips + SLA)
+- On tablet: collapses to single column with form first.
 
 ### Component overview
 
-- Navbar: search, notifications, user avatar.
-- Form card fields: title, category, priority, description, attachments, requester info.
-- Sticky action bar: Save Draft + Submit Ticket.
-- Right panel cards: SLA hints, examples, recent similar tickets.
+- Page header (status chip, title, helper text).
+- Ticket form card:
+  - Description textarea
+  - Priority select
+  - Zone UUID
+  - Latitude/Longitude
+  - Address
+  - Action row: Save Draft + Submit Ticket
+- Sidebar guidance cards for better form quality.
 
 ### Color usage
 
-- Form surfaces white with green-tinted borders.
-- Priority chips use neutral base with green highlight for selected.
-- Primary CTA uses `#A3D9A5`; secondary button white with green border.
-- Drag-drop attachment area uses `#F6FBF6` background + dashed green border.
+- Form and guidance cards remain white with green border lines.
+- Priority/select/input interactions use same green focus ring.
+- Primary submit button uses `#A3D9A5`, secondary remains white.
 
 ### Typography and spacing
 
-- Page title: 24/30 semibold.
-- Section headings: 16/24 semibold.
-- Inputs and selects: min height 40px.
-- Grid gap: 24px desktop, 16px tablet.
+- Page title: 30–36px.
+- Section labels: 14px medium.
+- Inputs: consistent ~40px+ touch target.
+- Grid gap: 20–24px desktop, ~16px tablet.
 
-### Interaction/UX details
+### Interaction / UX details
 
-- Autosave indicator (e.g., “Saved 10s ago”).
-- Character counter for description.
-- Real-time validation with clear message tone.
-- Preserve entered data on refresh/navigation warning.
+- Large description box for complete context capture.
+- Clear status message after submission.
+- Balanced action hierarchy: secondary "Save Draft" + primary "Submit".
+- Layout keeps guidance visible without interrupting form completion.
 
-### Tailwind snippet (key section)
+### Tailwind snippet
 
 ```tsx
-<section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-  <form className="xl:col-span-8 bg-white border border-[#DDEBDD] rounded-xl p-6 space-y-5">
-    <div className="grid md:grid-cols-2 gap-4">
-      <input placeholder="Ticket title" className="rounded-lg border border-[#DDEBDD] px-3 py-2 focus:ring-2 focus:ring-[#A3D9A5]" />
-      <select className="rounded-lg border border-[#DDEBDD] px-3 py-2 focus:ring-2 focus:ring-[#A3D9A5]" />
-    </div>
-    <textarea className="w-full min-h-40 rounded-lg border border-[#DDEBDD] px-3 py-2 focus:ring-2 focus:ring-[#A3D9A5]" />
-    <div className="flex gap-3 justify-end">
-      <button className="px-4 py-2 rounded-lg border border-[#A3D9A5]">Save draft</button>
-      <button className="px-4 py-2 rounded-lg bg-[#A3D9A5] hover:bg-[#8BCB8E]">Submit ticket</button>
-    </div>
-  </form>
-
-  <aside className="xl:col-span-4 space-y-4">
-    <div className="bg-[#F6FBF6] border border-[#DDEBDD] rounded-xl p-4">SLA guidance</div>
+<section className="grid gap-5 xl:grid-cols-[1.4fr_0.6fr]">
+  <form className="surface-3d p-6 space-y-5">...</form>
+  <aside className="space-y-4">
+    <article className="surface p-4">Submission tips</article>
   </aside>
 </section>
 ```
@@ -145,67 +128,49 @@
 
 ### Layout description
 
-- Desktop: persistent left sidebar + top navbar + content canvas.
-- Content hierarchy:
-  1. KPI cards row
-  2. Charts row (ticket volume, resolution time)
-  3. Ticket management table
-- Tablet: collapsible sidebar drawer, cards in 2-up layout.
+- Persistent sidebar (desktop) + compact top nav (mobile/tablet).
+- Content stack:
+  1. Overview heading
+  2. KPI cards row
+  3. Filter controls
+  4. Ticket status table with progress bars
 
 ### Component overview
 
-- Sidebar navigation with active state indicator.
-- KPI cards: Open, In Progress, Overdue, Resolved.
-- Filter toolbar: date range, status, assignee, search.
-- Data table with sortable columns, status badges, row actions.
-- Optional right drawer for quick ticket detail.
+- Left navigation for Dashboard / Create Ticket / Admin.
+- KPI cards: Total Tickets, Open Tickets, Total Users, Status Buckets.
+- Filter toolbar buttons (date range, status, assignee).
+- Analytics table with status counts and progress meter.
 
 ### Color usage
 
-- Sidebar white with green active item background tint.
-- KPI card accents (top border or icon background) in `#A3D9A5`.
-- Table header with very light green tint (`#F6FBF6`).
-- Status badges keep semantic colors, but neutral badges use green family.
+- Sidebar and cards are white; active/hover states use green tint.
+- Table header uses light green background (`#EEF8EE`).
+- Progress bars use brand green fills (`#A3D9A5`).
 
 ### Typography and spacing
 
-- Dashboard heading: 26/32 semibold.
-- KPI values: 28/32 bold.
-- Table text: 14/20.
-- Section spacing: 24px; card internal padding: 16–20px.
+- Dashboard heading: 32–36px desktop.
+- KPI values: 32px emphasis.
+- Table text: 14px with comfortable row padding.
+- Section separation: ~24px.
 
-### Interaction/UX details
+### Interaction / UX details
 
-- Sticky table header for long lists.
-- Hover row highlight and clear selected state.
-- Sort icons and filter chips with keyboard accessibility.
-- Empty/loading states with skeleton loaders.
+- Large filter controls for quick operations.
+- Table rows have clear row separation and visual scanability.
+- Progress bars help compare status distribution at a glance.
+- Responsive card grid scales from 4-up desktop to 2-up tablet.
 
-### Tailwind snippet (key section)
+### Tailwind snippet
 
 ```tsx
-<div className="min-h-screen bg-[#F6FBF6] grid lg:grid-cols-[240px_1fr]">
-  <aside className="bg-white border-r border-[#DDEBDD] p-4">
-    <nav className="space-y-1">
-      <a className="block px-3 py-2 rounded-lg bg-[#EAF6EA] text-gray-900 font-medium">Dashboard</a>
-    </nav>
-  </aside>
-
-  <main className="p-6 space-y-6">
-    <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <article className="bg-white border border-[#DDEBDD] rounded-xl p-4">
-        <p className="text-sm text-gray-600">Open Tickets</p>
-        <p className="text-2xl font-bold text-gray-900">128</p>
-      </article>
-    </section>
-
-    <section className="bg-white border border-[#DDEBDD] rounded-xl overflow-hidden">
-      <table className="w-full text-sm">
-        <thead className="bg-[#F6FBF6] text-gray-700">
-          <tr><th className="text-left px-4 py-3">Ticket</th></tr>
-        </thead>
-      </table>
-    </section>
-  </main>
-</div>
+<section className="surface p-5 space-y-4">
+  <div className="flex flex-wrap gap-2">filters...</div>
+  <div className="overflow-hidden rounded-xl border border-[#DDEBDD]">
+    <table className="w-full text-sm">
+      <thead className="bg-[#EEF8EE]">...</thead>
+    </table>
+  </div>
+</section>
 ```

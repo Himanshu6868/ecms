@@ -35,13 +35,13 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
     <div className="space-y-6">
       <FadeIn className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="status-chip inline-flex">ADMIN FLOW</p>
-          <h1 className="[font-family:var(--font-space)] mt-2 text-2xl font-semibold tracking-tight md:text-3xl">Operations Cockpit</h1>
-          <p className="text-soft mt-1 text-sm">System-wide visibility for workload, rules, and escalations.</p>
+          <p className="status-chip inline-flex">ADMIN DASHBOARD</p>
+          <h1 className="[font-family:var(--font-space)] mt-2 text-2xl font-semibold tracking-tight md:text-3xl">Operations Overview</h1>
+          <p className="text-soft mt-1 text-sm">Monitor ticket volume, workload balance, and system health from one place.</p>
         </div>
       </FadeIn>
 
-      <motion.section variants={container} initial="hidden" animate="show" className="grid gap-3 sm:grid-cols-3">
+      <motion.section variants={container} initial="hidden" animate="show" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <motion.div variants={item}>
           <HoverLift className="surface-3d p-4">
             <p className="text-soft text-xs uppercase">Total Tickets</p>
@@ -60,50 +60,50 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
             <p className="mt-2 text-2xl font-semibold">{totalUsers}</p>
           </HoverLift>
         </motion.div>
+        <motion.div variants={item}>
+          <HoverLift className="surface-3d p-4">
+            <p className="text-soft text-xs uppercase">Status Buckets</p>
+            <p className="mt-2 text-2xl font-semibold">{analytics.length}</p>
+          </HoverLift>
+        </motion.div>
       </motion.section>
 
-      <div className="grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
-        <section className="surface p-4 md:p-5">
-          <h2 className="[font-family:var(--font-space)] mb-4 text-lg font-semibold">Ticket Distribution</h2>
-          <motion.ul variants={container} initial="hidden" animate="show" className="space-y-3">
-            {analytics.map((entry) => {
-              const widthPct = Math.max(8, Math.round((entry.count / maxCount) * 100));
-              return (
-                <motion.li key={entry.status} variants={item} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium">{entry.status}</span>
-                    <span className="text-soft">{entry.count}</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-brand-100">
-                    <motion.div
-                      className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-300"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${widthPct}%` }}
-                      transition={{ duration: 0.6, ease: "easeOut" }}
-                    />
-                  </div>
-                </motion.li>
-              );
-            })}
-          </motion.ul>
-        </section>
+      <section className="surface space-y-4 p-4 md:p-5">
+        <div className="flex flex-wrap gap-2">
+          <button className="btn-muted text-sm">Date Range</button>
+          <button className="btn-muted text-sm">Status</button>
+          <button className="btn-muted text-sm">Assignee</button>
+          <button className="btn-brand text-sm">Apply Filters</button>
+        </div>
 
-        <section className="surface space-y-4 p-4 md:p-5">
-          <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Runbook</h2>
-          <article className="glass p-3">
-            <h3 className="font-semibold">SLA Guard</h3>
-            <p className="text-soft mt-1 text-sm">Priority-based SLA checks run in cron and escalation service.</p>
-          </article>
-          <article className="glass p-3">
-            <h3 className="font-semibold">Area Routing</h3>
-            <p className="text-soft mt-1 text-sm">Ticket zone maps to area and team assignment automatically.</p>
-          </article>
-          <article className="glass p-3">
-            <h3 className="font-semibold">Audit Trail</h3>
-            <p className="text-soft mt-1 text-sm">Chat and escalation history are append-only for traceability.</p>
-          </article>
-        </section>
-      </div>
+        <div className="overflow-hidden rounded-xl border border-brand-200">
+          <table className="w-full text-sm">
+            <thead className="bg-brand-100 text-left text-gray-700">
+              <tr>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Count</th>
+                <th className="px-4 py-3">Progress</th>
+              </tr>
+            </thead>
+            <tbody>
+              {analytics.map((entry) => {
+                const widthPct = Math.max(8, Math.round((entry.count / maxCount) * 100));
+                return (
+                  <tr key={entry.status} className="border-t border-brand-100">
+                    <td className="px-4 py-3 font-medium">{entry.status}</td>
+                    <td className="px-4 py-3 text-soft">{entry.count}</td>
+                    <td className="px-4 py-3">
+                      <div className="h-2 rounded-full bg-brand-100">
+                        <div className="h-full rounded-full bg-brand-500" style={{ width: `${widthPct}%` }} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   );
 }
