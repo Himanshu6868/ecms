@@ -7,7 +7,7 @@ export function AppHeader() {
       <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between px-3 py-3 md:px-6">
         <Link className="flex items-center gap-3" href="/dashboard">
           <span className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/70 bg-white/80 shadow-sm ring-1 ring-black/5">
-            <Image alt="DG LIGER logo" fill priority sizes="40px" src="/dgliger-logo.svg" />
+            <Image alt="DG LIGER logo" fill priority sizes="40px" src="/dgliger-logo.webp" />
           </span>
           <span>
             <strong className="block [font-family:var(--font-space)] text-sm font-semibold tracking-wide text-ink-900 md:text-base">
