@@ -131,7 +131,7 @@ export function InternalTicketBoard({
 
       {filteredTickets.length ? (
         <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
-          <div className="h-[460px] w-full max-w-full overflow-x-auto overflow-y-auto overscroll-contain md:h-[540px]">
+          <div className="h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-x-auto overflow-y-auto overscroll-contain">
             <table className="min-w-[1080px] w-max text-sm text-slate-700">
               <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur">
                 <tr>
