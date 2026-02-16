@@ -1,11 +1,12 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import { FadeIn, HoverLift } from "@/components/ui/motion";
+import { FadeIn } from "@/components/ui/motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { InlineToast } from "@/components/ui/toast";
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {
@@ -36,6 +37,7 @@ function getErrorMessage(error: unknown): string {
 
 export function TicketCreateForm() {
   const [status, setStatus] = useState<string | null>(null);
+  const [statusTone, setStatusTone] = useState<"success" | "error" | "info">("info");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [description, setDescription] = useState("");
@@ -47,6 +49,7 @@ export function TicketCreateForm() {
   function detectLocation() {
     if (!navigator.geolocation) {
       setStatus("Geolocation is not supported in this browser.");
+      setStatusTone("error");
       return;
     }
 
@@ -59,10 +62,12 @@ export function TicketCreateForm() {
           longitude: Number(position.coords.longitude.toFixed(6)),
         });
         setStatus("Location captured successfully.");
+        setStatusTone("success");
         setIsLocating(false);
       },
       () => {
         setStatus("Unable to fetch location. Please allow location access.");
+        setStatusTone("error");
         setIsLocating(false);
       },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
@@ -73,6 +78,7 @@ export function TicketCreateForm() {
     event.preventDefault();
     if (!coords) {
       setStatus("Please capture your location before submitting.");
+      setStatusTone("error");
       return;
     }
 
@@ -100,27 +106,30 @@ export function TicketCreateForm() {
       const json = (await res.json()) as { id?: string; error?: unknown };
       if (!res.ok) {
         setStatus(getErrorMessage(json.error));
+        setStatusTone("error");
         return;
       }
       setStatus(`Ticket created successfully: ${json.id?.slice(0, 8) ?? ""}`);
+      setStatusTone("success");
       form.reset();
       setDescription("");
       setCoords(null);
     } catch {
       setStatus("Unable to submit ticket right now. Try again.");
+      setStatusTone("error");
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <HoverLift className="surface-3d p-5 sm:p-6 md:p-8">
+    <section className="surface-3d p-5 sm:p-6 md:p-8">
       <FadeIn>
         <form onSubmit={submit} className="space-y-6 md:space-y-7">
           <div className="space-y-2">
             <div className="flex items-center justify-between gap-3">
               <Label htmlFor="description">Issue description</Label>
-              <span className="text-soft text-xs">{descriptionHint}</span>
+              <span className="text-xs text-soft">{descriptionHint}</span>
             </div>
             <Textarea
               id="description"
@@ -128,8 +137,8 @@ export function TicketCreateForm() {
               required
               minLength={8}
               maxLength={5000}
-              className="min-h-36"
-              placeholder="Describe what happened, business impact, and any temporary workaround already tried."
+              className="min-h-40"
+              placeholder="Describe what happened, business impact, and temporary workaround already attempted."
               value={description}
               onChange={(event) => setDescription(event.target.value)}
             />
@@ -153,13 +162,11 @@ export function TicketCreateForm() {
             </div>
             <div className="space-y-2">
               <Label>Location</Label>
-              <div className="flex flex-wrap items-center gap-3 rounded-xl border border-brand-200 bg-white p-3">
+              <div className="surface-muted flex flex-wrap items-center gap-3 p-3">
                 <Button type="button" variant="secondary" onClick={detectLocation} disabled={isLocating}>
                   {isLocating ? "Fetching..." : "Use Current Location"}
                 </Button>
-                <p className="text-soft text-sm">
-                  {coords ? `${coords.latitude}, ${coords.longitude}` : "No location captured yet"}
-                </p>
+                <p className="text-sm text-soft">{coords ? `${coords.latitude}, ${coords.longitude}` : "No location captured yet"}</p>
               </div>
             </div>
           </div>
@@ -173,9 +180,9 @@ export function TicketCreateForm() {
             </Button>
           </div>
 
-          {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
+          {status ? <InlineToast message={status} tone={statusTone} /> : null}
         </form>
       </FadeIn>
-    </HoverLift>
+    </section>
   );
 }
