@@ -1,0 +1,15 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="20" fill="#ffffff"/>
+  <g opacity="0.97">
+    <path d="M60 18C47 20 35 28 28 40L44 52L60 44V18Z" fill="#F4CB3A"/>
+    <path d="M60 44L44 52L45 68L64 76L78 64L76 48L60 44Z" fill="#79C542"/>
+    <path d="M64 76L45 68L36 84C46 99 63 108 81 108L90 90L64 76Z" fill="#2FA75F"/>
+    <path d="M76 48L78 64L95 72L110 64C108 45 96 29 79 22L76 48Z" fill="#22A7D8"/>
+    <path d="M78 64L64 76L90 90L110 64L95 72L78 64Z" fill="#1D78BE"/>
+    <circle cx="26" cy="44" r="6" fill="#E74C3C"/>
+    <circle cx="34" cy="30" r="5" fill="#F39C12"/>
+    <circle cx="22" cy="58" r="5" fill="#C0392B"/>
+    <circle cx="98" cy="24" r="4" fill="#2ECC71"/>
+  </g>
+  <text x="64" y="119" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#2E2E2E">DGLIGER</text>
+</svg>
