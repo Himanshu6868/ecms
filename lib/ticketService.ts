@@ -3,11 +3,16 @@ import { assertTransition } from "@/lib/stateMachine";
 import { Ticket, TicketPriority, TicketStatus, User } from "@/types/domain";
 import { INTERNAL_ACTOR_ROLES_BY_EMAIL, normalizeEmail } from "@/lib/internalActors";
 
+const SLA_SECONDS_BY_PRIORITY: Record<TicketPriority, number> = {
+  LOW: 30,
+  MEDIUM: 15,
+  HIGH: 8,
+  CRITICAL: 5,
+};
+
 function deadlineByPriority(priority: TicketPriority): Date {
   const now = Date.now();
-  // Short SLA windows for local/testing flows.
-  const hours = { LOW: 0.5, MEDIUM: 0.25, HIGH: 0.1, CRITICAL: 0.05 }[priority];
-  return new Date(now + hours * 60 * 60 * 1000);
+  return new Date(now + SLA_SECONDS_BY_PRIORITY[priority] * 1000);
 }
 
 export async function deriveAreaByZone(zoneId: string): Promise<string> {
@@ -121,6 +126,23 @@ async function selectNextEscalationAgent(teamId: string, currentAgentId: string 
   return nearestCandidates[0].user_id;
 }
 
+async function selectSeniorEscalationAgentForUnassigned(teamId: string): Promise<string | null> {
+  const members = await dbQuery<Array<{ user_id: string; hierarchy_level: number }>>(() =>
+    supabase.from("team_members").select("user_id, hierarchy_level").eq("team_id", teamId).order("hierarchy_level", { ascending: true }),
+  );
+  if (members.error || members.data.length === 0) {
+    return null;
+  }
+
+  const baseLevel = members.data[0].hierarchy_level;
+  const seniorLevel = members.data.find((member) => member.hierarchy_level > baseLevel)?.hierarchy_level ?? baseLevel;
+  const seniorCandidates = members.data.filter((member) => member.hierarchy_level === seniorLevel);
+  const counts = await getOpenCountByAgent(seniorCandidates.map((member) => member.user_id));
+
+  seniorCandidates.sort((a, b) => (counts[a.user_id] ?? 0) - (counts[b.user_id] ?? 0));
+  return seniorCandidates[0].user_id;
+}
+
 async function topLevelAdminId(): Promise<string | null> {
   const configuredAdminEmail = Object.entries(INTERNAL_ACTOR_ROLES_BY_EMAIL).find(([, role]) => role === "ADMIN")?.[0];
   if (configuredAdminEmail) {
@@ -213,7 +235,11 @@ export async function runSlaMonitor(): Promise<number> {
   for (const ticket of data as Ticket[]) {
     const fromAgent = ticket.assigned_agent_id;
     const ticketTeamId = ticket.assigned_team_id ?? (await selectTeamAndAgent(ticket.area_id)).teamId;
-    const nextInHierarchy = ticketTeamId ? await selectNextEscalationAgent(ticketTeamId, fromAgent) : null;
+    const nextInHierarchy = ticketTeamId
+      ? fromAgent
+        ? await selectNextEscalationAgent(ticketTeamId, fromAgent)
+        : await selectSeniorEscalationAgentForUnassigned(ticketTeamId)
+      : null;
     const agentId = nextInHierarchy ?? (await topLevelAdminId());
 
     const nextLevel = ticket.escalation_level + 1;
