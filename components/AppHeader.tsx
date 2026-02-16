@@ -1,0 +1,25 @@
+import Image from "next/image";
+import Link from "next/link";
+
+export function AppHeader() {
+  return (
+    <header className="app-header-mirror sticky top-0 z-40 border-b border-white/35">
+      <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between px-3 py-3 md:px-6">
+        <Link className="flex items-center gap-3" href="/dashboard">
+          <span className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/70 bg-white/80 shadow-sm ring-1 ring-black/5">
+            <Image alt="DG LIGER logo" fill priority sizes="40px" src="/dgliger-logo.svg" />
+          </span>
+          <span>
+            <strong className="block [font-family:var(--font-space)] text-sm font-semibold tracking-wide text-ink-900 md:text-base">
+              DG LIGER
+            </strong>
+            <span className="block text-xs text-ink-700/80">Enterprise Case Management</span>
+          </span>
+        </Link>
+        <span className="rounded-full border border-white/70 bg-white/65 px-3 py-1 text-[11px] font-semibold tracking-[0.1em] text-ink-700 shadow-sm">
+          LIVE OPS
+        </span>
+      </div>
+    </header>
+  );
+}

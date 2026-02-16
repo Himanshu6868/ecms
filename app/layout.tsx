@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import { AppHeader } from "@/components/AppHeader";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -24,7 +25,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className={`${manrope.variable} ${spaceGrotesk.variable} bg-zinc-50 text-zinc-900 antialiased [font-family:var(--font-manrope)]`}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <AppHeader />
+          {children}
+        </Providers>
       </body>
     </html>
   );
