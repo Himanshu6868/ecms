@@ -5,6 +5,7 @@ import { dbQuery, supabase } from "@/lib/db";
 import { ChatMessage, Ticket } from "@/types/domain";
 
 type ChatTicket = Pick<Ticket, "customer_id" | "created_by" | "assigned_agent_id">;
+type ChatMessageWithSender = ChatMessage & { sender_name: string | null };
 
 function canUseChat(ticket: ChatTicket, userId: string): boolean {
   return (
@@ -50,7 +51,19 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (result.error) {
     return NextResponse.json({ error: result.error.message }, { status: 500 });
   }
-  return NextResponse.json(result.data);
+
+  const senderIds = Array.from(new Set(result.data.map((message) => message.sender_id)));
+  const usersResult = senderIds.length
+    ? await dbQuery<Array<{ id: string; name: string }>>(() => supabase.from("users").select("id, name").in("id", senderIds))
+    : { data: [] as Array<{ id: string; name: string }>, error: null as null };
+
+  const senderNameById = new Map((usersResult.error ? [] : usersResult.data).map((user) => [user.id, user.name]));
+  const payload: ChatMessageWithSender[] = result.data.map((message) => ({
+    ...message,
+    sender_name: senderNameById.get(message.sender_id) ?? null,
+  }));
+
+  return NextResponse.json(payload);
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {

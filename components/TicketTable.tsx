@@ -18,7 +18,15 @@ function priorityClasses(priority: Ticket["priority"]): string {
   }
 }
 
-export function TicketTable({ tickets }: { tickets: Ticket[] }) {
+export function TicketTable({
+  tickets,
+  currentUserId,
+  currentUserName,
+}: {
+  tickets: Ticket[];
+  currentUserId: string;
+  currentUserName?: string | null;
+}) {
   if (!tickets.length) {
     return <EmptyState title="No tickets found" description="You have no active tickets in this scope. Create a new ticket to begin escalation tracking." />;
   }
@@ -41,7 +49,7 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
             </div>
             <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
             <div className="mt-2">
-              <TicketChatModal ticketId={ticket.id} />
+              <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
             </div>
           </div>
         ))}
@@ -73,7 +81,7 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
                   </td>
                   <td className="px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
                   <td className="px-4 py-3">
-                    <TicketChatModal ticketId={ticket.id} />
+                    <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
                   </td>
                 </tr>
               ))}
