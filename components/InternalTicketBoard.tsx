@@ -26,12 +26,14 @@ export function InternalTicketBoard({
   role,
   assignOptions,
   assignedEmailByUserId,
+  currentUserName,
 }: {
   tickets: Ticket[];
   currentUserId: string;
   role: Role;
   assignOptions: Array<{ teamId: string; teamName: string; userId: string; userLabel: string }>;
   assignedEmailByUserId: Record<string, string>;
+  currentUserName?: string | null;
 }) {
   const [activeTab, setActiveTab] = useState<"all" | "assigned">("all");
   const [statusValues, setStatusValues] = useState<Record<string, TicketStatus>>({});
@@ -146,7 +148,7 @@ export function InternalTicketBoard({
                         {ticket.assigned_agent_id ? assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user" : "Unassigned"}
                       </td>
                       <td className="px-4 py-3">
-                        <TicketChatModal ticketId={ticket.id} />
+                        <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
                       </td>
                       {showStatusControls ? (
                         <td className="px-4 py-3">

@@ -129,7 +129,7 @@ export default async function DashboardPage() {
       </FilterBar>
 
       {scopedExternal ? (
-        <TicketTable tickets={tickets} />
+        <TicketTable tickets={tickets} currentUserId={session.user.id} currentUserName={session.user.name} />
       ) : (
         <InternalTicketBoard
           tickets={tickets}
@@ -137,6 +137,7 @@ export default async function DashboardPage() {
           role={session.user.role}
           assignOptions={assignOptions}
           assignedEmailByUserId={Object.fromEntries(assignedEmailByUserId)}
+          currentUserName={session.user.name}
         />
       )}
     </main>
