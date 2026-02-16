@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${spaceGrotesk.variable} bg-zinc-50 text-zinc-900 antialiased [font-family:var(--font-manrope)]`}>
+      <body className={`${manrope.variable} ${spaceGrotesk.variable} overflow-x-clip bg-zinc-50 text-zinc-900 antialiased [font-family:var(--font-manrope)]`}>
         <Providers>
           <AppHeader />
           {children}

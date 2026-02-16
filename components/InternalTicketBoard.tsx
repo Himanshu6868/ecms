@@ -107,7 +107,7 @@ export function InternalTicketBoard({
   const canAssign = role === "MANAGER" || role === "ADMIN";
 
   return (
-    <section className="max-w-full space-y-4">
+    <section className="min-w-0 max-w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-xs">
           <button
@@ -132,9 +132,9 @@ export function InternalTicketBoard({
 
       {filteredTickets.length ? (
         <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
-          <div className="h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-x-auto overflow-y-auto overscroll-contain">
-            <table className="min-w-[1080px] w-max text-sm text-slate-700">
-              <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur">
+          <div className="theme-scrollbar h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-auto overscroll-contain">
+            <table className="w-max min-w-[1080px] border-collapse text-sm text-slate-700">
+              <thead className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
                 <tr>
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Ticket ID</th>
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Current Status</th>
