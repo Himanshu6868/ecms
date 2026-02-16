@@ -1,6 +1,7 @@
 import { Ticket } from "@/types/domain";
 import Link from "next/link";
 import { TicketChatModal } from "@/components/TicketChatModal";
+import { TicketDetailsModal } from "@/components/TicketDetailsModal";
 import { EmptyState } from "@/components/ui/empty-state";
 
 function priorityClasses(priority: Ticket["priority"]): string {
@@ -48,7 +49,8 @@ export function TicketTable({
               </span>
             </div>
             <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
-            <div className="mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
+              <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
               <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
             </div>
           </div>
@@ -64,6 +66,7 @@ export function TicketTable({
                 <th className="px-4 py-3 font-semibold">Status</th>
                 <th className="px-4 py-3 font-semibold">Priority</th>
                 <th className="px-4 py-3 font-semibold">SLA Deadline</th>
+                <th className="px-4 py-3 font-semibold">Details</th>
                 <th className="px-4 py-3 font-semibold">Chat</th>
               </tr>
             </thead>
@@ -80,6 +83,9 @@ export function TicketTable({
                     </span>
                   </td>
                   <td className="px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
+                  </td>
                   <td className="px-4 py-3">
                     <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
                   </td>

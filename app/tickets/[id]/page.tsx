@@ -108,6 +108,11 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
       </FadeIn>
 
       <section className="surface space-y-3 p-4 md:p-5">
+        <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Ticket Description</h2>
+        <p className="whitespace-pre-wrap text-sm text-ink-700">{ticket.description}</p>
+      </section>
+
+      <section className="surface space-y-3 p-4 md:p-5">
         <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Activity Chat</h2>
         {canChat ? (
           <form action={postMessage} className="flex flex-col gap-2 sm:flex-row">

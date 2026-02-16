@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { dbQuery, supabase } from "@/lib/db";
 import { AdminCockpit } from "@/components/AdminCockpit";
 import { AdminUserCreator } from "@/components/AdminUserCreator";
+import { AdminUsersTable } from "@/components/AdminUsersTable";
 
 interface Analytics {
   status: string;
@@ -40,6 +41,12 @@ export default async function AdminPage() {
       )
     : { data: [], error: null as null };
 
+  const allUsers = session.user.role === "ADMIN"
+    ? await dbQuery<Array<{ id: string; name: string; email: string; role: string; created_at: string }>>(() =>
+        supabase.from("users").select("id, name, email, role, created_at").is("deleted_at", null).order("created_at", { ascending: false }),
+      )
+    : { data: [], error: null as null };
+
   return (
     <main className="mx-auto w-full max-w-[1400px] px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4">
       <div className="mb-4">
@@ -60,6 +67,7 @@ export default async function AdminPage() {
         totalUsers={userCount.count ?? 0}
         openTickets={openTicketCount.count ?? 0}
       />
+      {session.user.role === "ADMIN" ? <AdminUsersTable users={allUsers.error ? [] : allUsers.data} /> : null}
     </main>
   );
 }

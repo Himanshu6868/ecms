@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Ticket, TicketStatus, Role } from "@/types/domain";
 import Link from "next/link";
 import { TicketChatModal } from "@/components/TicketChatModal";
+import { TicketDetailsModal } from "@/components/TicketDetailsModal";
 import { EmptyState } from "@/components/ui/empty-state";
 
 const agentStatuses: TicketStatus[] = ["IN_PROGRESS", "RESOLVED", "CLOSED", "REOPENED"];
@@ -139,6 +140,7 @@ export function InternalTicketBoard({
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Current Status</th>
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Priority</th>
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assigned To</th>
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Details</th>
                   <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Chat</th>
                   {showStatusControls ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Change Status</th> : null}
                   {canAssign ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assign</th> : null}
@@ -160,6 +162,9 @@ export function InternalTicketBoard({
                       </td>
                       <td className="max-w-[300px] truncate px-4 py-3 text-slate-600">
                         {ticket.assigned_agent_id ? assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user" : "Unassigned"}
+                      </td>
+                      <td className="px-4 py-3">
+                        <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
                       </td>
                       <td className="px-4 py-3">
                         <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
