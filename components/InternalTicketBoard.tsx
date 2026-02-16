@@ -20,6 +20,16 @@ function allowedStatuses(role: Role): TicketStatus[] {
   return agentStatuses;
 }
 
+function priorityBadgeClass(priority: Ticket["priority"]) {
+  if (priority === "CRITICAL" || priority === "HIGH") {
+    return "border-rose-200 bg-rose-50 text-rose-700";
+  }
+  if (priority === "MEDIUM") {
+    return "border-amber-200 bg-amber-50 text-amber-700";
+  }
+  return "border-emerald-200 bg-emerald-50 text-emerald-700";
+}
+
 export function InternalTicketBoard({
   tickets,
   currentUserId,
@@ -98,18 +108,18 @@ export function InternalTicketBoard({
   return (
     <section className="max-w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="surface-muted inline-flex items-center gap-1 p-1">
+        <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-xs">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${activeTab === "all" ? "bg-brand-500 text-ink-900" : "text-ink-700"}`}
+            className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${activeTab === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
           >
             All Tickets
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("assigned")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${activeTab === "assigned" ? "bg-brand-500 text-ink-900" : "text-ink-700"}`}
+            className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${activeTab === "assigned" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
           >
             Assigned to Me
           </button>
@@ -120,31 +130,35 @@ export function InternalTicketBoard({
       {!filteredTickets.length ? <EmptyState title="No tickets in this queue" description="Adjust filters or wait for new assignments." /> : null}
 
       {filteredTickets.length ? (
-        <div className="surface max-w-full overflow-hidden">
+        <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
           <div className="h-[460px] w-full max-w-full overflow-x-auto overflow-y-auto overscroll-contain md:h-[540px]">
-            <table className="min-w-[1080px] w-max text-sm">
-              <thead className="sticky top-0 z-10 bg-brand-100/90 text-left text-ink-700 backdrop-blur">
+            <table className="min-w-[1080px] w-max text-sm text-slate-700">
+              <thead className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Ticket</th>
-                  <th className="px-4 py-3 font-semibold">Current Status</th>
-                  <th className="px-4 py-3 font-semibold">Priority</th>
-                  <th className="px-4 py-3 font-semibold">Assigned To</th>
-                  <th className="px-4 py-3 font-semibold">Chat</th>
-                  {showStatusControls ? <th className="px-4 py-3 font-semibold">Change Status</th> : null}
-                  {canAssign ? <th className="px-4 py-3 font-semibold">Assign</th> : null}
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Ticket ID</th>
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Current Status</th>
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Priority</th>
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assigned To</th>
+                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Chat</th>
+                  {showStatusControls ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Change Status</th> : null}
+                  {canAssign ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assign</th> : null}
                 </tr>
               </thead>
               <tbody>
                 {filteredTickets.map((ticket) => {
                   const canUpdate = role === "ADMIN" || role === "MANAGER" || role === "SENIOR_AGENT" || ticket.assigned_agent_id === currentUserId;
                   return (
-                    <tr key={ticket.id} className="border-t border-brand-100 bg-white hover:bg-brand-50/30">
-                      <td className="px-4 py-3 font-medium text-ink-900">
+                    <tr key={ticket.id} className="border-t border-slate-100 bg-white hover:bg-slate-50/60">
+                      <td className="px-4 py-3 font-semibold text-slate-900">
                         <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                       </td>
-                      <td className="px-4 py-3 text-ink-700">{ticket.status}</td>
-                      <td className="px-4 py-3 text-ink-700">{ticket.priority}</td>
-                      <td className="px-4 py-3 text-soft">
+                      <td className="px-4 py-3 text-slate-600">{ticket.status.replaceAll("_", " ")}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${priorityBadgeClass(ticket.priority)}`}>
+                          {ticket.priority}
+                        </span>
+                      </td>
+                      <td className="max-w-[300px] truncate px-4 py-3 text-slate-600">
                         {ticket.assigned_agent_id ? assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user" : "Unassigned"}
                       </td>
                       <td className="px-4 py-3">
@@ -154,7 +168,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean !w-52 shrink-0 py-1.5 text-sm"
+                              className="input-clean !w-52 shrink-0 border-slate-200 py-1.5 text-sm"
                               value={statusValues[ticket.id] ?? ""}
                               onChange={(event) => setStatusValues((prev) => ({ ...prev, [ticket.id]: event.target.value as TicketStatus }))}
                               disabled={!canUpdate}
@@ -168,7 +182,7 @@ export function InternalTicketBoard({
                             </select>
                             <button
                               type="button"
-                              className="btn-brand w-24 px-3 py-1.5 text-sm text-center"
+                              className="w-24 rounded-lg border border-slate-900 bg-slate-900 px-3 py-1.5 text-center text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                               disabled={!canUpdate}
                               onClick={() => updateStatus(ticket.id)}
                             >
@@ -181,7 +195,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean !w-52 shrink-0 py-1.5 text-sm"
+                              className="input-clean !w-52 shrink-0 border-slate-200 py-1.5 text-sm"
                               value={assignValues[ticket.id] ?? ""}
                               onChange={(event) => setAssignValues((prev) => ({ ...prev, [ticket.id]: event.target.value }))}
                             >
@@ -192,7 +206,7 @@ export function InternalTicketBoard({
                                 </option>
                               ))}
                             </select>
-                            <button type="button" className="btn-muted w-24 px-3 py-1.5 text-sm text-center" onClick={() => assignTicket(ticket.id)}>
+                            <button type="button" className="w-24 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" onClick={() => assignTicket(ticket.id)}>
                               Assign
                             </button>
                           </div>
