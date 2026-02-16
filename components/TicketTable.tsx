@@ -1,5 +1,6 @@
 import { Ticket } from "@/types/domain";
 import Link from "next/link";
+import { TicketChatModal } from "@/components/TicketChatModal";
 
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
@@ -29,9 +30,11 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <Link key={ticket.id} href={`/tickets/${ticket.id}`} className="surface-3d block border-l-4 border-l-brand-300 p-4">
+          <div key={ticket.id} className="surface-3d border-l-4 border-l-brand-300 p-4">
             <div className="flex items-start justify-between gap-3">
-              <p className="font-semibold text-brand-700">#{ticket.id.slice(0, 8)}</p>
+              <Link href={`/tickets/${ticket.id}`} className="font-semibold text-brand-700">
+                #{ticket.id.slice(0, 8)}
+              </Link>
               <p className="status-chip">{ticket.status}</p>
             </div>
             <div className="mt-2">
@@ -40,7 +43,10 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
               </span>
             </div>
             <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
-          </Link>
+            <div className="mt-2">
+              <TicketChatModal ticketId={ticket.id} />
+            </div>
+          </div>
         ))}
       </div>
 
@@ -52,6 +58,7 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Priority</th>
               <th className="px-4 py-3">SLA Deadline</th>
+              <th className="px-4 py-3">Chat</th>
             </tr>
           </thead>
           <tbody>
@@ -67,6 +74,9 @@ export function TicketTable({ tickets }: { tickets: Ticket[] }) {
                   </span>
                 </td>
                 <td className="px-4 py-3">{new Date(ticket.sla_deadline).toLocaleString()}</td>
+                <td className="px-4 py-3">
+                  <TicketChatModal ticketId={ticket.id} />
+                </td>
               </tr>
             ))}
           </tbody>

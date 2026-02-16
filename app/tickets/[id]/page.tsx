@@ -30,6 +30,14 @@ function priorityClasses(priority: Ticket["priority"]): string {
   }
 }
 
+function canUseChat(ticket: Ticket, userId: string): boolean {
+  return (
+    ticket.customer_id === userId ||
+    ticket.created_by === userId ||
+    ticket.assigned_agent_id === userId
+  );
+}
+
 export default async function TicketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session?.user) {
@@ -50,14 +58,20 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
     notFound();
   }
 
-  const chatResult = await dbQuery<ChatMessage[]>(() =>
-    supabase.from("chat_messages").select("*").eq("ticket_id", routeParams.id).order("created_at", { ascending: false }).limit(30),
-  );
+  const canChat = canUseChat(ticket, session.user.id);
+  const chatResult = canChat
+    ? await dbQuery<ChatMessage[]>(() =>
+        supabase.from("chat_messages").select("*").eq("ticket_id", routeParams.id).order("created_at", { ascending: false }).limit(30),
+      )
+    : { data: [] as ChatMessage[], error: null as null };
 
   async function postMessage(formData: FormData) {
     "use server";
     const activeSession = await auth();
     if (!activeSession?.user) {
+      return;
+    }
+    if (!canUseChat(ticket, activeSession.user.id)) {
       return;
     }
     if (
@@ -95,12 +109,16 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
 
       <section className="surface space-y-3 p-4 md:p-5">
         <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Activity Chat</h2>
-        <form action={postMessage} className="flex flex-col gap-2 sm:flex-row">
-          <input name="message" className="input-clean flex-1" maxLength={2000} required placeholder="Send an update to this ticket" />
-          <button type="submit" className="btn-brand">
-            Send
-          </button>
-        </form>
+        {canChat ? (
+          <form action={postMessage} className="flex flex-col gap-2 sm:flex-row">
+            <input name="message" className="input-clean flex-1" maxLength={2000} required placeholder="Send an update to this ticket" />
+            <button type="submit" className="btn-brand">
+              Send
+            </button>
+          </form>
+        ) : (
+          <p className="text-soft text-sm">Chat is available only between the ticket creator/customer and the assigned agent.</p>
+        )}
         <ul className="space-y-2">
           {(chatResult.error ? [] : chatResult.data).map((msg) => (
             <li key={msg.id} className="glass p-3">

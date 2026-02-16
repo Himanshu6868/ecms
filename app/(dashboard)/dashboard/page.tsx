@@ -34,6 +34,22 @@ export default async function DashboardPage() {
   const highPriority = tickets.filter((ticket) => ["HIGH", "CRITICAL"].includes(ticket.priority)).length;
   const scopedExternal = isExternalScoped(session.user.role, session.user.isInternal);
 
+  const assignedAgentIds = Array.from(
+    new Set(
+      tickets
+        .map((ticket) => ticket.assigned_agent_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  );
+  const assignedUsersResult = assignedAgentIds.length
+    ? await dbQuery<Array<{ id: string; email: string }>>(() =>
+        supabase.from("users").select("id, email").in("id", assignedAgentIds),
+      )
+    : { data: [] as Array<{ id: string; email: string }>, error: null as null };
+  const assignedEmailByUserId = new Map(
+    (assignedUsersResult.error ? [] : assignedUsersResult.data).map((user) => [user.id, user.email]),
+  );
+
   let assignOptions: Array<{ teamId: string; teamName: string; userId: string; userLabel: string }> = [];
   if (!scopedExternal && canAssignTicket(session.user.role)) {
     const managerTeams = session.user.role === "MANAGER"
@@ -120,6 +136,7 @@ export default async function DashboardPage() {
           currentUserId={session.user.id}
           role={session.user.role}
           assignOptions={assignOptions}
+          assignedEmailByUserId={Object.fromEntries(assignedEmailByUserId)}
         />
       )}
     </main>

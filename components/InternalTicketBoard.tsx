@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Ticket, TicketStatus, Role } from "@/types/domain";
 import Link from "next/link";
+import { TicketChatModal } from "@/components/TicketChatModal";
 
 const agentStatuses: TicketStatus[] = ["IN_PROGRESS", "RESOLVED", "CLOSED", "REOPENED"];
 const managerStatuses: TicketStatus[] = ["ASSIGNED", "IN_PROGRESS", "RESOLVED", "REOPENED", "CLOSED", "SLA_BREACHED", "ESCALATED", "REASSIGNED"];
@@ -23,11 +24,13 @@ export function InternalTicketBoard({
   currentUserId,
   role,
   assignOptions,
+  assignedEmailByUserId,
 }: {
   tickets: Ticket[];
   currentUserId: string;
   role: Role;
   assignOptions: Array<{ teamId: string; teamName: string; userId: string; userLabel: string }>;
+  assignedEmailByUserId: Record<string, string>;
 }) {
   const [activeTab, setActiveTab] = useState<"all" | "assigned">("all");
   const [statusValues, setStatusValues] = useState<Record<string, TicketStatus>>({});
@@ -90,7 +93,7 @@ export function InternalTicketBoard({
   const canAssign = role === "MANAGER" || role === "ADMIN";
 
   return (
-    <section className="space-y-4">
+    <section className="max-w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <button
@@ -111,13 +114,16 @@ export function InternalTicketBoard({
         {message ? <p className="text-soft text-sm">{message}</p> : null}
       </div>
 
-      <div className="surface overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-brand-100/70 text-left">
+      <div className="surface max-w-full overflow-hidden">
+        <div className="h-[420px] w-full max-w-full overflow-x-auto overflow-y-auto overscroll-contain md:h-[500px]">
+        <table className="min-w-[1040px] w-max text-sm">
+          <thead className="sticky top-0 z-10 bg-brand-100/90 text-left backdrop-blur">
             <tr>
               <th className="px-4 py-3">Ticket</th>
               <th className="px-4 py-3">Current Status</th>
               <th className="px-4 py-3">Priority</th>
+              <th className="px-4 py-3">Assigned To</th>
+              <th className="px-4 py-3">Chat</th>
               {showStatusControls ? <th className="px-4 py-3">Change Status</th> : null}
               {canAssign ? <th className="px-4 py-3">Assign</th> : null}
             </tr>
@@ -132,6 +138,12 @@ export function InternalTicketBoard({
                   </td>
                   <td className="px-4 py-3">{ticket.status}</td>
                   <td className="px-4 py-3">{ticket.priority}</td>
+                  <td className="px-4 py-3 text-soft">
+                    {ticket.assigned_agent_id ? assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user" : "Unassigned"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <TicketChatModal ticketId={ticket.id} />
+                  </td>
                   {showStatusControls ? (
                     <td className="px-4 py-3">
                       <div className="flex flex-nowrap items-center justify-center gap-2">
@@ -189,6 +201,7 @@ export function InternalTicketBoard({
             })}
           </tbody>
         </table>
+        </div>
       </div>
     </section>
   );

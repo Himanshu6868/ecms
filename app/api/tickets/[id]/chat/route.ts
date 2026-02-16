@@ -4,32 +4,24 @@ import { chatMessageSchema, paginationSchema } from "@/lib/validations";
 import { dbQuery, supabase } from "@/lib/db";
 import { ChatMessage, Ticket } from "@/types/domain";
 
-function isExternalScoped(role: string, isInternal: boolean): boolean {
-  if (role === "CUSTOMER") {
-    return true;
-  }
-  if (role === "AGENT") {
-    return !isInternal;
-  }
-  return !isInternal;
+type ChatTicket = Pick<Ticket, "customer_id" | "created_by" | "assigned_agent_id">;
+
+function canUseChat(ticket: ChatTicket, userId: string): boolean {
+  return (
+    ticket.customer_id === userId ||
+    ticket.created_by === userId ||
+    ticket.assigned_agent_id === userId
+  );
 }
 
-async function canAccessTicket(ticketId: string, userId: string): Promise<boolean> {
-  const ticketResult = await dbQuery<Pick<Ticket, "customer_id" | "created_by">>(() =>
-    supabase.from("tickets").select("customer_id, created_by").eq("id", ticketId).single(),
+async function loadTicketForChat(ticketId: string): Promise<ChatTicket | null> {
+  const ticketResult = await dbQuery<ChatTicket>(() =>
+    supabase.from("tickets").select("customer_id, created_by, assigned_agent_id").eq("id", ticketId).single(),
   );
   if (ticketResult.error) {
-    return false;
+    return null;
   }
-
-  return ticketResult.data.customer_id === userId || ticketResult.data.created_by === userId;
-}
-
-async function assertExternalScopeAccess(ticketId: string, userId: string, scoped: boolean): Promise<boolean> {
-  if (!scoped) {
-    return true;
-  }
-  return canAccessTicket(ticketId, userId);
+  return ticketResult.data;
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -39,9 +31,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 
   const routeParams = await params;
-  const scoped = isExternalScoped(session.user.role, session.user.isInternal);
-  const hasAccess = await assertExternalScopeAccess(routeParams.id, session.user.id, scoped);
-  if (!hasAccess) {
+  const ticket = await loadTicketForChat(routeParams.id);
+  if (!ticket) {
+    return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+  }
+  if (!canUseChat(ticket, session.user.id)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -71,9 +65,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const routeParams = await params;
-  const scoped = isExternalScoped(session.user.role, session.user.isInternal);
-  const hasAccess = await assertExternalScopeAccess(routeParams.id, session.user.id, scoped);
-  if (!hasAccess) {
+  const ticket = await loadTicketForChat(routeParams.id);
+  if (!ticket) {
+    return NextResponse.json({ error: "Ticket not found" }, { status: 404 });
+  }
+  if (!canUseChat(ticket, session.user.id)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
