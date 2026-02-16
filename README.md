@@ -124,14 +124,20 @@ If user is not a participant, chat read/write is blocked (`403` or hidden input 
 
 ## SLA & Escalation Flow
 
-SLA is priority-based (currently shortened for testing in `lib/ticketService.ts`).
+SLA is priority-based and measured in seconds:
+
+- `CRITICAL`: `< 5s`
+- `HIGH`: `< 8s`
+- `MEDIUM`: `< 15s`
+- `LOW`: `< 30s`
 
 When SLA breaches:
 
 1. Ticket is escalated level-by-level using team hierarchy (`team_members.hierarchy_level`).
 2. Next higher member is selected (least-loaded among same next level).
-3. If no higher member found, fallback to top admin.
-4. Escalation history is written to `escalation_history`.
+3. If a breached ticket is still unassigned, it is auto-assigned to a senior hierarchy level member (least-loaded).
+4. If no higher member found, fallback to top admin.
+5. Escalation history is written to `escalation_history`.
 
 SLA monitor endpoint:
 
