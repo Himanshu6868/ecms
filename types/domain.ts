@@ -88,3 +88,13 @@ export interface EscalationHistory {
   level: number;
   timestamp: string;
 }
+
+export interface TicketAttachment {
+  id: string;
+  ticket_id: string;
+  file_url: string;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  created_at: string;
+}

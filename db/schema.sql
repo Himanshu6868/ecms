@@ -93,6 +93,16 @@ create table escalation_history (
   timestamp timestamptz not null default now()
 );
 
+create table ticket_attachments (
+  id uuid primary key default gen_random_uuid(),
+  ticket_id uuid not null references tickets(id) on delete cascade,
+  file_url text not null,
+  file_name text not null,
+  file_type text not null,
+  file_size bigint not null check (file_size > 0),
+  created_at timestamptz not null default now()
+);
+
 create index idx_tickets_customer_status on tickets(customer_id, status);
 create index idx_tickets_team_status on tickets(assigned_team_id, status);
 create index idx_tickets_agent_open on tickets(assigned_agent_id, status) where deleted_at is null;
@@ -100,6 +110,7 @@ create index idx_tickets_sla_status on tickets(sla_deadline, status);
 create index idx_locations_zone on locations(zone_id);
 create index idx_chat_ticket_created on chat_messages(ticket_id, created_at desc);
 create index idx_escalation_ticket_time on escalation_history(ticket_id, timestamp desc);
+create index idx_ticket_attachments_ticket_created on ticket_attachments(ticket_id, created_at desc);
 
 create or replace function least_loaded_agent(target_team_id uuid)
 returns table (user_id uuid, open_count bigint)

@@ -1,12 +1,41 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import Image from "next/image";
+import { ChangeEvent, FormEvent, useMemo, useState } from "react";
 import { FadeIn } from "@/components/ui/motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { InlineToast } from "@/components/ui/toast";
+
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_UPLOAD_FILES = 6;
+const ALLOWED_FILE_TYPES = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+
+type PendingAttachment = {
+  id: string;
+  file: File;
+  previewUrl: string | null;
+};
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 function getErrorMessage(error: unknown): string {
   if (typeof error === "string") {
@@ -35,14 +64,26 @@ function getErrorMessage(error: unknown): string {
   return "Failed to create ticket";
 }
 
+function attachmentError(file: File): string | null {
+  if (!ALLOWED_FILE_TYPES.has(file.type)) {
+    return `Unsupported file type: ${file.name}`;
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return `File is larger than 5MB: ${file.name}`;
+  }
+  return null;
+}
+
 export function TicketCreateForm() {
   const [status, setStatus] = useState<string | null>(null);
   const [statusTone, setStatusTone] = useState<"success" | "error" | "info">("info");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isLocating, setIsLocating] = useState(false);
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [attachments, setAttachments] = useState<PendingAttachment[]>([]);
 
   const descriptionHint = useMemo(() => `${description.trim().length}/5000`, [description]);
 
@@ -74,6 +115,80 @@ export function TicketCreateForm() {
     );
   }
 
+  function onFileInput(event: ChangeEvent<HTMLInputElement>) {
+    const incoming = Array.from(event.target.files ?? []);
+    if (!incoming.length) {
+      return;
+    }
+
+    if (attachments.length + incoming.length > MAX_UPLOAD_FILES) {
+      setStatus(`You can upload up to ${MAX_UPLOAD_FILES} files per ticket.`);
+      setStatusTone("error");
+      event.target.value = "";
+      return;
+    }
+
+    const next: PendingAttachment[] = [];
+    for (const file of incoming) {
+      const invalid = attachmentError(file);
+      if (invalid) {
+        setStatus(invalid);
+        setStatusTone("error");
+        continue;
+      }
+
+      next.push({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+      });
+    }
+
+    setAttachments((previous) => [...previous, ...next]);
+    event.target.value = "";
+  }
+
+  function removeAttachment(attachmentId: string) {
+    setAttachments((previous) => {
+      const candidate = previous.find((entry) => entry.id === attachmentId);
+      if (candidate?.previewUrl) {
+        URL.revokeObjectURL(candidate.previewUrl);
+      }
+      return previous.filter((entry) => entry.id !== attachmentId);
+    });
+  }
+
+  function clearAttachments() {
+    setAttachments((previous) => {
+      for (const item of previous) {
+        if (item.previewUrl) {
+          URL.revokeObjectURL(item.previewUrl);
+        }
+      }
+      return [];
+    });
+  }
+
+  function submitWithProgress(formData: FormData): Promise<Response> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/tickets");
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) {
+          return;
+        }
+        setUploadProgress(Math.round((event.loaded / event.total) * 100));
+      };
+      xhr.onload = () => {
+        resolve(new Response(xhr.responseText, { status: xhr.status }));
+      };
+      xhr.onerror = () => {
+        reject(new Error("Network interruption detected during upload."));
+      };
+      xhr.send(formData);
+    });
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!coords) {
@@ -82,27 +197,23 @@ export function TicketCreateForm() {
       return;
     }
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const payload = {
-      description: String(formData.get("description")),
-      priority: String(formData.get("priority")),
-      location: {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        address: `Auto-detected (${coords.latitude}, ${coords.longitude})`,
-      },
-    };
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("priority", priority);
+    formData.append("latitude", String(coords.latitude));
+    formData.append("longitude", String(coords.longitude));
+    formData.append("address", `Auto-detected (${coords.latitude}, ${coords.longitude})`);
+
+    for (const attachment of attachments) {
+      formData.append("attachments", attachment.file);
+    }
 
     setIsSubmitting(true);
+    setUploadProgress(0);
     setStatus(null);
 
     try {
-      const res = await fetch("/api/tickets", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await submitWithProgress(formData);
       const json = (await res.json()) as { id?: string; error?: unknown };
       if (!res.ok) {
         setStatus(getErrorMessage(json.error));
@@ -111,14 +222,15 @@ export function TicketCreateForm() {
       }
       setStatus(`Ticket created successfully: ${json.id?.slice(0, 8) ?? ""}`);
       setStatusTone("success");
-      form.reset();
       setDescription("");
       setCoords(null);
-    } catch {
-      setStatus("Unable to submit ticket right now. Try again.");
+      clearAttachments();
+    } catch (error) {
+      setStatus(getErrorMessage(error));
       setStatusTone("error");
     } finally {
       setIsSubmitting(false);
+      setUploadProgress(0);
     }
   }
 
@@ -171,8 +283,56 @@ export function TicketCreateForm() {
             </div>
           </div>
 
+          <div className="space-y-3">
+            <Label htmlFor="attachments">Attachments (PNG, JPG, WEBP, PDF, DOC, DOCX up to 5MB each, max 6 files)</Label>
+            <div className="rounded-xl border border-dashed border-brand-300 bg-brand-50/40 p-4">
+              <input
+                id="attachments"
+                type="file"
+                multiple
+                accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
+                onChange={onFileInput}
+                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-brand-200 file:bg-white file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink-900"
+              />
+              <p className="mt-2 text-xs text-soft">Uploads stay private and are securely stored via the server.</p>
+            </div>
+
+            {attachments.length > 0 ? (
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {attachments.map((attachment) => (
+                  <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-brand-100 p-3">
+                    {attachment.previewUrl ? (
+                      <div className="relative h-36 overflow-hidden rounded-lg border border-brand-100 bg-white">
+                        <Image src={attachment.previewUrl} alt={attachment.file.name} fill className="object-cover" unoptimized />
+                      </div>
+                    ) : null}
+                    <div className="space-y-1">
+                      <p className="truncate text-sm font-semibold text-ink-900">{attachment.file.name}</p>
+                      <p className="text-xs text-soft">{formatBytes(attachment.file.size)}</p>
+                    </div>
+                    <Button type="button" variant="secondary" className="w-full" onClick={() => removeAttachment(attachment.id)}>
+                      Remove file
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+
+          {isSubmitting ? (
+            <div className="space-y-2 rounded-lg border border-brand-200 bg-white p-3">
+              <div className="flex items-center justify-between text-xs text-soft">
+                <span>Upload progress</span>
+                <span>{uploadProgress}%</span>
+              </div>
+              <div className="h-2 rounded-full bg-brand-100">
+                <div className="h-2 rounded-full bg-brand-500 transition-all" style={{ width: `${uploadProgress}%` }} />
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex flex-wrap justify-end gap-3 border-t border-brand-200/80 pt-4">
-            <Button variant="secondary" type="reset">
+            <Button variant="secondary" type="reset" onClick={clearAttachments}>
               Clear Form
             </Button>
             <Button className="min-w-36" type="submit" disabled={isSubmitting}>
