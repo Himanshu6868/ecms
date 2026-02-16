@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, MouseEvent, useCallback } from "react";
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 
 interface FilterTabItem {
   id: string;
@@ -15,7 +15,6 @@ interface FilterBarProps {
   activeFilter?: string;
   onFilterChange?: (id: string) => void;
   onApply?: () => void;
-  onReset?: () => void;
   isApplying?: boolean;
 }
 
@@ -30,7 +29,6 @@ export function FilterBar({
   activeFilter,
   onFilterChange,
   onApply,
-  onReset,
   isApplying = false,
 }: FilterBarProps) {
   const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
@@ -56,23 +54,37 @@ export function FilterBar({
   }, [onFilterChange]);
 
   return (
-    <form className="surface-muted flex w-full flex-wrap items-center gap-3 p-3" onSubmit={handleSubmit}>
-      <label className="relative block min-w-0 flex-1" htmlFor="ticket-search-input">
-        <Search
-          aria-hidden="true"
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-600"
-        />
-        <input
-          id="ticket-search-input"
-          aria-label="Search tickets"
-          className="input-clean h-10 pl-12 pr-3 placeholder:text-ink-600"
-          style={{ paddingLeft: "3rem" }}
-          placeholder={searchPlaceholder}
-          type="search"
-          value={searchValue ?? ""}
-          onChange={handleInputChange}
-        />
-      </label>
+    <form className="surface-muted flex w-full flex-col gap-3 p-3" onSubmit={handleSubmit}>
+      <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
+        <label className="relative block min-w-0 flex-1" htmlFor="ticket-search-input">
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-600"
+          />
+          <input
+            id="ticket-search-input"
+            aria-label="Search tickets"
+            className="input-clean h-10 pl-12 pr-3 placeholder:text-ink-600"
+            style={{ paddingLeft: "3rem" }}
+            placeholder={searchPlaceholder}
+            type="search"
+            value={searchValue ?? ""}
+            onChange={handleInputChange}
+          />
+        </label>
+
+        {onApply ? (
+          <button
+            type="submit"
+            className="btn-brand inline-flex h-10 min-w-24 items-center justify-center gap-2 text-xs disabled:cursor-not-allowed"
+            disabled={isApplying}
+            aria-busy={isApplying}
+          >
+            <Loader2 aria-hidden="true" className={isApplying ? "h-4 w-4 animate-spin" : "invisible h-4 w-4"} />
+            <span>Apply</span>
+          </button>
+        ) : null}
+      </div>
 
       {hasTabs ? (
         <div className="flex w-full flex-wrap items-center gap-2 lg:w-auto" role="tablist" aria-label="Ticket filters">
@@ -96,19 +108,9 @@ export function FilterBar({
         </div>
       ) : null}
 
-      <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
-        {children}
-        {onReset ? (
-          <button type="button" className="btn-muted text-xs" onClick={onReset}>
-            Reset
-          </button>
-        ) : null}
-        {onApply ? (
-          <button type="submit" className="btn-brand text-xs" disabled={isApplying}>
-            {isApplying ? "Applying..." : "Apply"}
-          </button>
-        ) : null}
-      </div>
+      {children ? (
+        <div className="flex w-full flex-wrap items-center justify-end gap-2">{children}</div>
+      ) : null}
     </form>
   );
 }

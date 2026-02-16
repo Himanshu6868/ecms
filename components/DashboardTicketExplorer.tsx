@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useDeferredValue, useMemo, useState, useTransition } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState, useTransition } from "react";
 import { InternalTicketBoard } from "@/components/InternalTicketBoard";
 import { TicketTable } from "@/components/TicketTable";
 import { FilterBar } from "@/components/ui/filter-bar";
@@ -10,8 +10,8 @@ import { Ticket, Role } from "@/types/domain";
 type FilterTab = "ALL" | "OPEN" | "HIGH_PRIORITY" | "ASSIGNED_TO_ME";
 
 interface AppliedFilters {
-  query: string;
   tab: FilterTab;
+  query: string;
 }
 
 interface PaginationState {
@@ -36,6 +36,8 @@ const FILTER_TABS: Array<{ id: FilterTab; label: string }> = [
   { id: "ASSIGNED_TO_ME", label: "Assigned to Me" },
 ];
 
+const FILTER_TAB_IDS = new Set<FilterTab>(FILTER_TABS.map((tab) => tab.id));
+
 function matchesTabFilter(ticket: Ticket, tab: FilterTab, currentUserId: string): boolean {
   if (tab === "OPEN") {
     return ticket.status !== "CLOSED" && ticket.status !== "RESOLVED";
@@ -52,20 +54,38 @@ function matchesTabFilter(ticket: Ticket, tab: FilterTab, currentUserId: string)
   return true;
 }
 
-function includesQuery(ticket: Ticket, normalizedQuery: string): boolean {
-  if (!normalizedQuery) {
-    return true;
+
+function normalizeSearchQuery(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function buildTicketSearchIndex(ticket: Ticket, assignedTo: string): string {
+  return [ticket.id, ticket.status, ticket.priority, assignedTo]
+    .join(" ")
+    .toLowerCase();
+}
+
+export interface TicketSearchApiParamsInput {
+  searchQuery: string;
+  tab: FilterTab;
+  page: number;
+  pageSize: number;
+}
+
+export function buildTicketSearchApiParams(input: TicketSearchApiParamsInput): URLSearchParams {
+  const params = new URLSearchParams({
+    page: String(input.page),
+    pageSize: String(input.pageSize),
+    tab: input.tab,
+  });
+
+  const query = normalizeSearchQuery(input.searchQuery);
+  if (query) {
+    params.set("q", query);
+    params.set("fields", "ticketId,status,assignedTo,priority");
   }
 
-  const searchableValues = [
-    ticket.id,
-    ticket.status,
-    ticket.priority,
-    ticket.description,
-    ticket.assigned_agent_id ?? "",
-  ];
-
-  return searchableValues.some((value) => value.toLowerCase().includes(normalizedQuery));
+  return params;
 }
 
 export function DashboardTicketExplorer({
@@ -78,58 +98,73 @@ export function DashboardTicketExplorer({
   currentUserName,
 }: DashboardTicketExplorerProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterTab>("ALL");
-  const [appliedFilters, setAppliedFilters] = useState<AppliedFilters>({ query: "", tab: "ALL" });
+  const [activeFilters, setActiveFilters] = useState<AppliedFilters>({ tab: "ALL", query: "" });
   const [pagination, setPagination] = useState<PaginationState>({ page: 1, pageSize: 10 });
-  const deferredSearch = useDeferredValue(searchQuery);
-  const isDebouncing = deferredSearch !== searchQuery;
+  const deferredQuery = useDeferredValue(activeFilters.query);
+  const isDebouncing = deferredQuery !== activeFilters.query;
   const [isPending, startTransition] = useTransition();
 
-  const applyFilters = useCallback(
-    (nextQuery: string, nextTab: FilterTab) => {
-      const normalizedQuery = nextQuery.trim().toLowerCase();
-      startTransition(() => {
-        setAppliedFilters((previous) => {
-          if (previous.query === normalizedQuery && previous.tab === nextTab) {
-            return previous;
-          }
-          return { query: normalizedQuery, tab: nextTab };
-        });
-        setPagination((previous) => (previous.page === 1 ? previous : { ...previous, page: 1 }));
+  const applyFilters = useCallback((nextQuery: string, nextTab: FilterTab) => {
+    const normalizedQuery = normalizeSearchQuery(nextQuery);
+    startTransition(() => {
+      setActiveFilters((previous) => {
+        if (previous.query === normalizedQuery && previous.tab === nextTab) {
+          return previous;
+        }
+        return { tab: nextTab, query: normalizedQuery };
       });
-    },
-    [],
-  );
+      setPagination((previous) => (previous.page === 1 ? previous : { ...previous, page: 1 }));
+    });
+  }, []);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
   }, []);
 
+  useEffect(() => {
+    if (normalizeSearchQuery(searchQuery) === "" && activeFilters.query !== "") {
+      applyFilters("", activeFilters.tab);
+    }
+  }, [activeFilters.query, activeFilters.tab, applyFilters, searchQuery]);
+
   const handleApply = useCallback(() => {
-    applyFilters(deferredSearch, activeFilter);
-  }, [activeFilter, applyFilters, deferredSearch]);
+    applyFilters(searchQuery, activeFilters.tab);
+  }, [activeFilters.tab, applyFilters, searchQuery]);
 
   const handleFilterTabChange = useCallback(
     (tab: string) => {
-      const selectedTab = tab as FilterTab;
-      setActiveFilter((previous) => (previous === selectedTab ? previous : selectedTab));
-      applyFilters(deferredSearch, selectedTab);
+      if (!FILTER_TAB_IDS.has(tab as FilterTab)) {
+        return;
+      }
+
+      applyFilters(activeFilters.query, tab as FilterTab);
     },
-    [applyFilters, deferredSearch],
+    [activeFilters.query, applyFilters],
   );
 
-  const handleReset = useCallback(() => {
-    setSearchQuery("");
-    setActiveFilter("ALL");
-    applyFilters("", "ALL");
-  }, [applyFilters]);
+  const searchIndexByTicketId = useMemo(() => {
+    return new Map(
+      tickets.map((ticket) => {
+        const assignedTo = assignedEmailByUserId[ticket.assigned_agent_id ?? ""] ?? ticket.assigned_agent_id ?? "";
+        return [ticket.id, buildTicketSearchIndex(ticket, assignedTo)] as const;
+      }),
+    );
+  }, [assignedEmailByUserId, tickets]);
 
-  const filteredTickets = useMemo(() => tickets.filter((ticket) => {
-    if (!matchesTabFilter(ticket, appliedFilters.tab, currentUserId)) {
-      return false;
-    }
-    return includesQuery(ticket, appliedFilters.query);
-  }), [appliedFilters, currentUserId, tickets]);
+  const filteredTickets = useMemo(
+    () => tickets.filter((ticket) => {
+      if (!matchesTabFilter(ticket, activeFilters.tab, currentUserId)) {
+        return false;
+      }
+
+      if (!deferredQuery) {
+        return true;
+      }
+
+      return (searchIndexByTicketId.get(ticket.id) ?? "").includes(deferredQuery);
+    }),
+    [activeFilters.tab, currentUserId, deferredQuery, searchIndexByTicketId, tickets],
+  );
 
   const pageCount = Math.max(1, Math.ceil(filteredTickets.length / pagination.pageSize));
   const safePage = Math.min(pagination.page, pageCount);
@@ -162,21 +197,20 @@ export function DashboardTicketExplorer({
   return (
     <section className="space-y-4">
       <FilterBar
-        searchPlaceholder="Search tickets by ID, status, priority, or description"
+        searchPlaceholder="Search tickets by ID, status, priority, or assigned user"
         searchValue={searchQuery}
         onSearchChange={handleSearchChange}
         filterTabs={FILTER_TABS}
-        activeFilter={activeFilter}
+        activeFilter={activeFilters.tab}
         onFilterChange={handleFilterTabChange}
         onApply={handleApply}
-        onReset={handleReset}
         isApplying={isPending || isDebouncing}
       />
 
       {showNoResults ? (
         <EmptyState
           title="No matching tickets"
-          description="Try a different search query or reset filters to view the full queue."
+          description="Try a different search query or adjust filters to view the queue."
         />
       ) : null}
 
