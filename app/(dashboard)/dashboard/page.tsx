@@ -3,12 +3,10 @@ import { AlertTriangle, FolderKanban, FolderOpen } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { dbQuery, supabase } from "@/lib/db";
 import { Ticket } from "@/types/domain";
-import { TicketTable } from "@/components/TicketTable";
 import { FadeIn } from "@/components/ui/motion";
-import { InternalTicketBoard } from "@/components/InternalTicketBoard";
 import { canAssignTicket } from "@/lib/rbac";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { FilterBar } from "@/components/ui/filter-bar";
+import { DashboardTicketExplorer } from "@/components/DashboardTicketExplorer";
 
 function isExternalScoped(role: string, isInternal: boolean): boolean {
   if (role === "CUSTOMER") {
@@ -122,24 +120,15 @@ export default async function DashboardPage() {
         <KpiCard label="High priority" value={highPriority} trend="Needs immediate action" icon={AlertTriangle} />
       </section>
 
-      <FilterBar>
-        <button className="btn-muted text-xs">Status</button>
-        <button className="btn-muted text-xs">Priority</button>
-        <button className="btn-brand text-xs">Apply</button>
-      </FilterBar>
-
-      {scopedExternal ? (
-        <TicketTable tickets={tickets} currentUserId={session.user.id} currentUserName={session.user.name} />
-      ) : (
-        <InternalTicketBoard
-          tickets={tickets}
-          currentUserId={session.user.id}
-          role={session.user.role}
-          assignOptions={assignOptions}
-          assignedEmailByUserId={Object.fromEntries(assignedEmailByUserId)}
-          currentUserName={session.user.name}
-        />
-      )}
+      <DashboardTicketExplorer
+        tickets={tickets}
+        scopedExternal={scopedExternal}
+        currentUserId={session.user.id}
+        role={session.user.role}
+        assignOptions={assignOptions}
+        assignedEmailByUserId={Object.fromEntries(assignedEmailByUserId)}
+        currentUserName={session.user.name}
+      />
     </main>
   );
 }
