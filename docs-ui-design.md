@@ -1,176 +1,189 @@
-# ECMS UI/UX Design Blueprint (Light Green + White)
+# ECMS Enterprise UI Redesign Spec
 
-## Global Design Language
+## A) Design system specification
 
-- **Primary brand color:** `#A3D9A5`
-- **Primary background:** `#FFFFFF`
-- **Soft background:** `#F6FBF6`
-- **Borders:** `#DDEBDD`
-- **Text:** `#1F2937` (primary), `#4B5563` (secondary)
-- **Button hover:** `#8BCB8E`
+### 1) Typography scale (token-driven)
 
-### Shared component standards
+| Token | Size / line-height | Usage |
+| --- | --- | --- |
+| `text-display` | `clamp(2rem, 3vw, 3rem) / 1.1` | Login hero, key page headings |
+| `text-h1` | `2rem / 1.15` | Page titles |
+| `text-h2` | `1.5rem / 1.25` | Card titles, section headers |
+| `text-h3` | `1.125rem / 1.35` | Subsections |
+| `text-body` | `0.95rem / 1.5` | Standard content |
+| `text-caption` | `0.8rem / 1.4` | Metadata, chips |
 
-- **Buttons:** 10–12px radius, semibold label, subtle lift on hover
-- **Inputs:** 10–12px radius, 1px soft border, 4px green focus ring
-- **Cards/Surfaces:** white panel + gentle shadow + soft green border
-- **Spacing scale:** 4, 8, 12, 16, 24, 32
-- **Typography:** Inter / system sans; clear hierarchy
+### 2) Spacing scale
+
+- `space-1 = 4px`
+- `space-2 = 8px`
+- `space-3 = 12px`
+- `space-4 = 16px`
+- `space-5 = 20px`
+- `space-6 = 24px`
+- `space-8 = 32px`
+- `space-10 = 40px`
+
+### 3) Border radius scale
+
+- `--radius-sm: 8px`
+- `--radius-md: 12px`
+- `--radius-lg: 16px`
+- `--radius-xl: 20px`
+
+### 4) Shadow scale
+
+- `--shadow-xs`: low elevation for inputs
+- `--shadow-sm`: cards and app shell surfaces
+- `--shadow-md`: hero cards/modals
+
+### 5) Semantic color tokens (AA-safe foreground pairings)
+
+- **Brand:** `#A3D9A5` / hover `#8BCB8E`
+- **Text primary:** `#1F2937`
+- **Text secondary:** `#4B5563`
+- **Success:** bg `#E8F7EA`, fg `#1F7A3D`
+- **Warning:** bg `#FFF5DC`, fg `#9A6700`
+- **Error:** bg `#FEECEB`, fg `#B42318`
+- **Info:** bg `#EAF2FF`, fg `#1D4ED8`
+- **Surface layers:** `--surface-0` → `--surface-3` from background to nested cards
+
+### 6) Interaction states
+
+- **Hover:** subtle lift + tint (`hover:bg-brand-50`, translateY)
+- **Focus:** 2px outline + 4px soft focus ring (`focus-visible:ring-brand-100`)
+- **Disabled:** `opacity-50~55` and pointer lock
+- **Loading:** text change + spinner/skeleton when applicable
 
 ---
 
-## 1) Login Page
+## B) IA & layout upgrades
 
-### Layout description
+### Login flow
+- Clear split-layout: trust messaging on left, action card on right.
+- Two explicit flow cards reduce wrong-path sign-in.
+- Internal/external pages now include policy + security guidance.
 
-- Desktop split layout (`2 columns`):
-  - Left: brand value proposition and feature chips
-  - Right: authentication card
-- Tablet and below: stacks into single-column flow with form prioritized.
+### Dashboard
+- Structured as: header → KPI strip → filter bar → queue table.
+- Added reusable KPI cards and normalized top spacing.
+- Role visibility remains intact while improving scan speed.
 
-### Component overview
+### Ticket creation page
+- Reduced visual noise with one primary form card and muted guidance cards.
+- Clear form hierarchy (description → priority/location → actions).
+- SLA guidance preserved in right rail.
 
-- Branding card with heading/subheading and three capability chips.
-- Login card with:
-  - Email field
-  - OTP request button
-  - OTP input
-  - Primary sign-in CTA
-  - Inline status/validation message
+### Internal ticket board table
+- Improved table legibility: stronger header contrast, quieter row backgrounds.
+- Queue tabs placed in a compact segmented control.
+- Added explicit empty-state.
 
-### Color usage
+### Admin cockpit analytics
+- KPI cards upgraded with icons and contextual trend text.
+- Filter toolbar standardized via reusable filter bar component.
+- Added skeleton + empty-state fallback when analytics is unavailable.
 
-- Page base: white to very soft green gradient (`#FFFFFF` → `#F6FBF6`).
-- Form card: white, soft border (`#DDEBDD`).
-- Primary CTA: `#A3D9A5`, hover `#8BCB8E`.
-- Focus ring: translucent `#A3D9A5`.
+---
 
-### Typography and spacing
+## C) Component-level improvements
 
-- Hero title: 36–48px desktop, 30px tablet.
-- Form title: 24–30px.
-- Labels/body: 14–16px.
-- Vertical spacing: 16–24px.
+### App shell (sidebar/topbar)
+- New `AppShellNav` with icon-led navigation and consistent hover/focus behavior.
 
-### Interaction / UX details
+### KPI cards
+- New `KpiCard` component with tokenized surfaces and icon affordances.
 
-- Focus-visible input ring for keyboard users.
-- OTP status shown inline in a clearly separated message block.
-- Buttons sized for touch and pointer interaction.
-- Logical tab order (email → request otp → otp → sign in).
+### Filter bar
+- New `FilterBar` with integrated search field and action slots.
 
-### Tailwind snippet
+### Data table
+- Reduced clutter: cleaner headers, lighter row borders, compact action controls.
 
+### Empty states, skeletons, toasts
+- New reusable `EmptyState`, `Skeleton`, and `InlineToast` components.
+- Applied to ticket table, internal board, admin cockpit, auth, and ticket creation.
+
+---
+
+## D) Implementation patterns + before/after examples
+
+### Tailwind class patterns
+
+- **Primary card:** `surface p-5 md:p-6`
+- **Nested card:** `surface-muted p-4`
+- **Primary CTA:** `btn-brand`
+- **Secondary CTA:** `btn-muted`
+- **Accessible input:** `focus-visible:ring-4 focus-visible:ring-brand-100 focus-visible:border-brand-600`
+- **Dense table row:** `border-t border-brand-100 hover:bg-brand-50/70`
+
+### Before/After #1: Auth status message
+
+**Before**
 ```tsx
-<main className="grid min-h-screen lg:grid-cols-2 bg-gradient-to-br from-white to-[#F6FBF6]">
-  <section className="surface p-8">Brand content</section>
-  <section className="surface-3d p-8 max-w-lg mx-auto">Auth form</section>
-</main>
+{status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
 ```
 
----
-
-## 2) Ticket Creation Page
-
-### Layout description
-
-- Primary content uses responsive two-panel layout:
-  - Left: full ticket form
-  - Right: contextual guidance cards (tips + SLA)
-- On tablet: collapses to single column with form first.
-
-### Component overview
-
-- Page header (status chip, title, helper text).
-- Ticket form card:
-  - Description textarea
-  - Priority select
-  - Zone UUID
-  - Latitude/Longitude
-  - Address
-  - Action row: Save Draft + Submit Ticket
-- Sidebar guidance cards for better form quality.
-
-### Color usage
-
-- Form and guidance cards remain white with green border lines.
-- Priority/select/input interactions use same green focus ring.
-- Primary submit button uses `#A3D9A5`, secondary remains white.
-
-### Typography and spacing
-
-- Page title: 30–36px.
-- Section labels: 14px medium.
-- Inputs: consistent ~40px+ touch target.
-- Grid gap: 20–24px desktop, ~16px tablet.
-
-### Interaction / UX details
-
-- Large description box for complete context capture.
-- Clear status message after submission.
-- Balanced action hierarchy: secondary "Save Draft" + primary "Submit".
-- Layout keeps guidance visible without interrupting form completion.
-
-### Tailwind snippet
-
+**After**
 ```tsx
-<section className="grid gap-5 xl:grid-cols-[1.4fr_0.6fr]">
-  <form className="surface-3d p-6 space-y-5">...</form>
-  <aside className="space-y-4">
-    <article className="surface p-4">Submission tips</article>
-  </aside>
+{status ? <InlineToast message={status} tone={statusTone} /> : null}
+```
+
+### Before/After #2: KPI metric block
+
+**Before**
+```tsx
+<HoverLift className="surface-3d p-4">
+  <p className="text-soft text-xs uppercase">Open Workload</p>
+  <p className="mt-2 text-2xl font-semibold">{openCount}</p>
+</HoverLift>
+```
+
+**After**
+```tsx
+<KpiCard
+  label="Open workload"
+  value={openCount}
+  trend="Active operational demand"
+  icon={FolderOpen}
+/>
+```
+
+### Before/After #3: Empty table state
+
+**Before**
+```tsx
+<section className="surface-3d p-5">
+  <p className="text-soft text-sm">No tickets yet. Create one from the New Ticket page.</p>
 </section>
 ```
 
+**After**
+```tsx
+<EmptyState
+  title="No tickets found"
+  description="You have no active tickets in this scope. Create a new ticket to begin escalation tracking."
+/>
+```
+
+### Phased migration plan
+
+#### Week 1 (quick wins)
+1. Deploy token refresh in `globals.css` and update base form controls.
+2. Ship app shell/nav, KPI cards, and filter bar.
+3. Apply empty states and inline toast patterns to primary flows.
+
+#### Weeks 2–3 (medium phase)
+1. Migrate remaining forms/tables to shared primitives.
+2. Add real filter functionality + persisted table preferences.
+3. Expand skeleton/loading states and add visual regression checks.
+
 ---
 
-## 3) Admin Dashboard Page
+## E) UX rationale (trust, readability, conversion/speed)
 
-### Layout description
-
-- Persistent sidebar (desktop) + compact top nav (mobile/tablet).
-- Content stack:
-  1. Overview heading
-  2. KPI cards row
-  3. Filter controls
-  4. Ticket status table with progress bars
-
-### Component overview
-
-- Left navigation for Dashboard / Create Ticket / Admin.
-- KPI cards: Total Tickets, Open Tickets, Total Users, Status Buckets.
-- Filter toolbar buttons (date range, status, assignee).
-- Analytics table with status counts and progress meter.
-
-### Color usage
-
-- Sidebar and cards are white; active/hover states use green tint.
-- Table header uses light green background (`#EEF8EE`).
-- Progress bars use brand green fills (`#A3D9A5`).
-
-### Typography and spacing
-
-- Dashboard heading: 32–36px desktop.
-- KPI values: 32px emphasis.
-- Table text: 14px with comfortable row padding.
-- Section separation: ~24px.
-
-### Interaction / UX details
-
-- Large filter controls for quick operations.
-- Table rows have clear row separation and visual scanability.
-- Progress bars help compare status distribution at a glance.
-- Responsive card grid scales from 4-up desktop to 2-up tablet.
-
-### Tailwind snippet
-
-```tsx
-<section className="surface p-5 space-y-4">
-  <div className="flex flex-wrap gap-2">filters...</div>
-  <div className="overflow-hidden rounded-xl border border-[#DDEBDD]">
-    <table className="w-full text-sm">
-      <thead className="bg-[#EEF8EE]">...</thead>
-    </table>
-  </div>
-</section>
-```
+- **Trust:** cleaner shell, explicit role pathways, and stronger status feedback reduce ambiguity.
+- **Readability:** typographic hierarchy and lower-noise surfaces improve scanability in dense screens.
+- **Task speed:** KPI-first layouts and consistent filter/table structures shorten time-to-action for operators.
+- **Accessibility:** focus rings, safer color pairings, and consistent state treatment improve keyboard and low-vision usability.
+- **Scalability:** token-driven components reduce UI drift and make future feature work faster.

@@ -1,5 +1,5 @@
 import { TicketCreateForm } from "@/components/TicketCreateForm";
-import { FadeIn, HoverLift } from "@/components/ui/motion";
+import { FadeIn } from "@/components/ui/motion";
 import { auth } from "@/lib/auth";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -16,10 +16,7 @@ export default async function NewTicketPage() {
       <FadeIn className="space-y-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <div className="justify-self-start">
-            <Link
-              href="/dashboard"
-              className="group inline-flex items-center gap-2 rounded-xl bg-brand-100/70 px-4 py-2 text-sm font-semibold text-ink-900"
-            >
+            <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-xl border border-brand-200 bg-white px-4 py-2 text-sm font-semibold text-ink-900">
               <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
               Back to Dashboard
             </Link>
@@ -28,12 +25,9 @@ export default async function NewTicketPage() {
           <div />
         </div>
         <div className="text-center">
-          <h1 className="[font-family:var(--font-space)] text-3xl font-semibold tracking-tight md:text-4xl">
-            Ticket Creation
-          </h1>
-          <p className="text-soft mx-auto max-w-3xl text-sm md:text-base">
-            Capture issue details once and let routing plus SLA policies handle
-            assignment and escalation automatically.
+          <h1 className="[font-family:var(--font-space)] text-3xl font-semibold tracking-tight md:text-4xl">Ticket Creation</h1>
+          <p className="mx-auto max-w-3xl text-sm text-soft md:text-base">
+            Capture issue details once and let routing plus SLA policies handle assignment and escalation automatically.
           </p>
         </div>
       </FadeIn>
@@ -42,31 +36,22 @@ export default async function NewTicketPage() {
         <TicketCreateForm />
 
         <aside className="space-y-4 xl:pt-1">
-          <HoverLift className="surface p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
-              Submission Quality
-            </h2>
-            <ul className="text-soft mt-3 space-y-2 text-sm">
+          <section className="surface-muted p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Submission Quality</h2>
+            <ul className="mt-3 space-y-2 text-sm text-soft">
               <li>- Mention impact and urgency in one sentence.</li>
               <li>- Capture browser location before submit.</li>
               <li>- Use HIGH/CRITICAL only when SLA risk is immediate.</li>
             </ul>
-          </HoverLift>
+          </section>
 
-          <HoverLift className="surface p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
-              Routing Logic
-            </h2>
-            <p className="text-soft mt-2 text-sm">
-              User area mapping drives team queue assignment. Location is
-              captured automatically from the browser.
-            </p>
-          </HoverLift>
+          <section className="surface-muted p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Routing Logic</h2>
+            <p className="mt-2 text-sm text-soft">User area mapping drives team queue assignment. Location is captured automatically from the browser.</p>
+          </section>
 
-          <HoverLift className="surface-3d p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">
-              SLA Window
-            </h2>
+          <section className="surface-muted p-5">
+            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">SLA Window</h2>
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
                 <span>LOW/MEDIUM</span>
@@ -81,7 +66,7 @@ export default async function NewTicketPage() {
                 <span className="font-semibold">4h</span>
               </div>
             </div>
-          </HoverLift>
+          </section>
         </aside>
       </section>
     </main>
