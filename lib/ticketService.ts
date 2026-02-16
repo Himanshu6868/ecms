@@ -1,7 +1,8 @@
 import { dbQuery, supabase } from "@/lib/db";
 import { assertTransition } from "@/lib/stateMachine";
-import { Ticket, TicketPriority, TicketStatus, User } from "@/types/domain";
+import { Ticket, TicketAttachment, TicketPriority, TicketStatus, User } from "@/types/domain";
 import { INTERNAL_ACTOR_ROLES_BY_EMAIL, normalizeEmail } from "@/lib/internalActors";
+import { removeUploadedTicketFiles, uploadTicketFile } from "@/lib/ticketUploads";
 
 const SLA_SECONDS_BY_PRIORITY: Record<TicketPriority, number> = {
   LOW: 30,
@@ -167,15 +168,18 @@ export async function createTicket(input: {
   description: string;
   priority: TicketPriority;
   location: { latitude: number; longitude: number; address: string };
-}): Promise<Ticket> {
+  files?: File[];
+}): Promise<Ticket & { attachments: Array<TicketAttachment & { signed_url: string }> }> {
   const userResult = await dbQuery<User>(() => supabase.from("users").select("*").eq("id", input.customerId).single());
   if (userResult.error || !userResult.data.otp_verified_at) {
     throw new Error("OTP verification required before ticket creation");
   }
   const areaId = await resolveAreaIdForUser(userResult.data);
   const routing = await selectTeamAndAgent(areaId);
+  const ticketId = crypto.randomUUID();
 
   const payload = {
+    id: ticketId,
     customer_id: input.customerId,
     created_by: input.createdBy,
     area_id: areaId,
@@ -188,20 +192,71 @@ export async function createTicket(input: {
     escalation_level: 0,
   };
 
-  const ticketResult = await dbQuery<Ticket>(() => supabase.from("tickets").insert(payload).select("*").single());
-  if (ticketResult.error) {
-    throw ticketResult.error;
+  const uploadedKeys: string[] = [];
+  const attachmentPayload: Array<{
+    ticket_id: string;
+    file_url: string;
+    file_name: string;
+    file_type: string;
+    file_size: number;
+  }> = [];
+  const signedUrlByObjectKey: Record<string, string> = {};
+
+  try {
+    for (const file of input.files ?? []) {
+      const uploaded = await uploadTicketFile(ticketId, file);
+      uploadedKeys.push(uploaded.objectKey);
+      signedUrlByObjectKey[uploaded.objectKey] = uploaded.signedUrl;
+      attachmentPayload.push({
+        ticket_id: ticketId,
+        file_url: uploaded.objectKey,
+        file_name: file.name,
+        file_type: file.type,
+        file_size: file.size,
+      });
+    }
+
+    const ticketResult = await dbQuery<Ticket>(() => supabase.from("tickets").insert(payload).select("*").single());
+    if (ticketResult.error) {
+      throw ticketResult.error;
+    }
+
+    const locationInsert = await supabase.from("locations").insert({
+      ticket_id: ticketResult.data.id,
+      latitude: input.location.latitude,
+      longitude: input.location.longitude,
+      address: input.location.address,
+      zone_id: areaId,
+    });
+
+    if (locationInsert.error) {
+      throw new Error(locationInsert.error.message);
+    }
+
+    let attachments: Array<TicketAttachment & { signed_url: string }> = [];
+    if (attachmentPayload.length > 0) {
+      const attachmentsResult = await dbQuery<TicketAttachment[]>(() =>
+        supabase.from("ticket_attachments").insert(attachmentPayload).select("*"),
+      );
+
+      if (attachmentsResult.error) {
+        throw attachmentsResult.error;
+      }
+      attachments = attachmentsResult.data.map((attachment) => ({
+        ...attachment,
+        signed_url: signedUrlByObjectKey[attachment.file_url] ?? "",
+      }));
+    }
+
+    return {
+      ...ticketResult.data,
+      attachments,
+    };
+  } catch (error) {
+    await supabase.from("tickets").delete().eq("id", ticketId);
+    await removeUploadedTicketFiles(uploadedKeys);
+    throw error;
   }
-
-  await supabase.from("locations").insert({
-    ticket_id: ticketResult.data.id,
-    latitude: input.location.latitude,
-    longitude: input.location.longitude,
-    address: input.location.address,
-    zone_id: areaId,
-  });
-
-  return ticketResult.data;
 }
 
 export async function transitionTicket(ticketId: string, next: TicketStatus, options?: { force?: boolean }): Promise<Ticket> {

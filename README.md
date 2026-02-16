@@ -241,6 +241,9 @@ NEXTAUTH_SECRET=replace_with_32_plus_char_secret
 NEXTAUTH_URL=http://localhost:3000
 SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+SUPABASE_STORAGE_BUCKET=ticket-assets
+TICKET_UPLOAD_MAX_BYTES=5242880
+TICKET_UPLOAD_SIGNED_URL_TTL_SECONDS=3600
 ```
 
 `lib/env.ts` includes fallbacks for deploy environments:
@@ -264,6 +267,7 @@ alter table users
 ```
 
 4. Ensure team data exists (`teams`, `team_members`) for assignment/escalation behavior.
+5. Create a **private** Supabase Storage bucket matching `SUPABASE_STORAGE_BUCKET` (default `ticket-assets`) for ticket uploads.
 
 ---
 
@@ -292,6 +296,7 @@ npm run build
    - `NEXTAUTH_SECRET=<secure-secret>`
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_STORAGE_BUCKET`
 4. Add cron (optional): call `/api/cron/sla` on schedule.
 5. Deploy.
 
