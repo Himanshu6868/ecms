@@ -64,6 +64,10 @@ export function AuthForm({ flow }: { flow: LoginFlow }) {
         callbackUrl: "/dashboard",
       });
 
+      console.log("signIn result:", result); // Add this line
+      console.log("result?.ok:", result?.ok); // Check the response
+      console.log("result?.error:", result?.error);
+
       if (!result) {
         setStatus("Sign in failed. Try again.");
         return;
@@ -92,37 +96,37 @@ export function AuthForm({ flow }: { flow: LoginFlow }) {
   return (
     <HoverLift className="surface-3d p-6 md:p-8">
       <form className="space-y-5" onSubmit={doSignIn}>
-      <FadeIn className="space-y-5">
-        <div className="space-y-2">
-          <p className="status-chip inline-flex">{isInternalFlow ? "INTERNAL ACCESS" : "CUSTOMER/AGENT ACCESS"}</p>
-          <h2 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">
-            {isInternalFlow ? "Team Portal Login" : "User Portal Login"}
-          </h2>
-          <p className="text-soft text-sm">
-            {isInternalFlow
-              ? "For area support, senior escalation, and admin teams."
-              : "For customers and external agents creating and tracking tickets."}
-          </p>
-        </div>
+        <FadeIn className="space-y-5">
+          <div className="space-y-2">
+            <p className="status-chip inline-flex">{isInternalFlow ? "INTERNAL ACCESS" : "CUSTOMER/AGENT ACCESS"}</p>
+            <h2 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">
+              {isInternalFlow ? "Team Portal Login" : "User Portal Login"}
+            </h2>
+            <p className="text-soft text-sm">
+              {isInternalFlow
+                ? "For area support, senior escalation, and admin teams."
+                : "For customers and external agents creating and tracking tickets."}
+            </p>
+          </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isInternalFlow ? "team@company.com" : "you@example.com"} />
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isInternalFlow ? "team@company.com" : "you@example.com"} />
+          </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Button variant="secondary" type="button" onClick={requestOtp} disabled={isRequestingOtp}>
-            {isRequestingOtp ? "Generating..." : "Generate OTP"}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Button variant="secondary" type="button" onClick={requestOtp} disabled={isRequestingOtp}>
+              {isRequestingOtp ? "Generating..." : "Generate OTP"}
+            </Button>
+            <Input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} placeholder="6-digit OTP" />
+          </div>
+
+          <Button className="w-full" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : isInternalFlow ? "Sign In to Internal Portal" : "Sign In to User Portal"}
           </Button>
-          <Input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} placeholder="6-digit OTP" />
-        </div>
 
-        <Button className="w-full" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Signing in..." : isInternalFlow ? "Sign In to Internal Portal" : "Sign In to User Portal"}
-        </Button>
-
-        {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
-      </FadeIn>
+          {status ? <p className="rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 text-sm text-soft">{status}</p> : null}
+        </FadeIn>
       </form>
     </HoverLift>
   );
