@@ -75,6 +75,18 @@ export async function uploadTicketFile(ticketId: string, file: File): Promise<{ 
   return { objectKey, signedUrl: signedResult.data.signedUrl };
 }
 
+export async function createSignedTicketObjectUrl(objectKey: string): Promise<string> {
+  const signedResult = await supabase.storage
+    .from(ticketUploadConfig.bucket)
+    .createSignedUrl(objectKey, env.TICKET_UPLOAD_SIGNED_URL_TTL_SECONDS);
+
+  if (signedResult.error) {
+    return "";
+  }
+
+  return signedResult.data.signedUrl;
+}
+
 export async function removeUploadedTicketFiles(objectKeys: string[]): Promise<void> {
   if (!objectKeys.length) {
     return;
