@@ -11,7 +11,7 @@ function priorityClasses(priority: Ticket["priority"]): string {
     case "MEDIUM":
       return "border-warning-600/20 bg-warning-100 text-warning-600";
     case "HIGH":
-      return "border-orange-200 bg-orange-50 text-orange-800";
+      return "border-theme-primary/45 bg-theme-primary-soft text-indigo-200";
     case "CRITICAL":
       return "border-error-600/20 bg-error-100 text-error-600";
     default:
@@ -36,7 +36,7 @@ export function TicketTable({
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="surface-muted border-l-4 border-l-brand-400 p-4">
+          <div key={ticket.id} className="surface-muted border-l-4 border-l-theme-primary p-4">
             <div className="flex items-start justify-between gap-3">
               <Link href={`/tickets/${ticket.id}`} className="text-card-title text-ink-900">
                 #{ticket.id.slice(0, 8)}
@@ -57,11 +57,11 @@ export function TicketTable({
         ))}
       </div>
 
-      <div className="surface hidden overflow-hidden md:block">
+      <div className="table-surface hidden overflow-hidden md:block">
         <div className="overflow-x-auto">
           <table className="text-body w-full border-collapse">
             <thead>
-              <tr className="bg-brand-100/70 text-left text-ink-700">
+              <tr className="table-head text-left text-ink-700">
                 <th className="px-4 py-3 text-table-header">Ticket</th>
                 <th className="px-4 py-3 text-table-header">Status</th>
                 <th className="px-4 py-3 text-table-header">Priority</th>
@@ -72,7 +72,7 @@ export function TicketTable({
             </thead>
             <tbody>
               {tickets.map((ticket) => (
-                <tr key={ticket.id} className="border-t border-brand-100 transition-colors hover:bg-brand-50/70">
+                <tr key={ticket.id} className="table-row transition-colors">
                   <td className="text-label px-4 py-3 text-ink-900">
                     <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                   </td>

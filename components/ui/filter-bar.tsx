@@ -65,7 +65,7 @@ export function FilterBar({
             id="ticket-search-input"
             aria-label="Search tickets"
             className="input-clean h-10 pl-12 pr-3 placeholder:text-ink-600"
-            style={{ paddingLeft: "3rem" }}
+            
             placeholder={searchPlaceholder}
             type="search"
             value={searchValue ?? ""}

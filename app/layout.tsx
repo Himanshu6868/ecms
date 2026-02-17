@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans overflow-x-clip bg-zinc-50 text-zinc-900 antialiased`}>
+      <body className={`${inter.variable} font-sans overflow-x-clip bg-bg-page text-ink-900 antialiased`}>
         <Providers>
           <AppHeader />
           {children}

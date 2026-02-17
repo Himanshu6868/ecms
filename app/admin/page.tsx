@@ -50,7 +50,7 @@ export default async function AdminPage() {
   return (
     <main className="mx-auto w-full max-w-[1400px] px-2 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4">
       <div className="mb-4">
-        <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-xl bg-brand-100/70 px-4 py-2 text-sm font-semibold text-ink-900">
+        <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-xl bg-bg-elevated px-4 py-2 text-sm font-semibold text-ink-900">
           <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
           Back to Dashboard
         </Link>

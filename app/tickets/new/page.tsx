@@ -16,7 +16,7 @@ export default async function NewTicketPage() {
       <FadeIn className="space-y-3">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center">
           <div className="justify-self-start">
-            <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-xl border border-brand-200 bg-white px-4 py-2 text-sm font-semibold text-ink-900">
+            <Link href="/dashboard" className="group inline-flex items-center gap-2 rounded-xl border border-brand-200 bg-bg-elevated px-4 py-2 text-sm font-semibold text-ink-900">
               <ArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
               Back to Dashboard
             </Link>
