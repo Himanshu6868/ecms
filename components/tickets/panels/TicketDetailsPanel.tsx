@@ -36,7 +36,7 @@ function isImageAttachment(type: string): boolean {
 
 function MetaRow({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-[var(--panel-border)] py-2 last:border-b-0 last:pb-0">
+    <div className="flex items-start justify-between gap-4 border-b border-panel-border py-2 last:border-b-0 last:pb-0">
       <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">{label}</dt>
       <dd className="text-sm text-text-secondary">{value}</dd>
     </div>
@@ -94,7 +94,7 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
         footer={footer}
       >
         <div className="space-y-4">
-          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
             <h3 className="mb-2 text-sm font-semibold text-text-secondary">Metadata</h3>
             <dl>
               <MetaRow label="ID" value={effectiveTicket.id.slice(0, 8)} />
@@ -106,12 +106,12 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
             </dl>
           </section>
 
-          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
             <h3 className="mb-2 text-sm font-semibold text-text-secondary">Description</h3>
             <p className="whitespace-pre-wrap text-sm leading-6 text-text-primary">{effectiveTicket.description}</p>
           </section>
 
-          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
             <h3 className="mb-2 text-sm font-semibold text-text-secondary">Attachments</h3>
             {loading ? <p className="text-sm text-text-placeholder">Loading attachments…</p> : null}
             {error ? <p className="text-sm text-state-error">{error}</p> : null}
@@ -119,14 +119,14 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
             {!loading && !error && attachments.length > 0 ? (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {attachments.map((attachment) => (
-                  <a key={attachment.id} href={attachment.signed_url} target="_blank" rel="noreferrer" className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] p-2 transition-colors duration-150 hover:bg-panel-elevated">
+                  <a key={attachment.id} href={attachment.signed_url} target="_blank" rel="noreferrer" className="rounded-md border border-panel-border bg-panel p-2 transition-colors duration-150 hover:bg-panel-elevated">
                     {isImageAttachment(attachment.file_type) ? (
-                      <div className="overflow-hidden rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)]">
+                      <div className="overflow-hidden rounded-md border border-panel-border bg-panel">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={attachment.signed_url} alt={attachment.file_name} className="h-28 w-full object-cover" loading="lazy" />
                       </div>
                     ) : (
-                      <div className="flex h-28 items-center justify-center rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-placeholder">
+                      <div className="flex h-28 items-center justify-center rounded-md border border-panel-border bg-panel text-text-placeholder">
                         <FileText className="h-6 w-6" />
                       </div>
                     )}

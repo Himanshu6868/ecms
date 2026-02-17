@@ -132,7 +132,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
         title={`Ticket #${ticketId.slice(0, 8)} chat`}
         subtitle="Operational thread"
         ariaLabel="Ticket chat panel"
-        headerMeta={<span className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] px-2 py-1 text-xs text-text-secondary">{ticketStatus}</span>}
+        headerMeta={<span className="rounded-md border border-panel-border bg-panel-elevated px-2 py-1 text-xs text-text-secondary">{ticketStatus}</span>}
         footer={
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
         }
       >
         <div className="flex h-full min-h-0 flex-col">
-          <div className="mb-3 flex items-center justify-between border-b border-[var(--panel-border)] pb-3">
+          <div className="mb-3 flex items-center justify-between border-b border-panel-border pb-3">
             <p className="text-xs text-text-placeholder">Real-time collaboration</p>
             {hasMore ? (
               <ButtonSecondary type="button" className="px-2 py-1 text-xs" onClick={() => void loadMessages(page + 1, "prepend")} disabled={isLoadingOlder}>
@@ -158,7 +158,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
             ) : null}
           </div>
 
-          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-2 overflow-y-auto rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] p-3">
+          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-2 overflow-y-auto rounded-md border border-panel-border bg-panel p-3">
             <p className="sr-only">{messagesLabel}</p>
             {!loading && messages.length === 0 ? <p className="text-sm text-text-placeholder">No messages yet.</p> : null}
             {messages.map((msg) => {

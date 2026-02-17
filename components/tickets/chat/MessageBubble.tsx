@@ -10,7 +10,7 @@ interface MessageBubbleProps {
 export function MessageBubble({ content, senderLabel, timestamp, isCurrentUser }: MessageBubbleProps) {
   return (
     <article className={cn("flex w-full", isCurrentUser ? "justify-end" : "justify-start")}>
-      <div className={cn("max-w-[80%] rounded-md border px-3 py-2", isCurrentUser ? "border-[var(--panel-border)] bg-[var(--message-sender-bg)]" : "border-[var(--panel-border)] bg-[var(--message-receiver-bg)]")}>
+      <div className={cn("max-w-[80%] rounded-md border px-3 py-2", isCurrentUser ? "border-panel-border bg-message-sender" : "border-panel-border bg-message-receiver")}>
         <p className="text-xs font-medium text-text-secondary">{senderLabel}</p>
         <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-5 text-text-primary">{content}</p>
         <time className="mt-2 block text-right text-[11px] text-text-placeholder" dateTime={timestamp}>

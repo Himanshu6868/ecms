@@ -8,13 +8,13 @@ const badgeVariants = cva(
   {
     variants: {
       tone: {
-        neutral: "border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-secondary",
-        status: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
-        low: "border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-secondary",
-        medium: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-secondary",
-        high: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
-        critical: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
-        live: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
+        neutral: "border-panel-border bg-panel text-text-secondary",
+        status: "border-panel-border bg-panel-elevated text-text-primary",
+        low: "border-panel-border bg-panel text-text-secondary",
+        medium: "border-panel-border bg-panel-elevated text-text-secondary",
+        high: "border-panel-border bg-panel-elevated text-text-primary",
+        critical: "border-panel-border bg-panel-elevated text-text-primary",
+        live: "border-panel-border bg-panel-elevated text-text-primary",
       },
     },
     defaultVariants: {
