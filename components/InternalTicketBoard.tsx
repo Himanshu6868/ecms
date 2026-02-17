@@ -164,10 +164,10 @@ export function InternalTicketBoard({
                         {ticket.assigned_agent_id ? assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user" : "Unassigned"}
                       </td>
                       <td className="px-4 py-3">
-                        <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
+                        <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (assignedEmailByUserId[ticket.assigned_agent_id] ?? "Assigned user") : "Unassigned"} />
                       </td>
                       <td className="px-4 py-3">
-                        <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
+                        <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} ticketStatus={ticket.status} />
                       </td>
                       {showStatusControls ? (
                         <td className="px-4 py-3">

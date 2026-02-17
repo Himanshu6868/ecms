@@ -50,8 +50,8 @@ export function TicketTable({
             </div>
             <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
             <div className="mt-2 flex flex-wrap gap-2">
-              <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
-              <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
+              <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (ticket.assigned_agent_id) : "Unassigned"} />
+              <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} ticketStatus={ticket.status} />
             </div>
           </div>
         ))}
@@ -84,10 +84,10 @@ export function TicketTable({
                   </td>
                   <td className="px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
                   <td className="px-4 py-3">
-                    <TicketDetailsModal ticketId={ticket.id} description={ticket.description} />
+                    <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (ticket.assigned_agent_id) : "Unassigned"} />
                   </td>
                   <td className="px-4 py-3">
-                    <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} />
+                    <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} ticketStatus={ticket.status} />
                   </td>
                 </tr>
               ))}
