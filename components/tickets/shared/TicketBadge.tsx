@@ -4,17 +4,17 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold tracking-wide",
+  "inline-flex items-center rounded-md border px-2 py-1 text-xs font-semibold tracking-wide",
   {
     variants: {
       tone: {
-        neutral: "border-border-default bg-bg-surface text-text-secondary",
-        status: "border-primary/40 bg-primary-soft text-text-primary",
-        low: "border-emerald-400/50 bg-emerald-500/10 text-emerald-300",
-        medium: "border-sky-400/50 bg-sky-500/10 text-sky-300",
-        high: "border-amber-400/60 bg-amber-500/10 text-amber-200",
-        critical: "border-rose-400/60 bg-rose-500/15 text-rose-200",
-        live: "border-primary/45 bg-primary-soft text-text-primary",
+        neutral: "border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-secondary",
+        status: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
+        low: "border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-secondary",
+        medium: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-secondary",
+        high: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
+        critical: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
+        live: "border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] text-text-primary",
       },
     },
     defaultVariants: {

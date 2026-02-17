@@ -2,8 +2,11 @@
 
 import { Paperclip, SendHorizontal } from "lucide-react";
 import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Drawer } from "@/components/ui/overlays/Drawer";
-import { TicketBadge } from "@/components/tickets/shared/TicketBadge";
+import { ButtonPrimary } from "@/components/ui/buttons/ButtonPrimary";
+import { ButtonSecondary } from "@/components/ui/buttons/ButtonSecondary";
+import { FormInput } from "@/components/ui/forms/FormInput";
+import { DrawerPanel } from "@/components/ui/panels/DrawerPanel";
+import { MessageBubble } from "@/components/tickets/chat/MessageBubble";
 
 interface ChatMessage {
   id: string;
@@ -28,11 +31,8 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const loadMessages = useCallback(async (targetPage: number, mode: "reset" | "prepend" = "reset") => {
-    if (mode === "reset") {
-      setLoading(true);
-    } else {
-      setIsLoadingOlder(true);
-    }
+    if (mode === "reset") setLoading(true);
+    else setIsLoadingOlder(true);
     setError(null);
 
     const container = messagesContainerRef.current;
@@ -44,13 +44,12 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
       const body = (await res.json()) as ChatMessage[] | { error?: string };
       if (!res.ok) {
         setError((body as { error?: string }).error ?? "Unable to load chat.");
-        if (mode === "reset") {
-          setMessages([]);
-        }
+        if (mode === "reset") setMessages([]);
         return;
       }
       const incoming = Array.isArray(body) ? [...body].reverse() : [];
       setHasMore(incoming.length === 30);
+
       if (mode === "prepend") {
         setMessages((prev) => {
           const merged = [...incoming, ...prev];
@@ -60,16 +59,13 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
         requestAnimationFrame(() => {
           const current = messagesContainerRef.current;
           if (!current) return;
-          const newScrollHeight = current.scrollHeight;
-          current.scrollTop = newScrollHeight - prevScrollHeight + prevScrollTop;
+          current.scrollTop = current.scrollHeight - prevScrollHeight + prevScrollTop;
         });
       } else {
         setMessages(incoming);
         chatCache.set(ticketId, incoming);
         requestAnimationFrame(() => {
-          const current = messagesContainerRef.current;
-          if (!current) return;
-          current.scrollTo({ top: current.scrollHeight, behavior: "auto" });
+          messagesContainerRef.current?.scrollTo({ top: messagesContainerRef.current.scrollHeight, behavior: "auto" });
         });
       }
       setPage(targetPage);
@@ -110,20 +106,14 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
   useEffect(() => {
     if (!open) return;
     void loadMessages(1, "reset");
-
-    const interval = window.setInterval(() => {
-      void loadMessages(1, "reset");
-    }, 5000);
-
+    const interval = window.setInterval(() => void loadMessages(1, "reset"), 5000);
     return () => window.clearInterval(interval);
   }, [open, loadMessages]);
 
   const handleInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      if (!sending && input.trim().length > 0) {
-        void sendMessage();
-      }
+      if (!sending && input.trim()) void sendMessage();
     }
   };
 
@@ -135,78 +125,49 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
 
   return (
     <>
-      <button type="button" className="rounded-md border border-border-default bg-bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-bg-surface/70" onClick={() => setOpen(true)}>
-        Chat
-      </button>
-      <Drawer
+      <ButtonSecondary type="button" className="px-3 py-1.5" onClick={() => setOpen(true)}>Chat</ButtonSecondary>
+      <DrawerPanel
         open={open}
         onClose={() => setOpen(false)}
         title={`Ticket #${ticketId.slice(0, 8)} chat`}
         subtitle="Operational thread"
         ariaLabel="Ticket chat panel"
-        headerMeta={<div className="flex items-center gap-2"><TicketBadge tone="live"><span className="mr-1 inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />Live</TicketBadge><TicketBadge tone="status">{ticketStatus}</TicketBadge></div>}
+        headerMeta={<span className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] px-2 py-1 text-xs text-text-secondary">{ticketStatus}</span>}
         footer={
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <button type="button" className="rounded-md border border-border-subtle p-2 text-text-placeholder transition hover:bg-bg-surface/80" aria-label="Attach file" disabled>
+              <ButtonSecondary type="button" className="p-2" aria-label="Attach file" disabled>
                 <Paperclip className="h-4 w-4" />
-              </button>
-              <input
-                className="input-clean h-10 rounded-md border-border-default"
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={handleInputKeyDown}
-                placeholder="Write an update"
-                maxLength={2000}
-                disabled={sending}
-                aria-label="Message input"
-              />
-              <button type="button" className="rounded-md border border-primary bg-primary p-2 text-text-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-55" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
+              </ButtonSecondary>
+              <FormInput value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleInputKeyDown} placeholder="Write an update" maxLength={2000} disabled={sending} aria-label="Message input" />
+              <ButtonPrimary type="button" className="p-2" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
                 <SendHorizontal className="h-4 w-4" />
-              </button>
+              </ButtonPrimary>
             </div>
             {error ? <p className="text-xs text-state-error">{error}</p> : null}
           </div>
         }
       >
         <div className="flex h-full min-h-0 flex-col">
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-3 flex items-center justify-between border-b border-[var(--panel-border)] pb-3">
             <p className="text-xs text-text-placeholder">Real-time collaboration</p>
             {hasMore ? (
-              <button
-                type="button"
-                className="rounded-md border border-border-subtle px-2 py-1 text-xs font-medium text-text-secondary transition hover:bg-bg-surface"
-                onClick={() => void loadMessages(page + 1, "prepend")}
-                disabled={isLoadingOlder}
-              >
+              <ButtonSecondary type="button" className="px-2 py-1 text-xs" onClick={() => void loadMessages(page + 1, "prepend")} disabled={isLoadingOlder}>
                 {isLoadingOlder ? "Loading…" : "Load older"}
-              </button>
+              </ButtonSecondary>
             ) : null}
           </div>
 
-          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-3 overflow-y-auto rounded-lg border border-border-subtle bg-bg-surface p-3">
+          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-2 overflow-y-auto rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] p-3">
             <p className="sr-only">{messagesLabel}</p>
             {!loading && messages.length === 0 ? <p className="text-sm text-text-placeholder">No messages yet.</p> : null}
             {messages.map((msg) => {
               const mine = msg.sender_id === currentUserId;
-              return (
-                <article key={msg.id} className={`chat-message-fade-in flex ${mine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] rounded-lg border px-3 py-2 shadow-[0_1px_6px_rgba(15,23,42,0.06)] ${mine ? "border-primary/40 bg-primary-soft text-text-primary" : "border-border-subtle bg-bg-surface text-text-primary"}`}>
-                    <div className="mb-1 flex items-center gap-2">
-                      <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${mine ? "bg-primary/20 text-text-primary" : "bg-bg-surface/80 text-text-secondary"}`}>
-                        {(mine ? "Y" : msg.sender_name?.slice(0, 1) || "S").toUpperCase()}
-                      </span>
-                      <p className="text-xs font-medium text-text-placeholder">{mine ? "You" : msg.sender_name || "Support"}</p>
-                    </div>
-                    <p className="text-sm leading-6">{msg.message}</p>
-                    <p className="mt-1 text-right text-[11px] text-text-placeholder">{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
-                  </div>
-                </article>
-              );
+              return <MessageBubble key={msg.id} content={msg.message} senderLabel={mine ? "You" : msg.sender_name || "Support"} timestamp={msg.created_at} isCurrentUser={mine} />;
             })}
           </div>
         </div>
-      </Drawer>
+      </DrawerPanel>
     </>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { FileText, ImageIcon } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
-import { Drawer } from "@/components/ui/overlays/Drawer";
-import { KeyValueRow, PanelCard } from "@/components/tickets/shared/PanelCard";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { ButtonSecondary } from "@/components/ui/buttons/ButtonSecondary";
+import { DrawerPanel } from "@/components/ui/panels/DrawerPanel";
 import { TicketBadge, priorityTone } from "@/components/tickets/shared/TicketBadge";
 import { type Ticket } from "@/types/domain";
 
@@ -32,6 +32,15 @@ function formatBytes(size: number): string {
 
 function isImageAttachment(type: string): boolean {
   return type.startsWith("image/");
+}
+
+function MetaRow({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-4 border-b border-[var(--panel-border)] py-2 last:border-b-0 last:pb-0">
+      <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">{label}</dt>
+      <dd className="text-sm text-text-secondary">{value}</dd>
+    </div>
+  );
 }
 
 export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; assignedTo?: string }) {
@@ -69,24 +78,13 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
   const effectiveAssignedTo = payload?.assignedTo ?? assignedTo ?? "Unassigned";
   const attachments = payload?.attachments ?? [];
 
-  const footer = useMemo(
-    () => (
-      <div className="flex items-center justify-end">
-        <button type="button" className="rounded-md border border-border-default bg-bg-surface px-3 py-2 text-sm font-medium text-text-secondary transition hover:bg-bg-surface/70" onClick={() => setOpen(false)}>
-          Close
-        </button>
-      </div>
-    ),
-    [],
-  );
+  const footer = useMemo(() => <div className="flex justify-end"><ButtonSecondary type="button" onClick={() => setOpen(false)}>Cancel</ButtonSecondary></div>, []);
 
   return (
     <>
-      <button type="button" className="rounded-md border border-border-default bg-bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-bg-surface/70" onClick={() => { setOpen(true); void ensureDetails(); }}>
-        Details
-      </button>
+      <ButtonSecondary type="button" className="px-3 py-1.5" onClick={() => { setOpen(true); void ensureDetails(); }}>Details</ButtonSecondary>
 
-      <Drawer
+      <DrawerPanel
         open={open}
         onClose={() => setOpen(false)}
         title={`Ticket #${ticket.id.slice(0, 8)}`}
@@ -95,52 +93,40 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
         headerMeta={<TicketBadge tone="status">{effectiveTicket.status}</TicketBadge>}
         footer={footer}
       >
-        <div className="space-y-3">
-          <PanelCard>
-            <h3 className="mb-2 text-sm font-semibold text-text-primary">Ticket Metadata</h3>
+        <div className="space-y-4">
+          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Metadata</h3>
             <dl>
-              <KeyValueRow label="ID" value={effectiveTicket.id.slice(0, 8)} />
-              <div className="flex items-start justify-between gap-3 border-b border-border-subtle py-2">
-                <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">Status</dt>
-                <dd><TicketBadge tone="status">{effectiveTicket.status}</TicketBadge></dd>
-              </div>
-              <div className="flex items-start justify-between gap-3 border-b border-border-subtle py-2">
-                <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">Priority</dt>
-                <dd><TicketBadge tone={priorityTone(effectiveTicket.priority)}>{effectiveTicket.priority}</TicketBadge></dd>
-              </div>
-              <KeyValueRow label="Assigned To" value={effectiveAssignedTo} />
-              <KeyValueRow label="Created" value={new Date(effectiveTicket.created_at).toLocaleString()} />
-              <KeyValueRow label="Updated" value={new Date(effectiveTicket.updated_at).toLocaleString()} />
+              <MetaRow label="ID" value={effectiveTicket.id.slice(0, 8)} />
+              <MetaRow label="Status" value={<TicketBadge tone="status">{effectiveTicket.status}</TicketBadge>} />
+              <MetaRow label="Priority" value={<TicketBadge tone={priorityTone(effectiveTicket.priority)}>{effectiveTicket.priority}</TicketBadge>} />
+              <MetaRow label="Assigned To" value={effectiveAssignedTo} />
+              <MetaRow label="Created" value={new Date(effectiveTicket.created_at).toLocaleString()} />
+              <MetaRow label="Updated" value={new Date(effectiveTicket.updated_at).toLocaleString()} />
             </dl>
-          </PanelCard>
+          </section>
 
-          <PanelCard>
-            <h3 className="mb-2 text-sm font-semibold text-text-primary">Description</h3>
-            <p className="whitespace-pre-wrap text-sm leading-6 text-text-secondary">{effectiveTicket.description}</p>
-          </PanelCard>
+          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Description</h3>
+            <p className="whitespace-pre-wrap text-sm leading-6 text-text-primary">{effectiveTicket.description}</p>
+          </section>
 
-          <PanelCard>
-            <h3 className="mb-2 text-sm font-semibold text-text-primary">Attachments</h3>
+          <section className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg-elevated)] p-4">
+            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Attachments</h3>
             {loading ? <p className="text-sm text-text-placeholder">Loading attachments…</p> : null}
             {error ? <p className="text-sm text-state-error">{error}</p> : null}
             {!loading && !error && attachments.length === 0 ? <p className="text-sm text-text-placeholder">No attachments uploaded.</p> : null}
             {!loading && !error && attachments.length > 0 ? (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {attachments.map((attachment) => (
-                  <a
-                    key={attachment.id}
-                    href={attachment.signed_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group rounded-lg border border-border-subtle bg-bg-surface p-2 transition hover:-translate-y-0.5 hover:border-primary/55"
-                  >
+                  <a key={attachment.id} href={attachment.signed_url} target="_blank" rel="noreferrer" className="rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] p-2 transition-colors duration-150 hover:bg-panel-elevated">
                     {isImageAttachment(attachment.file_type) ? (
-                      <div className="overflow-hidden rounded-md border border-border-subtle bg-bg-surface/70">
+                      <div className="overflow-hidden rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={attachment.signed_url} alt={attachment.file_name} className="h-28 w-full object-cover transition duration-300 group-hover:scale-105" loading="lazy" />
+                        <img src={attachment.signed_url} alt={attachment.file_name} className="h-28 w-full object-cover" loading="lazy" />
                       </div>
                     ) : (
-                      <div className="flex h-28 items-center justify-center rounded-md border border-border-subtle bg-bg-surface/70 text-text-placeholder">
+                      <div className="flex h-28 items-center justify-center rounded-md border border-[var(--panel-border)] bg-[var(--panel-bg)] text-text-placeholder">
                         <FileText className="h-6 w-6" />
                       </div>
                     )}
@@ -155,9 +141,9 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
                 ))}
               </div>
             ) : null}
-          </PanelCard>
+          </section>
         </div>
-      </Drawer>
+      </DrawerPanel>
     </>
   );
 }

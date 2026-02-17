@@ -9,20 +9,26 @@
   --bg-surface: #212134;
   --bg-field: #212134;
 
-  --color-primary: #4945ff;
-  --color-primary-hover: #3e39e5;
-  --color-primary-soft: color-mix(in oklab, var(--color-primary) 22%, var(--bg-surface));
+  --panel-bg: #212134;
+  --panel-bg-elevated: #26263a;
+  --message-sender-bg: #2a2a40;
+  --message-receiver-bg: #1d1d2f;
 
-  --border-subtle: #2e2e46;
-  --border-default: #3a3a54;
+  --color-primary: #4945ff;
+  --color-primary-hover: #3f3be3;
+  --color-primary-soft: #2a2949;
+
+  --border-subtle: #2c2c44;
+  --border-default: #34344f;
+  --panel-border: #31314a;
 
   --text-primary: #f6f6f9;
   --text-secondary: #a6a7ba;
   --text-placeholder: #7e8097;
 
   --state-error: #ef6b7b;
-  --overlay-dark: rgb(10 10 18 / 72%);
-  --focus-ring: color-mix(in oklab, var(--color-primary) 45%, transparent);
+  --overlay-dark: #181826;
+  --focus-ring: #4945ff;
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -62,7 +68,7 @@ a { color: inherit; text-decoration: none; }
   padding: 0.625rem 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 .input-clean::placeholder { color: var(--text-placeholder); }
-.input-clean:focus { border-color: var(--color-primary); box-shadow: 0 0 0 4px var(--focus-ring); }
+.input-clean:focus { border-color: var(--color-primary); box-shadow: none; }
 .input-clean:disabled { opacity: 0.6; }
 .input-clean[aria-invalid="true"], .input-clean[data-invalid="true"] { border-color: var(--state-error); }
 
@@ -115,3 +121,6 @@ a { color: inherit; text-decoration: none; }
 }
 
 .app-header-mirror, .app-header-mirror-solid, .app-header-mirror-transparent { background: var(--bg-surface); }
+
+
+.border-system { border: 1px solid var(--panel-border); }
