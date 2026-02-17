@@ -10,6 +10,10 @@ const config: Config = {
         "bg-page": "var(--bg-page)",
         "bg-surface": "var(--bg-surface)",
         "bg-field": "var(--bg-field)",
+        panel: "var(--panel-bg)",
+        "panel-elevated": "var(--panel-bg-elevated)",
+        "message-sender": "var(--message-sender-bg)",
+        "message-receiver": "var(--message-receiver-bg)",
         primary: "var(--color-primary)",
         "primary-hover": "var(--color-primary-hover)",
         "text-primary": "var(--text-primary)",
@@ -17,6 +21,7 @@ const config: Config = {
         "text-placeholder": "var(--text-placeholder)",
         "border-subtle": "var(--border-subtle)",
         "border-default": "var(--border-default)",
+        "panel-border": "var(--panel-border)",
         "state-error": "var(--state-error)",
       },
       borderRadius: {
