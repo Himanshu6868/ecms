@@ -18,15 +18,15 @@ function isExternalScoped(role: string, isInternal: boolean): boolean {
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-success-600/35 bg-success-100 text-success-600";
+      return "border-primary/35 bg-primary/10 text-primary";
     case "MEDIUM":
-      return "border-amber-200 bg-amber-50 text-amber-800";
+      return "border-border-subtle bg-bg-surface/80 text-text-secondary";
     case "HIGH":
-      return "border-orange-200 bg-orange-50 text-orange-800";
+      return "border-primary/45 bg-primary-soft text-text-primary";
     case "CRITICAL":
-      return "border-rose-200 bg-rose-50 text-rose-800";
+      return "border-state-error/45 bg-state-error/10 text-state-error";
     default:
-      return "border-brand-200 bg-brand-50 text-ink-900";
+      return "border-border-subtle bg-bg-surface/80 text-text-primary";
   }
 }
 
@@ -109,7 +109,7 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
 
       <section className="surface space-y-3 p-4 md:p-5">
         <h2 className="text-section-title">Ticket Description</h2>
-        <p className="whitespace-pre-wrap text-sm text-ink-700">{ticket.description}</p>
+        <p className="whitespace-pre-wrap text-sm text-text-secondary">{ticket.description}</p>
       </section>
 
       <section className="surface space-y-3 p-4 md:p-5">

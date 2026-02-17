@@ -5,14 +5,14 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-label transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-theme-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-page disabled:pointer-events-none disabled:opacity-55",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-label transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/80 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-page disabled:pointer-events-none disabled:opacity-55",
   {
     variants: {
       variant: {
-        default: "border border-theme-primary/70 bg-theme-primary px-4 py-2.5 text-ink-950 hover:bg-theme-primary-hover",
-        secondary: "border border-border-default bg-bg-elevated px-4 py-2.5 text-ink-700 hover:bg-bg-hover hover:text-ink-900",
-        ghost: "px-3 py-2 text-ink-700 hover:bg-bg-hover hover:text-ink-900",
-        danger: "border border-error-600/40 bg-error-100 px-4 py-2.5 text-error-600 hover:brightness-110",
+        default: "border border-primary/70 bg-primary px-4 py-2.5 text-text-primary hover:bg-primary-hover",
+        secondary: "border border-border-default bg-bg-surface px-4 py-2.5 text-text-secondary hover:bg-bg-surface/80 hover:text-text-primary",
+        ghost: "px-3 py-2 text-text-secondary hover:bg-bg-surface/80 hover:text-text-primary",
+        danger: "border border-state-error/50 bg-state-error/10 px-4 py-2.5 text-state-error hover:brightness-110",
       },
       size: {
         default: "h-10",

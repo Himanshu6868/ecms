@@ -285,14 +285,14 @@ export function TicketCreateForm() {
 
           <div className="space-y-3">
             <Label htmlFor="attachments">Attachments (PNG, JPG, WEBP, PDF, DOC, DOCX up to 5MB each, max 6 files)</Label>
-            <div className="rounded-xl border border-dashed border-brand-300 bg-brand-50/40 p-4">
+            <div className="rounded-xl border border-dashed border-border-subtle bg-bg-surface/40 p-4">
               <input
                 id="attachments"
                 type="file"
                 multiple
                 accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
                 onChange={onFileInput}
-                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-brand-200 file:bg-bg-elevated file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink-900"
+                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-border-subtle file:bg-bg-surface file:px-3 file:py-2 file:text-sm file:font-semibold file:text-text-primary"
               />
               <p className="mt-2 text-xs text-soft">Uploads stay private and are securely stored via the server.</p>
             </div>
@@ -300,14 +300,14 @@ export function TicketCreateForm() {
             {attachments.length > 0 ? (
               <ul className="grid gap-3 sm:grid-cols-2">
                 {attachments.map((attachment) => (
-                  <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-brand-100 p-3">
+                  <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-border-subtle p-3">
                     {attachment.previewUrl ? (
-                      <div className="relative h-36 overflow-hidden rounded-lg border border-brand-100 bg-bg-elevated">
+                      <div className="relative h-36 overflow-hidden rounded-lg border border-border-subtle bg-bg-surface">
                         <Image src={attachment.previewUrl} alt={attachment.file.name} fill className="object-cover" unoptimized />
                       </div>
                     ) : null}
                     <div className="space-y-1">
-                      <p className="truncate text-sm font-semibold text-ink-900">{attachment.file.name}</p>
+                      <p className="truncate text-sm font-semibold text-text-primary">{attachment.file.name}</p>
                       <p className="text-xs text-soft">{formatBytes(attachment.file.size)}</p>
                     </div>
                     <Button type="button" variant="secondary" className="w-full" onClick={() => removeAttachment(attachment.id)}>
@@ -320,18 +320,18 @@ export function TicketCreateForm() {
           </div>
 
           {isSubmitting ? (
-            <div className="space-y-2 rounded-lg border border-brand-200 bg-bg-elevated p-3">
+            <div className="space-y-2 rounded-lg border border-border-subtle bg-bg-surface p-3">
               <div className="flex items-center justify-between text-xs text-soft">
                 <span>Upload progress</span>
                 <span>{uploadProgress}%</span>
               </div>
-              <div className="h-2 rounded-full bg-brand-100">
-                <div className="h-2 rounded-full bg-brand-500 transition-all" style={{ width: `${uploadProgress}%` }} />
+              <div className="h-2 rounded-full bg-bg-surface/80">
+                <div className="h-2 rounded-full bg-primary transition-all" style={{ width: `${uploadProgress}%` }} />
               </div>
             </div>
           ) : null}
 
-          <div className="flex flex-wrap justify-end gap-3 border-t border-brand-200/80 pt-4">
+          <div className="flex flex-wrap justify-end gap-3 border-t border-border-subtle/80 pt-4">
             <Button variant="secondary" type="reset" onClick={clearAttachments}>
               Clear Form
             </Button>

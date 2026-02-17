@@ -107,12 +107,12 @@ export function AdminUserCreator({
         <div className="space-y-2">
           <Label htmlFor="internal-name">Name *</Label>
           <Input id="internal-name" value={name} onChange={(event) => setName(event.target.value)} placeholder="Full name" />
-          {errors.name ? <p className="text-sm text-rose-600">{errors.name}</p> : null}
+          {errors.name ? <p className="text-sm text-state-error">{errors.name}</p> : null}
         </div>
         <div className="space-y-2">
           <Label htmlFor="internal-email">Email *</Label>
           <Input id="internal-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="user@company.com" />
-          {errors.email ? <p className="text-sm text-rose-600">{errors.email}</p> : null}
+          {errors.email ? <p className="text-sm text-state-error">{errors.email}</p> : null}
         </div>
       </div>
 
@@ -157,7 +157,7 @@ export function AdminUserCreator({
               </SelectContent>
             </Select>
           )}
-          {errors.reportsToUserId ? <p className="text-sm text-rose-600">{errors.reportsToUserId}</p> : null}
+          {errors.reportsToUserId ? <p className="text-sm text-state-error">{errors.reportsToUserId}</p> : null}
         </div>
       </div>
 

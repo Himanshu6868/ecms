@@ -10,8 +10,8 @@ const iconByTone = {
 };
 
 const stylesByTone = {
-  success: "border-success-600/20 bg-success-100 text-success-600",
-  error: "border-error-600/20 bg-error-100 text-error-600",
+  success: "border-primary/35 bg-primary/10 text-primary",
+  error: "border-state-error/40 bg-state-error/10 text-state-error",
   info: "border-info-600/20 bg-info-100 text-info-600",
 };
 

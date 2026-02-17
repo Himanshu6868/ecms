@@ -71,9 +71,9 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
             <EmptyState title="No analytics data" description="Status insights will appear once ticket activity is available." />
           </>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-brand-200">
+          <div className="overflow-hidden rounded-xl border border-border-subtle">
             <table className="w-full text-sm">
-              <thead className="bg-brand-100/75 text-left text-ink-700">
+              <thead className="bg-bg-surface/80 text-left text-text-secondary">
                 <tr>
                   <th className="px-4 py-3 text-table-header">Status</th>
                   <th className="px-4 py-3 text-table-header">Count</th>
@@ -84,12 +84,12 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
                 {analytics.map((entry) => {
                   const widthPct = Math.max(8, Math.round((entry.count / maxCount) * 100));
                   return (
-                    <tr key={entry.status} className="border-t border-brand-100">
+                    <tr key={entry.status} className="border-t border-border-subtle">
                       <td className="px-4 py-3 font-medium">{entry.status}</td>
                       <td className="px-4 py-3 text-soft">{entry.count}</td>
                       <td className="px-4 py-3">
-                        <div className="h-2 rounded-full bg-brand-100">
-                          <div className="h-full rounded-full bg-brand-500" style={{ width: `${widthPct}%` }} />
+                        <div className="h-2 rounded-full bg-bg-surface/80">
+                          <div className="h-full rounded-full bg-primary" style={{ width: `${widthPct}%` }} />
                         </div>
                       </td>
                     </tr>

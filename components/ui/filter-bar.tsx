@@ -59,12 +59,12 @@ export function FilterBar({
         <label className="relative block min-w-0 flex-1" htmlFor="ticket-search-input">
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-600"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-placeholder"
           />
           <input
             id="ticket-search-input"
             aria-label="Search tickets"
-            className="input-clean h-10 pl-12 pr-3 placeholder:text-ink-600"
+            className="input-clean h-10 pl-12 pr-3 placeholder:text-text-placeholder"
             
             placeholder={searchPlaceholder}
             type="search"

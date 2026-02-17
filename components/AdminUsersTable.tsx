@@ -22,7 +22,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRecord[] }) {
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
-            <tr className="bg-brand-100/75 text-left text-ink-700">
+            <tr className="bg-bg-surface/80 text-left text-text-secondary">
               <th className="px-4 py-3 text-table-header">Name</th>
               <th className="px-4 py-3 text-table-header">Email</th>
               <th className="px-4 py-3 text-table-header">Role</th>
@@ -31,8 +31,8 @@ export function AdminUsersTable({ users }: { users: AdminUserRecord[] }) {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-t border-brand-100">
-                <td className="px-4 py-3 font-medium text-ink-900">{user.name}</td>
+              <tr key={user.id} className="border-t border-border-subtle">
+                <td className="px-4 py-3 font-medium text-text-primary">{user.name}</td>
                 <td className="px-4 py-3 text-soft">{user.email}</td>
                 <td className="px-4 py-3">{user.role}</td>
                 <td className="px-4 py-3 text-soft">{new Date(user.created_at).toLocaleString()}</td>
