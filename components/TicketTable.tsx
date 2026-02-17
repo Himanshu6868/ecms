@@ -59,7 +59,7 @@ export function TicketTable({
 
       <div className="surface hidden overflow-hidden md:block">
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+          <table className="text-body w-full border-collapse">
             <thead>
               <tr className="bg-brand-100/70 text-left text-ink-700">
                 <th className="px-4 py-3 text-table-header">Ticket</th>
@@ -73,16 +73,16 @@ export function TicketTable({
             <tbody>
               {tickets.map((ticket) => (
                 <tr key={ticket.id} className="border-t border-brand-100 transition-colors hover:bg-brand-50/70">
-                  <td className="px-4 py-3 font-medium text-ink-900">
+                  <td className="text-label px-4 py-3 text-ink-900">
                     <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                   </td>
-                  <td className="px-4 py-3 text-ink-700">{ticket.status}</td>
+                  <td className="text-body px-4 py-3 text-ink-700">{ticket.status}</td>
                   <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${priorityClasses(ticket.priority)}`}>
+                    <span className={`text-label inline-flex rounded-full border px-2.5 py-1 ${priorityClasses(ticket.priority)}`}>
                       {ticket.priority}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
+                  <td className="text-body px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (ticket.assigned_agent_id) : "Unassigned"} />
                   </td>
