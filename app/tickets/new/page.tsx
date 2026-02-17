@@ -25,7 +25,7 @@ export default async function NewTicketPage() {
           <div />
         </div>
         <div className="text-center">
-          <h1 className="[font-family:var(--font-space)] text-3xl font-semibold tracking-tight md:text-4xl">Ticket Creation</h1>
+          <h1 className="text-page-title">Ticket Creation</h1>
           <p className="mx-auto max-w-3xl text-sm text-soft md:text-base">
             Capture issue details once and let routing plus SLA policies handle assignment and escalation automatically.
           </p>
@@ -37,7 +37,7 @@ export default async function NewTicketPage() {
 
         <aside className="space-y-4 xl:pt-1">
           <section className="surface-muted p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Submission Quality</h2>
+            <h2 className="text-section-title">Submission Quality</h2>
             <ul className="mt-3 space-y-2 text-sm text-soft">
               <li>- Mention impact and urgency in one sentence.</li>
               <li>- Capture browser location before submit.</li>
@@ -46,12 +46,12 @@ export default async function NewTicketPage() {
           </section>
 
           <section className="surface-muted p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Routing Logic</h2>
+            <h2 className="text-section-title">Routing Logic</h2>
             <p className="mt-2 text-sm text-soft">User area mapping drives team queue assignment. Location is captured automatically from the browser.</p>
           </section>
 
           <section className="surface-muted p-5">
-            <h2 className="[font-family:var(--font-space)] text-lg font-semibold">SLA Window</h2>
+            <h2 className="text-section-title">SLA Window</h2>
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex items-center justify-between rounded-lg bg-brand-50 px-3 py-2">
                 <span>LOW/MEDIUM</span>

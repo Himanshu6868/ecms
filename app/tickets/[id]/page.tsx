@@ -93,7 +93,7 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
     <main className="space-y-5">
       <FadeIn className="surface-3d space-y-3 p-5 md:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="[font-family:var(--font-space)] text-xl font-semibold tracking-tight md:text-2xl">Ticket #{ticket.id.slice(0, 8)}</h1>
+          <h1 className="text-section-title tracking-tight md:text-2xl">Ticket #{ticket.id.slice(0, 8)}</h1>
           <p className="status-chip">{ticket.status}</p>
         </div>
         <div className="grid gap-2 text-sm text-soft sm:grid-cols-2">
@@ -108,12 +108,12 @@ export default async function TicketDetailPage({ params }: { params: Promise<{ i
       </FadeIn>
 
       <section className="surface space-y-3 p-4 md:p-5">
-        <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Ticket Description</h2>
+        <h2 className="text-section-title">Ticket Description</h2>
         <p className="whitespace-pre-wrap text-sm text-ink-700">{ticket.description}</p>
       </section>
 
       <section className="surface space-y-3 p-4 md:p-5">
-        <h2 className="[font-family:var(--font-space)] text-lg font-semibold">Activity Chat</h2>
+        <h2 className="text-section-title">Activity Chat</h2>
         {canChat ? (
           <form action={postMessage} className="flex flex-col gap-2 sm:flex-row">
             <input name="message" className="input-clean flex-1" maxLength={2000} required placeholder="Send an update to this ticket" />

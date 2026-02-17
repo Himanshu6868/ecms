@@ -41,8 +41,8 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
       <FadeIn className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="status-chip inline-flex">ADMIN DASHBOARD</p>
-          <h1 className="[font-family:var(--font-space)] mt-2 text-2xl font-semibold tracking-tight md:text-3xl">Operations Overview</h1>
-          <p className="mt-1 text-sm text-soft">Monitor ticket volume, workload balance, and system health from one place.</p>
+          <h1 className="mt-2 text-page-title">Operations Overview</h1>
+          <p className="mt-1 text-body text-soft">Monitor ticket volume, workload balance, and system health from one place.</p>
         </div>
       </FadeIn>
 
@@ -55,10 +55,10 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
 
       <section className="surface space-y-5 p-5 md:p-6">
         <FilterBar searchPlaceholder="Search status buckets">
-          <button className="btn-muted text-sm">Date Range</button>
-          <button className="btn-muted text-sm">Status</button>
-          <button className="btn-muted text-sm">Assignee</button>
-          <button className="btn-brand text-sm">Apply Filters</button>
+          <button className="btn-muted text-label">Date Range</button>
+          <button className="btn-muted text-label">Status</button>
+          <button className="btn-muted text-label">Assignee</button>
+          <button className="btn-brand text-label">Apply Filters</button>
         </FilterBar>
 
         {!analytics.length ? (
@@ -75,9 +75,9 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
             <table className="w-full text-sm">
               <thead className="bg-brand-100/75 text-left text-ink-700">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 font-semibold">Count</th>
-                  <th className="px-4 py-3 font-semibold">Progress</th>
+                  <th className="px-4 py-3 text-table-header">Status</th>
+                  <th className="px-4 py-3 text-table-header">Count</th>
+                  <th className="px-4 py-3 text-table-header">Progress</th>
                 </tr>
               </thead>
               <tbody>

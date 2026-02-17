@@ -31,7 +31,7 @@ export function AppHeader() {
             <Image alt="DG LIGER logo" fill priority sizes="40px" src="/dgliger-logo.webp" />
           </span>
           <span>
-            <strong className="block [font-family:var(--font-space)] text-sm font-semibold tracking-wide text-ink-900 md:text-base">
+            <strong className="block text-card-title text-ink-900">
               DG LIGER
             </strong>
             <span className="block text-xs text-ink-700/80">Enterprise Case Management</span>

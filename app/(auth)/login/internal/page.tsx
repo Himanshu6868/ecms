@@ -8,7 +8,7 @@ export default function InternalLoginPage() {
     <main className="mx-auto grid min-h-screen w-full max-w-6xl items-center gap-8 px-4 py-10 md:px-8 lg:grid-cols-2">
       <FadeIn className="surface space-y-6 p-7 md:p-10">
         <p className="status-chip inline-flex">INTERNAL TEAM FLOW</p>
-        <h1 className="[font-family:var(--font-space)] text-3xl leading-tight font-semibold tracking-tight md:text-5xl">Internal support login</h1>
+        <h1 className="text-page-title">Internal support login</h1>
         <p className="text-sm text-soft md:text-base">Area support, escalation, and operations accounts use this flow for protected internal actions.</p>
         <ul className="space-y-2 text-sm text-soft">
           <li>- Role validation is enforced server-side.</li>

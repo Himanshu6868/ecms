@@ -97,7 +97,7 @@ export function AdminUserCreator({
   return (
     <section className="surface mb-6 space-y-5 p-5 md:p-6">
       <div>
-        <h2 className="[font-family:var(--font-space)] text-xl font-semibold">Create Internal User</h2>
+        <h2 className="text-section-title">Create Internal User</h2>
         <p className="text-soft mt-1 text-sm">
           Super admin can create Member, Manager, or Super Admin and set reporting hierarchy.
         </p>
