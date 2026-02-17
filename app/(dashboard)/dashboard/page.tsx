@@ -108,7 +108,7 @@ export default async function DashboardPage() {
     <main className="space-y-6">
       <FadeIn className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="[font-family:var(--font-space)] text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
+          <h1 className="text-page-title">Dashboard</h1>
           <p className="mt-1 text-sm text-soft">Role: {session.user.role}</p>
         </div>
         <div className="status-chip inline-flex">Live queue: last 20 tickets</div>

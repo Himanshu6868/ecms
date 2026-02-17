@@ -16,17 +16,17 @@ export function AdminUsersTable({ users }: { users: AdminUserRecord[] }) {
   return (
     <section className="surface space-y-4 p-5 md:p-6">
       <div>
-        <h2 className="[font-family:var(--font-space)] text-lg font-semibold tracking-tight">All Users</h2>
-        <p className="mt-1 text-sm text-soft">Super admin view for user directory and role visibility.</p>
+        <h2 className="text-section-title tracking-tight">All Users</h2>
+        <p className="mt-1 text-body text-soft">Super admin view for user directory and role visibility.</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
             <tr className="bg-brand-100/75 text-left text-ink-700">
-              <th className="px-4 py-3 font-semibold">Name</th>
-              <th className="px-4 py-3 font-semibold">Email</th>
-              <th className="px-4 py-3 font-semibold">Role</th>
-              <th className="px-4 py-3 font-semibold">Created</th>
+              <th className="px-4 py-3 text-table-header">Name</th>
+              <th className="px-4 py-3 text-table-header">Email</th>
+              <th className="px-4 py-3 text-table-header">Role</th>
+              <th className="px-4 py-3 text-table-header">Created</th>
             </tr>
           </thead>
           <tbody>

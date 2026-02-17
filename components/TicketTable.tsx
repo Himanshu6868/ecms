@@ -38,17 +38,17 @@ export function TicketTable({
         {tickets.map((ticket) => (
           <div key={ticket.id} className="surface-muted border-l-4 border-l-brand-400 p-4">
             <div className="flex items-start justify-between gap-3">
-              <Link href={`/tickets/${ticket.id}`} className="font-semibold text-ink-900">
+              <Link href={`/tickets/${ticket.id}`} className="text-card-title text-ink-900">
                 #{ticket.id.slice(0, 8)}
               </Link>
               <p className="status-chip">{ticket.status}</p>
             </div>
             <div className="mt-2">
-              <span className={`inline-flex rounded-full border px-2 py-1 text-xs font-semibold ${priorityClasses(ticket.priority)}`}>
+              <span className={`inline-flex rounded-full border px-2 py-1 text-label ${priorityClasses(ticket.priority)}`}>
                 {ticket.priority}
               </span>
             </div>
-            <p className="mt-1 text-xs text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
+            <p className="mt-1 text-meta text-soft">SLA: {new Date(ticket.sla_deadline).toLocaleString()}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (ticket.assigned_agent_id) : "Unassigned"} />
               <TicketChatModal ticketId={ticket.id} currentUserId={currentUserId} currentUserName={currentUserName} ticketStatus={ticket.status} />
@@ -62,12 +62,12 @@ export function TicketTable({
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="bg-brand-100/70 text-left text-ink-700">
-                <th className="px-4 py-3 font-semibold">Ticket</th>
-                <th className="px-4 py-3 font-semibold">Status</th>
-                <th className="px-4 py-3 font-semibold">Priority</th>
-                <th className="px-4 py-3 font-semibold">SLA Deadline</th>
-                <th className="px-4 py-3 font-semibold">Details</th>
-                <th className="px-4 py-3 font-semibold">Chat</th>
+                <th className="px-4 py-3 text-table-header">Ticket</th>
+                <th className="px-4 py-3 text-table-header">Status</th>
+                <th className="px-4 py-3 text-table-header">Priority</th>
+                <th className="px-4 py-3 text-table-header">SLA Deadline</th>
+                <th className="px-4 py-3 text-table-header">Details</th>
+                <th className="px-4 py-3 text-table-header">Chat</th>
               </tr>
             </thead>
             <tbody>

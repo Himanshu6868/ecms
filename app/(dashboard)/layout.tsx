@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="grid min-h-[calc(100vh-2rem)] gap-4 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-6">
         <aside className="surface sticky top-4 hidden h-fit p-5 lg:block">
           <div className="mb-6 space-y-1 border-b border-brand-200 pb-5">
-            <h2 className="[font-family:var(--font-space)] text-xl font-semibold tracking-tight text-ink-900">ECMS Console</h2>
+            <h2 className="text-section-title tracking-tight text-ink-900">ECMS Console</h2>
             <p className="text-xs text-soft">Ticketing and escalation command center</p>
           </div>
 
@@ -33,7 +33,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="min-w-0 space-y-4">
           <header className="surface flex flex-wrap items-center justify-between gap-3 px-4 py-3 lg:hidden">
             <div>
-              <h2 className="[font-family:var(--font-space)] text-lg font-semibold text-ink-900">ECMS Console</h2>
+              <h2 className="text-section-title text-ink-900">ECMS Console</h2>
               <p className="text-xs text-soft">Operations</p>
             </div>
             <div className="flex w-full flex-wrap items-center gap-2 text-xs sm:w-auto">

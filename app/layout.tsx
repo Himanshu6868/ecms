@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Manrope, Space_Grotesk } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import { AppHeader } from "@/components/AppHeader";
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-manrope",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space",
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -24,7 +19,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${spaceGrotesk.variable} overflow-x-clip bg-zinc-50 text-zinc-900 antialiased [font-family:var(--font-manrope)]`}>
+      <body className={`${inter.variable} font-sans overflow-x-clip bg-zinc-50 text-zinc-900 antialiased`}>
         <Providers>
           <AppHeader />
           {children}

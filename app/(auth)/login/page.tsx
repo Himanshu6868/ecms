@@ -8,7 +8,7 @@ export default function LoginPage() {
       <section className="grid w-full gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <FadeIn className="surface space-y-5 p-7 md:p-9">
           <p className="status-chip inline-flex">ECMS AUTH</p>
-          <h1 className="[font-family:var(--font-space)] text-3xl font-semibold tracking-tight md:text-5xl">Secure access for every workflow</h1>
+          <h1 className="text-page-title">Secure access for every workflow</h1>
           <p className="max-w-xl text-sm text-soft md:text-base">
             Enterprise OTP authentication with separate flows for external users and internal operations teams.
           </p>
@@ -20,7 +20,7 @@ export default function LoginPage() {
               <UserRound className="h-5 w-5" />
             </div>
             <p className="status-chip mt-4 inline-flex">NORMAL FLOW</p>
-            <h2 className="[font-family:var(--font-space)] mt-3 text-2xl font-semibold">Customer / Agent</h2>
+            <h2 className="mt-3 text-section-title">Customer / Agent</h2>
             <p className="mt-2 text-sm text-soft">For self-service customers and external agents creating tickets on behalf of users.</p>
             <Link href="/login/external" className="btn-brand mt-5 inline-flex">
               Continue
@@ -32,7 +32,7 @@ export default function LoginPage() {
               <ShieldCheck className="h-5 w-5" />
             </div>
             <p className="status-chip mt-4 inline-flex">INTERNAL FLOW</p>
-            <h2 className="[font-family:var(--font-space)] mt-3 text-2xl font-semibold">Internal Team</h2>
+            <h2 className="mt-3 text-section-title">Internal Team</h2>
             <p className="mt-2 text-sm text-soft">For area support, escalation teams, managers, and admins handling operational workflows.</p>
             <Link href="/login/internal" className="btn-brand mt-5 inline-flex">
               Continue
