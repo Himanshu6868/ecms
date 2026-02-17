@@ -76,11 +76,11 @@ export function FilterBar({
         {onApply ? (
           <button
             type="submit"
-            className="btn-brand inline-flex h-10 min-w-24 items-center justify-center gap-2 text-xs disabled:cursor-not-allowed"
+            className={`btn-brand inline-flex h-10 min-w-24 items-center justify-center text-xs disabled:cursor-not-allowed ${isApplying ? "gap-2" : ""}`}
             disabled={isApplying}
             aria-busy={isApplying}
           >
-            <Loader2 aria-hidden="true" className={isApplying ? "h-4 w-4 animate-spin" : "invisible h-4 w-4"} />
+            {isApplying ? <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" /> : null}
             <span>Apply</span>
           </button>
         ) : null}
