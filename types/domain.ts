@@ -98,3 +98,34 @@ export interface TicketAttachment {
   file_size: number;
   created_at: string;
 }
+
+export interface WorkflowInstance {
+  id: string;
+  ticket_id: string;
+  workflow_id: string;
+  current_state_key: string;
+  version: number;
+  updated_at: string;
+  created_at: string;
+}
+
+export interface SlaTimer {
+  id: string;
+  ticket_id: string;
+  policy_id: string;
+  timer_name: string;
+  status: "RUNNING" | "PAUSED" | "BREACHED" | "COMPLETED" | "CANCELLED";
+  started_at: string;
+  due_at: string;
+}
+
+export interface AuditLogEvent {
+  id: string;
+  event_type: string;
+  actor_id: string | null;
+  ticket_id: string | null;
+  resource_type: string;
+  action: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}

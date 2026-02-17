@@ -33,6 +33,23 @@ A production-style ticketing platform built with **Next.js App Router + Supabase
 
 ---
 
+
+## Enterprise Hardening Additions
+
+The codebase now includes foundational enterprise modules and schema extensions for:
+
+- Workflow engine state orchestration (`lib/enterprise/workflowEngine.ts`)
+- Durable SLA timers and escalation events (`lib/enterprise/slaEngine.ts`, `lib/enterprise/escalationEngine.ts`)
+- Notification orchestration + queue abstraction (`lib/enterprise/notificationOrchestrator.ts`, `lib/enterprise/queue.ts`)
+- Immutable audit event ingestion (`lib/enterprise/auditLogService.ts`)
+- Compliance retention scheduling (`lib/enterprise/complianceService.ts`)
+- Penalty and incident services (`lib/enterprise/penaltyService.ts`, `lib/enterprise/incidentService.ts`)
+- Enterprise cron endpoint: `GET /api/cron/enterprise`
+
+See architecture and gap-analysis plan in `docs/enterprise-cto-gap-analysis.md`.
+
+---
+
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router, Server Actions, Route Handlers)
