@@ -114,7 +114,7 @@ export function AuthForm({ flow }: { flow: LoginFlow }) {
             <h2 className="text-page-title">
               {isInternalFlow ? "Team Portal Login" : "User Portal Login"}
             </h2>
-            <p className="text-sm text-soft">{helperText}</p>
+            <p className="text-body text-soft">{helperText}</p>
           </div>
 
           <div className="space-y-2">

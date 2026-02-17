@@ -113,19 +113,19 @@ export function InternalTicketBoard({
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${activeTab === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
+            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
           >
             All Tickets
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("assigned")}
-            className={`rounded-lg px-3 py-1.5 text-sm font-semibold transition ${activeTab === "assigned" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
+            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "assigned" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
           >
             Assigned to Me
           </button>
         </div>
-        {message ? <p className="text-sm text-soft">{message}</p> : null}
+        {message ? <p className="text-body text-soft">{message}</p> : null}
       </div>
 
       {!filteredTickets.length ? <EmptyState title="No tickets in this queue" description="Adjust filters or wait for new assignments." /> : null}
@@ -133,17 +133,17 @@ export function InternalTicketBoard({
       {filteredTickets.length ? (
         <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
           <div className="theme-scrollbar h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-auto overscroll-contain">
-            <table className="w-max min-w-[1080px] border-collapse text-sm text-slate-700">
+            <table className="text-body w-max min-w-[1080px] border-collapse text-slate-700">
               <thead className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
                 <tr>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Ticket ID</th>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Current Status</th>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Priority</th>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assigned To</th>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Details</th>
-                  <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Chat</th>
-                  {showStatusControls ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Change Status</th> : null}
-                  {canAssign ? <th className="px-4 py-3 font-medium uppercase tracking-wide text-slate-500">Assign</th> : null}
+                  <th className="text-table-header px-4 py-3 text-slate-500">Ticket ID</th>
+                  <th className="text-table-header px-4 py-3 text-slate-500">Current Status</th>
+                  <th className="text-table-header px-4 py-3 text-slate-500">Priority</th>
+                  <th className="text-table-header px-4 py-3 text-slate-500">Assigned To</th>
+                  <th className="text-table-header px-4 py-3 text-slate-500">Details</th>
+                  <th className="text-table-header px-4 py-3 text-slate-500">Chat</th>
+                  {showStatusControls ? <th className="text-table-header px-4 py-3 text-slate-500">Change Status</th> : null}
+                  {canAssign ? <th className="text-table-header px-4 py-3 text-slate-500">Assign</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -151,12 +151,12 @@ export function InternalTicketBoard({
                   const canUpdate = role === "ADMIN" || role === "MANAGER" || role === "SENIOR_AGENT" || ticket.assigned_agent_id === currentUserId;
                   return (
                     <tr key={ticket.id} className="border-t border-slate-100 bg-white hover:bg-slate-50/60">
-                      <td className="px-4 py-3 font-semibold text-slate-900">
+                      <td className="text-label px-4 py-3 text-slate-900">
                         <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                       </td>
                       <td className="px-4 py-3 text-slate-600">{ticket.status.replaceAll("_", " ")}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold ${priorityBadgeClass(ticket.priority)}`}>
+                        <span className={`text-label inline-flex rounded-full border px-2.5 py-1 ${priorityBadgeClass(ticket.priority)}`}>
                           {ticket.priority}
                         </span>
                       </td>
@@ -173,7 +173,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean !w-52 shrink-0 border-slate-200 py-1.5 text-sm"
+                              className="input-clean text-body !w-52 shrink-0 border-slate-200 py-1.5"
                               value={statusValues[ticket.id] ?? ""}
                               onChange={(event) => setStatusValues((prev) => ({ ...prev, [ticket.id]: event.target.value as TicketStatus }))}
                               disabled={!canUpdate}
@@ -187,7 +187,7 @@ export function InternalTicketBoard({
                             </select>
                             <button
                               type="button"
-                              className="w-24 rounded-lg border border-slate-900 bg-slate-900 px-3 py-1.5 text-center text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="text-label w-24 rounded-lg border border-slate-900 bg-slate-900 px-3 py-1.5 text-center text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
                               disabled={!canUpdate}
                               onClick={() => updateStatus(ticket.id)}
                             >
@@ -200,7 +200,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean !w-52 shrink-0 border-slate-200 py-1.5 text-sm"
+                              className="input-clean text-body !w-52 shrink-0 border-slate-200 py-1.5"
                               value={assignValues[ticket.id] ?? ""}
                               onChange={(event) => setAssignValues((prev) => ({ ...prev, [ticket.id]: event.target.value }))}
                             >
@@ -211,7 +211,7 @@ export function InternalTicketBoard({
                                 </option>
                               ))}
                             </select>
-                            <button type="button" className="w-24 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50" onClick={() => assignTicket(ticket.id)}>
+                            <button type="button" className="text-label w-24 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 transition hover:bg-slate-50" onClick={() => assignTicket(ticket.id)}>
                               Assign
                             </button>
                           </div>

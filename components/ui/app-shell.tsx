@@ -15,12 +15,12 @@ export function AppShellNav({ showAdmin }: { showAdmin: boolean }) {
   ];
 
   return (
-    <nav className="space-y-1.5 text-sm">
+    <nav className="space-y-1.5">
       {navItems.map((item) => (
         <Link
           key={item.href}
           href={item.href}
-          className="group flex items-center gap-2.5 rounded-xl px-3 py-2.5 font-medium text-ink-700 transition hover:bg-brand-100/80 hover:text-ink-900"
+          className="text-label group flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-ink-700 transition hover:bg-brand-100/80 hover:text-ink-900"
         >
           <item.icon className="h-4 w-4 text-ink-600 transition group-hover:text-ink-900" />
           <span>{item.label}</span>

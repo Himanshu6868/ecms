@@ -109,7 +109,7 @@ export default async function DashboardPage() {
       <FadeIn className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-page-title">Dashboard</h1>
-          <p className="mt-1 text-sm text-soft">Role: {session.user.role}</p>
+          <p className="text-body mt-1 text-soft">Role: {session.user.role}</p>
         </div>
         <div className="status-chip inline-flex">Live queue: last 20 tickets</div>
       </FadeIn>

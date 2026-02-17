@@ -34,10 +34,10 @@ export function AppHeader() {
             <strong className="block text-card-title text-ink-900">
               DG LIGER
             </strong>
-            <span className="block text-xs text-ink-700/80">Enterprise Case Management</span>
+            <span className="text-meta block text-ink-700/80">Enterprise Case Management</span>
           </span>
         </Link>
-        <span className="rounded-full border border-white/70 bg-white/65 px-3 py-1 text-[11px] font-semibold tracking-[0.1em] text-ink-700 shadow-sm">
+        <span className="text-meta rounded-full border border-white/70 bg-white/65 px-3 py-1 font-medium tracking-[0.1em] text-ink-700 shadow-sm">
           LIVE OPS
         </span>
       </div>

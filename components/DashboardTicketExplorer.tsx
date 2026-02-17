@@ -230,14 +230,14 @@ export function DashboardTicketExplorer({
       ) : null}
 
       {filteredTickets.length > 0 ? (
-        <nav className="flex items-center justify-between gap-3 rounded-xl border border-brand-200 bg-white p-3 text-xs text-soft" aria-label="Pagination">
+        <nav className="text-meta flex items-center justify-between gap-3 rounded-xl border border-brand-200 bg-white p-3 text-soft" aria-label="Pagination">
           <p>
             Page {safePage} of {pageCount}
           </p>
           <div className="flex items-center gap-2">
             <button
               type="button"
-              className="btn-muted text-xs disabled:opacity-50"
+              className="btn-muted text-label disabled:opacity-50"
               onClick={handlePreviousPage}
               disabled={safePage === 1}
             >
@@ -245,7 +245,7 @@ export function DashboardTicketExplorer({
             </button>
             <button
               type="button"
-              className="btn-muted text-xs disabled:opacity-50"
+              className="btn-muted text-label disabled:opacity-50"
               onClick={handleNextPage}
               disabled={safePage === pageCount}
             >
