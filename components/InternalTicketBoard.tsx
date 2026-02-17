@@ -22,13 +22,16 @@ function allowedStatuses(role: Role): TicketStatus[] {
 }
 
 function priorityBadgeClass(priority: Ticket["priority"]) {
-  if (priority === "CRITICAL" || priority === "HIGH") {
-    return "border-state-error/45 bg-state-error/10 text-state-error";
+  if (priority === "CRITICAL") {
+    return "border-rose-400/60 bg-rose-500/15 text-rose-200";
+  }
+  if (priority === "HIGH") {
+    return "border-amber-400/60 bg-amber-500/10 text-amber-200";
   }
   if (priority === "MEDIUM") {
-    return "border-border-subtle bg-bg-surface/80 text-text-secondary";
+    return "border-sky-400/50 bg-sky-500/10 text-sky-300";
   }
-  return "border-primary/35 bg-primary/10 text-primary";
+  return "border-emerald-400/50 bg-emerald-500/10 text-emerald-300";
 }
 
 export function InternalTicketBoard({
