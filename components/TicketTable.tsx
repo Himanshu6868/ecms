@@ -7,13 +7,13 @@ import { EmptyState } from "@/components/ui/empty-state";
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-primary/35 bg-primary/10 text-primary";
+      return "border-emerald-400/50 bg-emerald-500/10 text-emerald-300";
     case "MEDIUM":
-      return "border-border-subtle bg-bg-surface/80 text-text-secondary";
+      return "border-sky-400/50 bg-sky-500/10 text-sky-300";
     case "HIGH":
-      return "border-primary/45 bg-primary-soft text-text-primary";
+      return "border-amber-400/60 bg-amber-500/10 text-amber-200";
     case "CRITICAL":
-      return "border-state-error/40 bg-state-error/10 text-state-error";
+      return "border-rose-400/60 bg-rose-500/15 text-rose-200";
     default:
       return "border-border-subtle bg-bg-surface/80 text-text-primary";
   }
