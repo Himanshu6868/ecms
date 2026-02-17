@@ -17,15 +17,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="mx-auto min-h-screen w-full max-w-[1480px] px-3 py-4 md:px-6 md:py-6">
       <div className="grid min-h-[calc(100vh-2rem)] gap-4 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-6">
-        <aside className="surface sticky top-4 hidden h-fit p-5 lg:block">
-          <div className="mb-6 space-y-1 border-b border-brand-200 pb-5">
+        <aside className="surface sidebar-scrollbar sticky top-4 hidden h-[calc(100vh-2.5rem)] overflow-y-auto bg-bg-sidebar p-5 lg:block">
+          <div className="mb-6 space-y-1 border-b border-border-subtle pb-5">
             <h2 className="text-section-title text-ink-900">ECMS Console</h2>
             <p className="text-meta text-soft">Ticketing and escalation command center</p>
           </div>
 
           <AppShellNav showAdmin={showAdmin} />
 
-          <div className="mt-6 border-t border-brand-200 pt-4">
+          <div className="mt-6 border-t border-border-subtle pt-4">
             <UserNavActions />
           </div>
         </aside>
@@ -37,14 +37,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <p className="text-meta text-soft">Operations</p>
             </div>
             <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-              <Link className="text-label rounded-lg border border-brand-200 bg-white px-2.5 py-1.5" href="/dashboard">Dashboard</Link>
-              <Link className="text-label rounded-lg border border-brand-200 bg-white px-2.5 py-1.5" href="/tickets/new">Create</Link>
-              {showAdmin ? <Link className="text-label rounded-lg border border-brand-200 bg-white px-2.5 py-1.5" href="/admin">Admin</Link> : null}
+              <Link className="text-label rounded-lg border border-border-subtle bg-bg-elevated px-2.5 py-1.5" href="/dashboard">Dashboard</Link>
+              <Link className="text-label rounded-lg border border-border-subtle bg-bg-elevated px-2.5 py-1.5" href="/tickets/new">Create</Link>
+              {showAdmin ? <Link className="text-label rounded-lg border border-border-subtle bg-bg-elevated px-2.5 py-1.5" href="/admin">Admin</Link> : null}
               <UserNavActions />
             </div>
           </header>
 
-          <FadeIn className="surface min-h-[70vh] p-4 md:p-6">{children}</FadeIn>
+          <FadeIn className="surface min-h-[70vh] bg-bg-surface p-4 md:p-6">{children}</FadeIn>
         </div>
       </div>
     </div>

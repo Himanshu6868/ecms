@@ -28,7 +28,7 @@ function priorityBadgeClass(priority: Ticket["priority"]) {
   if (priority === "MEDIUM") {
     return "border-amber-200 bg-amber-50 text-amber-700";
   }
-  return "border-emerald-200 bg-emerald-50 text-emerald-700";
+  return "border-success-600/35 bg-success-100 text-success-600";
 }
 
 export function InternalTicketBoard({
@@ -109,18 +109,18 @@ export function InternalTicketBoard({
   return (
     <section className="min-w-0 max-w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-xs">
+        <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-bg-elevated p-1 shadow-xs">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "all" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
+            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "all" ? "bg-slate-900 text-ink-950" : "text-slate-600 hover:text-slate-900"}`}
           >
             All Tickets
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("assigned")}
-            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "assigned" ? "bg-slate-900 text-white" : "text-slate-600 hover:text-slate-900"}`}
+            className={`text-label rounded-lg px-3 py-1.5 transition ${activeTab === "assigned" ? "bg-slate-900 text-ink-950" : "text-slate-600 hover:text-slate-900"}`}
           >
             Assigned to Me
           </button>
@@ -131,7 +131,7 @@ export function InternalTicketBoard({
       {!filteredTickets.length ? <EmptyState title="No tickets in this queue" description="Adjust filters or wait for new assignments." /> : null}
 
       {filteredTickets.length ? (
-        <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
+        <div className="max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-bg-elevated shadow-xs">
           <div className="theme-scrollbar h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-auto overscroll-contain">
             <table className="text-body w-max min-w-[1080px] border-collapse text-slate-700">
               <thead className="sticky top-0 z-20 border-b border-slate-200 bg-slate-50/95 text-left backdrop-blur supports-[backdrop-filter]:bg-slate-50/80">
@@ -150,7 +150,7 @@ export function InternalTicketBoard({
                 {filteredTickets.map((ticket) => {
                   const canUpdate = role === "ADMIN" || role === "MANAGER" || role === "SENIOR_AGENT" || ticket.assigned_agent_id === currentUserId;
                   return (
-                    <tr key={ticket.id} className="border-t border-slate-100 bg-white hover:bg-slate-50/60">
+                    <tr key={ticket.id} className="border-t border-slate-100 bg-bg-elevated hover:bg-slate-50/60">
                       <td className="text-label px-4 py-3 text-slate-900">
                         <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                       </td>
@@ -187,7 +187,7 @@ export function InternalTicketBoard({
                             </select>
                             <button
                               type="button"
-                              className="text-label w-24 rounded-lg border border-slate-900 bg-slate-900 px-3 py-1.5 text-center text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="text-label w-24 rounded-lg border border-theme-primary bg-theme-primary px-3 py-1.5 text-center text-ink-950 transition hover:bg-theme-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
                               disabled={!canUpdate}
                               onClick={() => updateStatus(ticket.id)}
                             >
@@ -211,7 +211,7 @@ export function InternalTicketBoard({
                                 </option>
                               ))}
                             </select>
-                            <button type="button" className="text-label w-24 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-center text-slate-700 transition hover:bg-slate-50" onClick={() => assignTicket(ticket.id)}>
+                            <button type="button" className="text-label w-24 rounded-lg border border-slate-300 bg-bg-elevated px-3 py-1.5 text-center text-slate-700 transition hover:bg-slate-50" onClick={() => assignTicket(ticket.id)}>
                               Assign
                             </button>
                           </div>

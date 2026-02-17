@@ -18,7 +18,7 @@ function isExternalScoped(role: string, isInternal: boolean): boolean {
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-emerald-200 bg-emerald-50 text-emerald-800";
+      return "border-success-600/35 bg-success-100 text-success-600";
     case "MEDIUM":
       return "border-amber-200 bg-amber-50 text-amber-800";
     case "HIGH":

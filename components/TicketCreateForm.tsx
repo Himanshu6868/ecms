@@ -292,7 +292,7 @@ export function TicketCreateForm() {
                 multiple
                 accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
                 onChange={onFileInput}
-                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-brand-200 file:bg-white file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink-900"
+                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-brand-200 file:bg-bg-elevated file:px-3 file:py-2 file:text-sm file:font-semibold file:text-ink-900"
               />
               <p className="mt-2 text-xs text-soft">Uploads stay private and are securely stored via the server.</p>
             </div>
@@ -302,7 +302,7 @@ export function TicketCreateForm() {
                 {attachments.map((attachment) => (
                   <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-brand-100 p-3">
                     {attachment.previewUrl ? (
-                      <div className="relative h-36 overflow-hidden rounded-lg border border-brand-100 bg-white">
+                      <div className="relative h-36 overflow-hidden rounded-lg border border-brand-100 bg-bg-elevated">
                         <Image src={attachment.previewUrl} alt={attachment.file.name} fill className="object-cover" unoptimized />
                       </div>
                     ) : null}
@@ -320,7 +320,7 @@ export function TicketCreateForm() {
           </div>
 
           {isSubmitting ? (
-            <div className="space-y-2 rounded-lg border border-brand-200 bg-white p-3">
+            <div className="space-y-2 rounded-lg border border-brand-200 bg-bg-elevated p-3">
               <div className="flex items-center justify-between text-xs text-soft">
                 <span>Upload progress</span>
                 <span>{uploadProgress}%</span>

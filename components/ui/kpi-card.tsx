@@ -12,10 +12,10 @@ export function KpiCard({
   icon: LucideIcon;
 }) {
   return (
-    <article className="surface-muted p-4 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-sm)]">
+    <article className="surface-muted p-4 transition">
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ink-600">{label}</p>
-        <span className="rounded-lg bg-brand-100 p-2 text-ink-700">
+        <span className="rounded-md bg-bg-elevated p-2 text-theme-primary">
           <Icon className="h-4 w-4" />
         </span>
       </div>

@@ -72,7 +72,7 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
   const footer = useMemo(
     () => (
       <div className="flex items-center justify-end">
-        <button type="button" className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => setOpen(false)}>
+        <button type="button" className="rounded-md border border-slate-300 bg-bg-elevated px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => setOpen(false)}>
           Close
         </button>
       </div>
@@ -82,7 +82,7 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
 
   return (
     <>
-      <button type="button" className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => { setOpen(true); void ensureDetails(); }}>
+      <button type="button" className="rounded-md border border-slate-300 bg-bg-elevated px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => { setOpen(true); void ensureDetails(); }}>
         Details
       </button>
 
@@ -132,7 +132,7 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
                     href={attachment.signed_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="group rounded-lg border border-slate-200 bg-white p-2 transition hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_8px_18px_rgba(109,40,217,0.14)]"
+                    className="group rounded-lg border border-slate-200 bg-bg-elevated p-2 transition hover:-translate-y-0.5 hover:border-theme-primary/55 hover:shadow-[0_8px_18px_rgba(109,40,217,0.14)]"
                   >
                     {isImageAttachment(attachment.file_type) ? (
                       <div className="overflow-hidden rounded-md border border-slate-100 bg-slate-50">

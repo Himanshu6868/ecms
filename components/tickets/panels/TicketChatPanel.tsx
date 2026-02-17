@@ -135,7 +135,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
 
   return (
     <>
-      <button type="button" className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => setOpen(true)}>
+      <button type="button" className="rounded-md border border-slate-300 bg-bg-elevated px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => setOpen(true)}>
         Chat
       </button>
       <Drawer
@@ -161,7 +161,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
                 disabled={sending}
                 aria-label="Message input"
               />
-              <button type="button" className="rounded-md border border-violet-700 bg-violet-600 p-2 text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-55" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
+              <button type="button" className="rounded-md border border-theme-primary bg-theme-primary p-2 text-ink-950 transition hover:bg-theme-primary-hover disabled:cursor-not-allowed disabled:opacity-55" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
                 <SendHorizontal className="h-4 w-4" />
               </button>
             </div>
@@ -175,7 +175,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
             {hasMore ? (
               <button
                 type="button"
-                className="rounded-md border border-slate-200 px-2 py-1 text-xs font-medium text-slate-600 transition hover:bg-white"
+                className="rounded-md border border-slate-200 px-2 py-1 text-xs font-medium text-slate-600 transition hover:bg-bg-elevated"
                 onClick={() => void loadMessages(page + 1, "prepend")}
                 disabled={isLoadingOlder}
               >
@@ -184,14 +184,14 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
             ) : null}
           </div>
 
-          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-3 overflow-y-auto rounded-lg border border-slate-200 bg-[#f8f8fc] p-3">
+          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-3 overflow-y-auto rounded-lg border border-slate-200 bg-bg-sidebar p-3">
             <p className="sr-only">{messagesLabel}</p>
             {!loading && messages.length === 0 ? <p className="text-sm text-slate-500">No messages yet.</p> : null}
             {messages.map((msg) => {
               const mine = msg.sender_id === currentUserId;
               return (
                 <article key={msg.id} className={`chat-message-fade-in flex ${mine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] rounded-lg border px-3 py-2 shadow-[0_1px_6px_rgba(15,23,42,0.06)] ${mine ? "border-violet-100 bg-violet-50 text-violet-900" : "border-slate-200 bg-white text-slate-800"}`}>
+                  <div className={`max-w-[80%] rounded-lg border px-3 py-2 shadow-[0_1px_6px_rgba(15,23,42,0.06)] ${mine ? "border-theme-primary/40 bg-theme-primary-soft text-indigo-200" : "border-slate-200 bg-bg-elevated text-slate-800"}`}>
                     <div className="mb-1 flex items-center gap-2">
                       <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${mine ? "bg-violet-200 text-violet-800" : "bg-slate-200 text-slate-700"}`}>
                         {(mine ? "Y" : msg.sender_name?.slice(0, 1) || "S").toUpperCase()}

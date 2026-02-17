@@ -16,7 +16,7 @@ export default function LoginPage() {
 
         <div className="grid gap-4">
           <section className="surface-muted p-6">
-            <div className="inline-flex rounded-lg bg-brand-100 p-2 text-ink-700">
+            <div className="inline-flex rounded-lg bg-bg-elevated p-2 text-theme-primary">
               <UserRound className="h-5 w-5" />
             </div>
             <p className="status-chip mt-4 inline-flex">NORMAL FLOW</p>
@@ -28,7 +28,7 @@ export default function LoginPage() {
           </section>
 
           <section className="surface-muted p-6">
-            <div className="inline-flex rounded-lg bg-brand-100 p-2 text-ink-700">
+            <div className="inline-flex rounded-lg bg-bg-elevated p-2 text-theme-primary">
               <ShieldCheck className="h-5 w-5" />
             </div>
             <p className="status-chip mt-4 inline-flex">INTERNAL FLOW</p>
