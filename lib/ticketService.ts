@@ -3,6 +3,8 @@ import { assertTransition } from "@/lib/stateMachine";
 import { Ticket, TicketAttachment, TicketPriority, TicketStatus, User } from "@/types/domain";
 import { INTERNAL_ACTOR_ROLES_BY_EMAIL, normalizeEmail } from "@/lib/internalActors";
 import { removeUploadedTicketFiles, uploadTicketFile } from "@/lib/ticketUploads";
+import { createEscalationEvent } from "@/lib/enterprise/escalationEngine";
+import { appendAuditEvent } from "@/lib/enterprise/auditLogService";
 
 const SLA_SECONDS_BY_PRIORITY: Record<TicketPriority, number> = {
   LOW: 30,
@@ -273,6 +275,17 @@ export async function transitionTicket(ticketId: string, next: TicketStatus, opt
   if (updatedResult.error) {
     throw updatedResult.error;
   }
+
+  await appendAuditEvent({
+    eventType: "TICKET_TRANSITION",
+    severity: "INFO",
+    ticketId,
+    resourceType: "TICKET",
+    resourceId: ticketId,
+    action: `STATUS:${currentResult.data.status}->${next}`,
+    metadata: { forced: Boolean(options?.force) },
+  });
+
   return updatedResult.data;
 }
 
@@ -316,6 +329,16 @@ export async function runSlaMonitor(): Promise<number> {
       to_agent: agentId,
       level: nextLevel,
       timestamp: new Date().toISOString(),
+    });
+
+    await createEscalationEvent({
+      ticketId: ticket.id,
+      fromAgent,
+      toAgent: agentId,
+      previousLevel: ticket.escalation_level,
+      newLevel: nextLevel,
+      reason: "SLA breach monitor",
+      correlationId: `legacy-sla:${ticket.id}:${nextLevel}`,
     });
   }
 
