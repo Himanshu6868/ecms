@@ -7,15 +7,15 @@ import { EmptyState } from "@/components/ui/empty-state";
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-success-600/20 bg-success-100 text-success-600";
+      return "border-primary/35 bg-primary/10 text-primary";
     case "MEDIUM":
-      return "border-warning-600/20 bg-warning-100 text-warning-600";
+      return "border-border-subtle bg-bg-surface/80 text-text-secondary";
     case "HIGH":
-      return "border-theme-primary/45 bg-theme-primary-soft text-indigo-200";
+      return "border-primary/45 bg-primary-soft text-text-primary";
     case "CRITICAL":
-      return "border-error-600/20 bg-error-100 text-error-600";
+      return "border-state-error/40 bg-state-error/10 text-state-error";
     default:
-      return "border-brand-200 bg-brand-50 text-ink-900";
+      return "border-border-subtle bg-bg-surface/80 text-text-primary";
   }
 }
 
@@ -36,9 +36,9 @@ export function TicketTable({
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="surface-muted border-l-4 border-l-theme-primary p-4">
+          <div key={ticket.id} className="surface-muted border-l-4 border-l-primary p-4">
             <div className="flex items-start justify-between gap-3">
-              <Link href={`/tickets/${ticket.id}`} className="text-card-title text-ink-900">
+              <Link href={`/tickets/${ticket.id}`} className="text-card-title text-text-primary">
                 #{ticket.id.slice(0, 8)}
               </Link>
               <p className="status-chip">{ticket.status}</p>
@@ -61,7 +61,7 @@ export function TicketTable({
         <div className="overflow-x-auto">
           <table className="text-body w-full border-collapse">
             <thead>
-              <tr className="table-head text-left text-ink-700">
+              <tr className="table-head text-left text-text-secondary">
                 <th className="px-4 py-3 text-table-header">Ticket</th>
                 <th className="px-4 py-3 text-table-header">Status</th>
                 <th className="px-4 py-3 text-table-header">Priority</th>
@@ -73,16 +73,16 @@ export function TicketTable({
             <tbody>
               {tickets.map((ticket) => (
                 <tr key={ticket.id} className="table-row transition-colors">
-                  <td className="text-label px-4 py-3 text-ink-900">
+                  <td className="text-label px-4 py-3 text-text-primary">
                     <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                   </td>
-                  <td className="text-body px-4 py-3 text-ink-700">{ticket.status}</td>
+                  <td className="text-body px-4 py-3 text-text-secondary">{ticket.status}</td>
                   <td className="px-4 py-3">
                     <span className={`text-label inline-flex rounded-full border px-2.5 py-1 ${priorityClasses(ticket.priority)}`}>
                       {ticket.priority}
                     </span>
                   </td>
-                  <td className="text-body px-4 py-3 text-ink-700">{new Date(ticket.sla_deadline).toLocaleString()}</td>
+                  <td className="text-body px-4 py-3 text-text-secondary">{new Date(ticket.sla_deadline).toLocaleString()}</td>
                   <td className="px-4 py-3">
                     <TicketDetailsModal ticket={ticket} assignedTo={ticket.assigned_agent_id ? (ticket.assigned_agent_id) : "Unassigned"} />
                   </td>

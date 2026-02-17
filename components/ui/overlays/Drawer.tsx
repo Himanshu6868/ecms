@@ -80,26 +80,26 @@ export function Drawer({ open, onClose, title, subtitle, children, footer, width
             aria-labelledby={typeof title === "string" ? titleId : undefined}
             aria-describedby={subtitle ? subtitleId : undefined}
             className={cn(
-              "ticket-drawer-panel animate-drawer-in flex h-full w-[min(100vw,44rem)] flex-col border-l border-border-default bg-bg-elevated",
+              "ticket-drawer-panel animate-drawer-in flex h-full w-[min(100vw,44rem)] flex-col border-l border-border-default bg-bg-surface",
               widthClassName,
             )}
           >
-            <header className="sticky top-0 z-20 border-b border-border-subtle bg-bg-elevated px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-bg-elevated/95 sm:px-5">
+            <header className="sticky top-0 z-20 border-b border-border-subtle bg-bg-surface px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-bg-surface/95 sm:px-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 space-y-1">
-                  <h2 id={titleId} className="truncate text-base font-semibold text-ink-900 sm:text-lg">{title}</h2>
-                  {subtitle ? <p id={subtitleId} className="text-xs text-ink-600">{subtitle}</p> : null}
+                  <h2 id={titleId} className="truncate text-base font-semibold text-text-primary sm:text-lg">{title}</h2>
+                  {subtitle ? <p id={subtitleId} className="text-xs text-text-placeholder">{subtitle}</p> : null}
                 </div>
                 <div className="flex items-center gap-2">
                   {headerMeta}
-                  <button type="button" className="rounded-md border border-border-default p-2 text-ink-600 transition hover:bg-bg-hover" onClick={onClose} aria-label="Close panel">
+                  <button type="button" className="rounded-md border border-border-default p-2 text-text-placeholder transition hover:bg-bg-surface/80" onClick={onClose} aria-label="Close panel">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
               </div>
             </header>
             <div className="ticket-scroll-area min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">{children}</div>
-            {footer ? <footer className="sticky bottom-0 z-20 border-t border-border-subtle bg-bg-elevated px-4 py-3 sm:px-5">{footer}</footer> : null}
+            {footer ? <footer className="sticky bottom-0 z-20 border-t border-border-subtle bg-bg-surface px-4 py-3 sm:px-5">{footer}</footer> : null}
           </div>
         </aside>
       </div>

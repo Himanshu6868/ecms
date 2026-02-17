@@ -230,7 +230,7 @@ export function DashboardTicketExplorer({
       ) : null}
 
       {filteredTickets.length > 0 ? (
-        <nav className="text-meta flex items-center justify-between gap-3 rounded-xl border border-brand-200 bg-bg-elevated p-3 text-soft" aria-label="Pagination">
+        <nav className="text-meta flex items-center justify-between gap-3 rounded-xl border border-border-subtle bg-bg-surface p-3 text-soft" aria-label="Pagination">
           <p>
             Page {safePage} of {pageCount}
           </p>

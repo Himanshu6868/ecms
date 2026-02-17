@@ -135,7 +135,7 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
 
   return (
     <>
-      <button type="button" className="rounded-md border border-slate-300 bg-bg-elevated px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50" onClick={() => setOpen(true)}>
+      <button type="button" className="rounded-md border border-border-default bg-bg-surface px-3 py-1.5 text-sm font-medium text-text-secondary transition hover:bg-bg-surface/70" onClick={() => setOpen(true)}>
         Chat
       </button>
       <Drawer
@@ -148,11 +148,11 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
         footer={
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <button type="button" className="rounded-md border border-slate-200 p-2 text-slate-500 transition hover:bg-slate-100" aria-label="Attach file" disabled>
+              <button type="button" className="rounded-md border border-border-subtle p-2 text-text-placeholder transition hover:bg-bg-surface/80" aria-label="Attach file" disabled>
                 <Paperclip className="h-4 w-4" />
               </button>
               <input
-                className="input-clean h-10 rounded-md border-slate-300"
+                className="input-clean h-10 rounded-md border-border-default"
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={handleInputKeyDown}
@@ -161,21 +161,21 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
                 disabled={sending}
                 aria-label="Message input"
               />
-              <button type="button" className="rounded-md border border-theme-primary bg-theme-primary p-2 text-ink-950 transition hover:bg-theme-primary-hover disabled:cursor-not-allowed disabled:opacity-55" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
+              <button type="button" className="rounded-md border border-primary bg-primary p-2 text-text-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-55" onClick={() => void sendMessage()} disabled={sending || !input.trim()} aria-label="Send message">
                 <SendHorizontal className="h-4 w-4" />
               </button>
             </div>
-            {error ? <p className="text-xs text-rose-600">{error}</p> : null}
+            {error ? <p className="text-xs text-state-error">{error}</p> : null}
           </div>
         }
       >
         <div className="flex h-full min-h-0 flex-col">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-xs text-slate-500">Real-time collaboration</p>
+            <p className="text-xs text-text-placeholder">Real-time collaboration</p>
             {hasMore ? (
               <button
                 type="button"
-                className="rounded-md border border-slate-200 px-2 py-1 text-xs font-medium text-slate-600 transition hover:bg-bg-elevated"
+                className="rounded-md border border-border-subtle px-2 py-1 text-xs font-medium text-text-secondary transition hover:bg-bg-surface"
                 onClick={() => void loadMessages(page + 1, "prepend")}
                 disabled={isLoadingOlder}
               >
@@ -184,22 +184,22 @@ export function TicketChatPanel({ ticketId, currentUserId, ticketStatus }: { tic
             ) : null}
           </div>
 
-          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-3 overflow-y-auto rounded-lg border border-slate-200 bg-bg-sidebar p-3">
+          <div ref={messagesContainerRef} role="log" aria-live="polite" aria-label="Ticket chat messages" aria-busy={loading} className="ticket-scroll-area flex-1 space-y-3 overflow-y-auto rounded-lg border border-border-subtle bg-bg-surface p-3">
             <p className="sr-only">{messagesLabel}</p>
-            {!loading && messages.length === 0 ? <p className="text-sm text-slate-500">No messages yet.</p> : null}
+            {!loading && messages.length === 0 ? <p className="text-sm text-text-placeholder">No messages yet.</p> : null}
             {messages.map((msg) => {
               const mine = msg.sender_id === currentUserId;
               return (
                 <article key={msg.id} className={`chat-message-fade-in flex ${mine ? "justify-end" : "justify-start"}`}>
-                  <div className={`max-w-[80%] rounded-lg border px-3 py-2 shadow-[0_1px_6px_rgba(15,23,42,0.06)] ${mine ? "border-theme-primary/40 bg-theme-primary-soft text-indigo-200" : "border-slate-200 bg-bg-elevated text-slate-800"}`}>
+                  <div className={`max-w-[80%] rounded-lg border px-3 py-2 shadow-[0_1px_6px_rgba(15,23,42,0.06)] ${mine ? "border-primary/40 bg-primary-soft text-text-primary" : "border-border-subtle bg-bg-surface text-text-primary"}`}>
                     <div className="mb-1 flex items-center gap-2">
-                      <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${mine ? "bg-violet-200 text-violet-800" : "bg-slate-200 text-slate-700"}`}>
+                      <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${mine ? "bg-primary/20 text-text-primary" : "bg-bg-surface/80 text-text-secondary"}`}>
                         {(mine ? "Y" : msg.sender_name?.slice(0, 1) || "S").toUpperCase()}
                       </span>
-                      <p className="text-xs font-medium text-slate-500">{mine ? "You" : msg.sender_name || "Support"}</p>
+                      <p className="text-xs font-medium text-text-placeholder">{mine ? "You" : msg.sender_name || "Support"}</p>
                     </div>
                     <p className="text-sm leading-6">{msg.message}</p>
-                    <p className="mt-1 text-right text-[11px] text-slate-400">{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
+                    <p className="mt-1 text-right text-[11px] text-text-placeholder">{new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                   </div>
                 </article>
               );

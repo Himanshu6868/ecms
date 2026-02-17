@@ -31,11 +31,11 @@ export function AppShellNav({ showAdmin }: { showAdmin: boolean }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "text-label relative flex items-center gap-2.5 rounded-md border border-transparent px-3 py-2.5 text-ink-700 transition hover:bg-bg-hover hover:text-ink-900",
-                active && "border-border-default bg-bg-active text-ink-900 before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-r before:bg-theme-primary",
+                "text-label relative flex items-center gap-2.5 rounded-md border border-transparent px-3 py-2.5 text-text-secondary transition hover:bg-bg-surface/80 hover:text-text-primary",
+                active && "border-border-default bg-bg-surface/80 text-text-primary before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-r before:bg-primary",
               )}
             >
-              <item.icon className={cn("h-4 w-4 text-ink-600", active && "text-theme-primary")} />
+              <item.icon className={cn("h-4 w-4 text-text-placeholder", active && "text-primary")} />
               <span>{item.label}</span>
             </Link>
           );
@@ -52,11 +52,11 @@ export function AppShellNav({ showAdmin }: { showAdmin: boolean }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-label relative flex items-center gap-2.5 rounded-md border border-transparent px-3 py-2.5 text-ink-700 transition hover:bg-bg-hover hover:text-ink-900",
-                  active && "border-border-default bg-bg-active text-ink-900 before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-r before:bg-theme-primary",
+                  "text-label relative flex items-center gap-2.5 rounded-md border border-transparent px-3 py-2.5 text-text-secondary transition hover:bg-bg-surface/80 hover:text-text-primary",
+                  active && "border-border-default bg-bg-surface/80 text-text-primary before:absolute before:bottom-1 before:left-0 before:top-1 before:w-0.5 before:rounded-r before:bg-primary",
                 )}
               >
-                <item.icon className={cn("h-4 w-4 text-ink-600", active && "text-theme-primary")} />
+                <item.icon className={cn("h-4 w-4 text-text-placeholder", active && "text-primary")} />
                 <span>{item.label}</span>
               </Link>
             );

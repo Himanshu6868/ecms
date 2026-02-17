@@ -9,8 +9,8 @@ export function PanelCard({ className, ...props }: React.ComponentProps<"section
 export function KeyValueRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-start justify-between gap-3 border-b border-border-subtle py-2 last:border-b-0 last:pb-0">
-      <dt className="text-xs font-medium uppercase tracking-wide text-ink-600">{label}</dt>
-      <dd className="text-sm font-medium text-ink-700">{value}</dd>
+      <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">{label}</dt>
+      <dd className="text-sm font-medium text-text-secondary">{value}</dd>
     </div>
   );
 }
