@@ -1,7 +1,7 @@
 "use client";
 
 import { FileText, ImageIcon } from "lucide-react";
-import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { memo, type ReactNode, useCallback, useMemo, useState } from "react";
 import { ButtonSecondary } from "@/components/ui/buttons/ButtonSecondary";
 import { DrawerPanel } from "@/components/ui/panels/DrawerPanel";
 import { TicketBadge, priorityTone } from "@/components/tickets/shared/TicketBadge";
@@ -34,14 +34,14 @@ function isImageAttachment(type: string): boolean {
   return type.startsWith("image/");
 }
 
-function MetaRow({ label, value }: { label: string; value: ReactNode }) {
+const MetaRow = memo(function MetaRow({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-panel-border py-2 last:border-b-0 last:pb-0">
-      <dt className="text-xs font-medium uppercase tracking-wide text-text-placeholder">{label}</dt>
-      <dd className="text-sm text-text-secondary">{value}</dd>
+    <div className="grid grid-cols-[120px_1fr] items-start gap-x-4 py-2 first:pt-0 last:pb-0">
+      <dt className="text-xs font-medium uppercase tracking-wider text-text-placeholder">{label}</dt>
+      <dd className="justify-self-end text-right text-sm font-medium text-text-primary">{value}</dd>
     </div>
   );
-}
+});
 
 export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; assignedTo?: string }) {
   const [open, setOpen] = useState(false);
@@ -78,11 +78,29 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
   const effectiveAssignedTo = payload?.assignedTo ?? assignedTo ?? "Unassigned";
   const attachments = payload?.attachments ?? [];
 
-  const footer = useMemo(() => <div className="flex justify-end"><ButtonSecondary type="button" onClick={() => setOpen(false)}>Cancel</ButtonSecondary></div>, []);
+  const footer = useMemo(
+    () => (
+      <div className="flex justify-end">
+        <ButtonSecondary type="button" onClick={() => setOpen(false)}>
+          Close
+        </ButtonSecondary>
+      </div>
+    ),
+    [],
+  );
 
   return (
     <>
-      <ButtonSecondary type="button" className="px-3 py-1.5" onClick={() => { setOpen(true); void ensureDetails(); }}>Details</ButtonSecondary>
+      <ButtonSecondary
+        type="button"
+        className="px-3 py-1.5"
+        onClick={() => {
+          setOpen(true);
+          void ensureDetails();
+        }}
+      >
+        Details
+      </ButtonSecondary>
 
       <DrawerPanel
         open={open}
@@ -93,10 +111,10 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
         headerMeta={<TicketBadge tone="status">{effectiveTicket.status}</TicketBadge>}
         footer={footer}
       >
-        <div className="space-y-4">
-          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
-            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Metadata</h3>
-            <dl>
+        <div className="space-y-6">
+          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm ring-1 ring-panel-border/60">
+            <h3 className="text-base font-semibold text-text-primary">Metadata</h3>
+            <dl className="mt-4 divide-y divide-panel-border/60">
               <MetaRow label="ID" value={effectiveTicket.id.slice(0, 8)} />
               <MetaRow label="Status" value={<TicketBadge tone="status">{effectiveTicket.status}</TicketBadge>} />
               <MetaRow label="Priority" value={<TicketBadge tone={priorityTone(effectiveTicket.priority)}>{effectiveTicket.priority}</TicketBadge>} />
@@ -106,39 +124,60 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
             </dl>
           </section>
 
-          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
-            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Description</h3>
-            <p className="whitespace-pre-wrap text-sm leading-6 text-text-primary">{effectiveTicket.description}</p>
+          <section className="rounded-xl bg-panel-elevated/95 p-6 shadow-sm ring-1 ring-panel-border/60">
+            <h3 className="text-base font-semibold text-text-primary">Description</h3>
+            <div className="mt-4 max-h-56 overflow-auto rounded-lg bg-panel/70 p-4">
+              <p className="whitespace-pre-wrap text-sm leading-7 text-text-primary">{effectiveTicket.description}</p>
+            </div>
           </section>
 
-          <section className="rounded-md border border-panel-border bg-panel-elevated p-4">
-            <h3 className="mb-2 text-sm font-semibold text-text-secondary">Attachments</h3>
-            {loading ? <p className="text-sm text-text-placeholder">Loading attachments…</p> : null}
-            {error ? <p className="text-sm text-state-error">{error}</p> : null}
-            {!loading && !error && attachments.length === 0 ? <p className="text-sm text-text-placeholder">No attachments uploaded.</p> : null}
+          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm ring-1 ring-panel-border/60">
+            <h3 className="text-base font-semibold text-text-primary">Attachments</h3>
+            <div className="mt-4 space-y-3">
+              {loading ? <p className="text-sm text-text-placeholder">Loading attachments…</p> : null}
+              {error ? <p className="text-sm text-state-error">{error}</p> : null}
+              {!loading && !error && attachments.length === 0 ? <p className="text-sm text-text-placeholder">No attachments uploaded.</p> : null}
+            </div>
             {!loading && !error && attachments.length > 0 ? (
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {attachments.map((attachment) => (
-                  <a key={attachment.id} href={attachment.signed_url} target="_blank" rel="noreferrer" className="rounded-md border border-panel-border bg-panel p-2 transition-colors duration-150 hover:bg-panel-elevated">
-                    {isImageAttachment(attachment.file_type) ? (
-                      <div className="overflow-hidden rounded-md border border-panel-border bg-panel">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={attachment.signed_url} alt={attachment.file_name} className="h-28 w-full object-cover" loading="lazy" />
+              <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {attachments.map((attachment) => {
+                  const isImage = isImageAttachment(attachment.file_type);
+
+                  return (
+                    <a
+                      key={attachment.id}
+                      href={attachment.signed_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group rounded-xl bg-panel p-3 shadow-sm ring-1 ring-panel-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                    >
+                      {isImage ? (
+                        <div className="overflow-hidden rounded-lg bg-panel-elevated">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={attachment.signed_url}
+                            alt={attachment.file_name}
+                            className="h-28 w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-28 items-center justify-center rounded-lg bg-panel-elevated text-text-placeholder">
+                          <FileText className="h-6 w-6" />
+                        </div>
+                      )}
+                      <div className="mt-3 flex items-start gap-2">
+                        {isImage ? <ImageIcon className="mt-0.5 h-4 w-4 text-text-placeholder" /> : <FileText className="mt-0.5 h-4 w-4 text-text-placeholder" />}
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-medium text-text-primary">{attachment.file_name}</p>
+                          <p className="text-xs text-text-placeholder">
+                            {formatBytes(attachment.file_size)} • {new Date(attachment.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="flex h-28 items-center justify-center rounded-md border border-panel-border bg-panel text-text-placeholder">
-                        <FileText className="h-6 w-6" />
-                      </div>
-                    )}
-                    <div className="mt-2 flex items-start gap-2">
-                      {isImageAttachment(attachment.file_type) ? <ImageIcon className="mt-0.5 h-4 w-4 text-text-placeholder" /> : <FileText className="mt-0.5 h-4 w-4 text-text-placeholder" />}
-                      <div className="min-w-0">
-                        <p className="truncate text-xs font-medium text-text-secondary">{attachment.file_name}</p>
-                        <p className="text-xs text-text-placeholder">{formatBytes(attachment.file_size)} • {new Date(attachment.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  </a>
-                ))}
+                    </a>
+                  );
+                })}
               </div>
             ) : null}
           </section>
