@@ -21,7 +21,7 @@ const focusSelector = "button, [href], input, select, textarea, [tabindex]:not([
 
 export function PanelHeader({ title, subtitle, onClose, headerMeta, titleId, subtitleId }: { title: ReactNode; subtitle?: ReactNode; onClose: () => void; headerMeta?: ReactNode; titleId?: string; subtitleId?: string }) {
   return (
-    <header className="border-b border-panel-border bg-panel px-6 py-4">
+    <header className="border-b border-panel-border bg-panel px-6 py-5">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h2 id={titleId} className="truncate text-base font-semibold text-text-primary">{title}</h2>
@@ -29,7 +29,12 @@ export function PanelHeader({ title, subtitle, onClose, headerMeta, titleId, sub
         </div>
         <div className="flex items-center gap-2">
           {headerMeta}
-          <button type="button" onClick={onClose} aria-label="Close panel" className="rounded-md border border-panel-border bg-panel-elevated p-2 text-text-placeholder transition-colors duration-150 hover:text-text-primary">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close panel"
+            className="rounded-md border border-panel-border bg-panel-elevated p-2 text-text-placeholder transition-colors duration-150 hover:text-text-primary"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -39,11 +44,11 @@ export function PanelHeader({ title, subtitle, onClose, headerMeta, titleId, sub
 }
 
 export function PanelBody({ className, children }: { className?: string; children: ReactNode }) {
-  return <div className={cn("ticket-scroll-area min-h-0 flex-1 overflow-y-auto bg-panel px-6 py-4", className)}>{children}</div>;
+  return <div className={cn("ticket-scroll-area min-h-0 flex-1 overflow-y-auto bg-panel px-6 py-6", className)}>{children}</div>;
 }
 
 export function PanelFooter({ className, children }: { className?: string; children: ReactNode }) {
-  return <footer className={cn("border-t border-panel-border bg-panel px-6 py-4", className)}>{children}</footer>;
+  return <footer className={cn("border-t border-panel-border bg-panel px-6 py-5", className)}>{children}</footer>;
 }
 
 export function DrawerPanel({ open, onClose, title, subtitle, ariaLabel, headerMeta, widthClassName, children, footer }: DrawerPanelProps) {
@@ -90,7 +95,13 @@ export function DrawerPanel({ open, onClose, title, subtitle, ariaLabel, headerM
     if (!open) return null;
 
     return (
-      <div className="fixed inset-0 z-[80] bg-bg-page">
+      <div className="fixed inset-0 z-[80]">
+        <button
+          type="button"
+          aria-label="Close panel"
+          onClick={onClose}
+          className="absolute inset-0 bg-black/55 backdrop-blur-sm transition-opacity duration-200"
+        />
         <div className="absolute inset-y-0 right-0 flex max-w-full items-stretch">
           <aside
             ref={panelRef}
@@ -99,7 +110,7 @@ export function DrawerPanel({ open, onClose, title, subtitle, ariaLabel, headerM
             aria-label={ariaLabel}
             aria-labelledby={typeof title === "string" ? titleId : undefined}
             aria-describedby={subtitle ? subtitleId : undefined}
-            className={cn("flex h-full w-[min(100vw,44rem)] flex-col border-l border-panel-border bg-panel", widthClassName)}
+            className={cn("flex h-full w-[min(100vw,480px)] max-w-lg flex-col border-l border-panel-border bg-panel shadow-2xl", widthClassName)}
           >
             <PanelHeader title={title} subtitle={subtitle} onClose={onClose} headerMeta={headerMeta} titleId={titleId} subtitleId={subtitle ? subtitleId : undefined} />
             <PanelBody>{children}</PanelBody>
