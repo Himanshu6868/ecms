@@ -10,9 +10,9 @@ const iconByTone = {
 };
 
 const stylesByTone = {
-  success: "border-primary/35 bg-primary/10 text-primary",
-  error: "border-state-error/40 bg-state-error/10 text-state-error",
-  info: "border-info-600/20 bg-info-100 text-info-600",
+  success: "border-border-default bg-primary/10 text-primary",
+  error: "border-border-default bg-state-error/10 text-state-error",
+  info: "border-border-default bg-info-100 text-info-600",
 };
 
 export function InlineToast({ message, tone = "info" }: { message: string; tone?: Tone }) {

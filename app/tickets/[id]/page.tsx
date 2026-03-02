@@ -18,13 +18,13 @@ function isExternalScoped(role: string, isInternal: boolean): boolean {
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-emerald-400/50 bg-emerald-500/10 text-emerald-300";
+      return "border-border-default bg-emerald-500/10 text-emerald-300";
     case "MEDIUM":
-      return "border-sky-400/50 bg-sky-500/10 text-sky-300";
+      return "border-border-default bg-sky-500/10 text-sky-300";
     case "HIGH":
-      return "border-amber-400/60 bg-amber-500/10 text-amber-200";
+      return "border-border-default bg-amber-500/10 text-amber-200";
     case "CRITICAL":
-      return "border-rose-400/60 bg-rose-500/15 text-rose-200";
+      return "border-border-default bg-rose-500/15 text-rose-200";
     default:
       return "border-border-subtle bg-bg-surface/80 text-text-primary";
   }
