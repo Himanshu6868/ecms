@@ -38,6 +38,9 @@
   --shadow-xs: none;
   --shadow-sm: none;
   --shadow-md: none;
+  --shadow-dropdown: 0 10px 26px color-mix(in oklab, var(--bg-page) 72%, black);
+  --scrollbar-thumb: color-mix(in oklab, var(--bg-surface) 72%, white);
+  --scrollbar-track: var(--bg-surface);
 }
 
 *,:before,:after { box-sizing: border-box; }
@@ -108,16 +111,20 @@ a { color: inherit; text-decoration: none; }
 .table-row { border-top: 1px solid var(--border-subtle); }
 .table-row:hover { background: color-mix(in oklab, var(--bg-surface) 84%, white); }
 
-.theme-scrollbar, .chat-scrollbar, .ticket-scroll-area, .sidebar-scrollbar {
+.theme-scrollbar, .chat-scrollbar, .ticket-scroll-area, .sidebar-scrollbar, .admin-table-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #555777 var(--bg-surface);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
-.theme-scrollbar::-webkit-scrollbar, .chat-scrollbar::-webkit-scrollbar, .ticket-scroll-area::-webkit-scrollbar, .sidebar-scrollbar::-webkit-scrollbar { width: 10px; height: 10px; }
-.theme-scrollbar::-webkit-scrollbar-track, .chat-scrollbar::-webkit-scrollbar-track, .ticket-scroll-area::-webkit-scrollbar-track, .sidebar-scrollbar::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 4px; }
-.theme-scrollbar::-webkit-scrollbar-thumb, .chat-scrollbar::-webkit-scrollbar-thumb, .ticket-scroll-area::-webkit-scrollbar-thumb, .sidebar-scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  border: 2px solid var(--bg-surface);
-  background: #555777;
+.theme-scrollbar::-webkit-scrollbar, .chat-scrollbar::-webkit-scrollbar, .ticket-scroll-area::-webkit-scrollbar, .sidebar-scrollbar::-webkit-scrollbar, .admin-table-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.theme-scrollbar::-webkit-scrollbar-track, .chat-scrollbar::-webkit-scrollbar-track, .ticket-scroll-area::-webkit-scrollbar-track, .sidebar-scrollbar::-webkit-scrollbar-track, .admin-table-scrollbar::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 8px; }
+.theme-scrollbar::-webkit-scrollbar-thumb, .chat-scrollbar::-webkit-scrollbar-thumb, .ticket-scroll-area::-webkit-scrollbar-thumb, .sidebar-scrollbar::-webkit-scrollbar-thumb, .admin-table-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 1px solid var(--scrollbar-track);
+  background: var(--scrollbar-thumb);
+}
+
+.shadow-dropdown {
+  box-shadow: var(--shadow-dropdown);
 }
 
 .app-header-mirror, .app-header-mirror-solid, .app-header-mirror-transparent { background: var(--bg-surface); }
