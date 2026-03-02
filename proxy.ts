@@ -9,8 +9,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
-  if (!token) {
+const token = await getToken({
+    req: request,
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    secureCookie:
+      request.nextUrl.protocol === "https:" ||
+      request.headers.get("x-forwarded-proto") === "https",
+  });  if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
