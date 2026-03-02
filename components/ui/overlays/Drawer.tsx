@@ -84,7 +84,7 @@ export function Drawer({ open, onClose, title, subtitle, children, footer, width
               widthClassName,
             )}
           >
-            <header className="sticky top-0 z-20 border-b border-border-subtle bg-bg-surface px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-bg-surface/95 sm:px-5">
+            <header className="sticky top-0 z-20 border-b border-border-default bg-bg-surface px-4 py-3 backdrop-blur supports-[backdrop-filter]:bg-bg-surface/95 sm:px-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 space-y-1">
                   <h2 id={titleId} className="truncate text-base font-semibold text-text-primary sm:text-lg">{title}</h2>
@@ -99,7 +99,7 @@ export function Drawer({ open, onClose, title, subtitle, children, footer, width
               </div>
             </header>
             <div className="ticket-scroll-area min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">{children}</div>
-            {footer ? <footer className="sticky bottom-0 z-20 border-t border-border-subtle bg-bg-surface px-4 py-3 sm:px-5">{footer}</footer> : null}
+            {footer ? <footer className="sticky bottom-0 z-20 border-t border-border-default bg-bg-surface px-4 py-3 sm:px-5">{footer}</footer> : null}
           </div>
         </aside>
       </div>

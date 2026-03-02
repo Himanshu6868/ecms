@@ -71,7 +71,7 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
             <EmptyState title="No analytics data" description="Status insights will appear once ticket activity is available." />
           </>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-border-subtle">
+          <div className="overflow-hidden rounded-xl border border-border-default">
             <table className="w-full text-sm">
               <thead className="bg-bg-surface/80 text-left text-text-secondary">
                 <tr>
@@ -84,7 +84,7 @@ export function AdminCockpit({ analytics, totalTickets, totalUsers, openTickets 
                 {analytics.map((entry) => {
                   const widthPct = Math.max(8, Math.round((entry.count / maxCount) * 100));
                   return (
-                    <tr key={entry.status} className="border-t border-border-subtle">
+                    <tr key={entry.status} className="border-t border-border-default">
                       <td className="px-4 py-3 font-medium">{entry.status}</td>
                       <td className="px-4 py-3 text-soft">{entry.count}</td>
                       <td className="px-4 py-3">

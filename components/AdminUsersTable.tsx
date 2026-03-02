@@ -31,7 +31,7 @@ export function AdminUsersTable({ users }: { users: AdminUserRecord[] }) {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="border-t border-border-subtle">
+              <tr key={user.id} className="border-t border-border-default">
                 <td className="px-4 py-3 font-medium text-text-primary">{user.name}</td>
                 <td className="px-4 py-3 text-soft">{user.email}</td>
                 <td className="px-4 py-3">{user.role}</td>
