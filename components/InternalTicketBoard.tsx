@@ -23,15 +23,15 @@ function allowedStatuses(role: Role): TicketStatus[] {
 
 function priorityBadgeClass(priority: Ticket["priority"]) {
   if (priority === "CRITICAL") {
-    return "border-rose-400/60 bg-rose-500/15 text-rose-200";
+    return "border-border-default bg-rose-500/15 text-rose-200";
   }
   if (priority === "HIGH") {
-    return "border-amber-400/60 bg-amber-500/10 text-amber-200";
+    return "border-border-default bg-amber-500/10 text-amber-200";
   }
   if (priority === "MEDIUM") {
-    return "border-sky-400/50 bg-sky-500/10 text-sky-300";
+    return "border-border-default bg-sky-500/10 text-sky-300";
   }
-  return "border-emerald-400/50 bg-emerald-500/10 text-emerald-300";
+  return "border-border-default bg-emerald-500/10 text-emerald-300";
 }
 
 export function InternalTicketBoard({
@@ -190,7 +190,7 @@ export function InternalTicketBoard({
                             </select>
                             <button
                               type="button"
-                              className="text-label w-24 rounded-lg border border-primary bg-primary px-3 py-1.5 text-center text-text-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
+                              className="text-label w-24 rounded-lg border border-border-default bg-primary px-3 py-1.5 text-center text-text-primary transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
                               disabled={!canUpdate}
                               onClick={() => updateStatus(ticket.id)}
                             >

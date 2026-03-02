@@ -7,13 +7,13 @@ import { EmptyState } from "@/components/ui/empty-state";
 function priorityClasses(priority: Ticket["priority"]): string {
   switch (priority) {
     case "LOW":
-      return "border-emerald-400/50 bg-emerald-500/10 text-emerald-300";
+      return "border-border-default bg-emerald-500/10 text-emerald-300";
     case "MEDIUM":
-      return "border-sky-400/50 bg-sky-500/10 text-sky-300";
+      return "border-border-default bg-sky-500/10 text-sky-300";
     case "HIGH":
-      return "border-amber-400/60 bg-amber-500/10 text-amber-200";
+      return "border-border-default bg-amber-500/10 text-amber-200";
     case "CRITICAL":
-      return "border-rose-400/60 bg-rose-500/15 text-rose-200";
+      return "border-border-default bg-rose-500/15 text-rose-200";
     default:
       return "border-border-subtle bg-bg-surface/80 text-text-primary";
   }
@@ -36,7 +36,7 @@ export function TicketTable({
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="surface-muted border-l-4 border-l-primary p-4">
+          <div key={ticket.id} className="surface-muted border-l-4 border-l-border-default p-4">
             <div className="flex items-start justify-between gap-3">
               <Link href={`/tickets/${ticket.id}`} className="text-card-title text-text-primary">
                 #{ticket.id.slice(0, 8)}

@@ -18,9 +18,9 @@
   --color-primary-hover: #3f3be3;
   --color-primary-soft: #2a2949;
 
-  --border-subtle: #2c2c44;
-  --border-default: #34344f;
-  --panel-border: #31314a;
+  --border-subtle: #4a4a6a;
+  --border-default: #4a4a6a;
+  --panel-border: #4a4a6a;
 
   --text-primary: #f6f6f9;
   --text-secondary: #a6a7ba;
@@ -68,12 +68,12 @@ a { color: inherit; text-decoration: none; }
   padding: 0.625rem 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 .input-clean::placeholder { color: var(--text-placeholder); }
-.input-clean:focus { border-color: var(--color-primary); box-shadow: none; }
+.input-clean:focus { border-color: var(--border-default); box-shadow: none; }
 .input-clean:disabled { opacity: 0.6; }
-.input-clean[aria-invalid="true"], .input-clean[data-invalid="true"] { border-color: var(--state-error); }
+.input-clean[aria-invalid="true"], .input-clean[data-invalid="true"] { border-color: var(--border-default); }
 
 .btn-brand {
-  border: 1px solid color-mix(in oklab, var(--color-primary) 70%, black);
+  border: 1px solid var(--border-default);
   background: var(--color-primary); color: var(--text-primary); border-radius: var(--radius-md); padding: 0.6rem 1rem; font-weight: 500;
   transition: background-color 0.18s ease;
 }
@@ -84,7 +84,7 @@ a { color: inherit; text-decoration: none; }
 .btn-muted:hover { background: color-mix(in oklab, var(--bg-surface) 82%, white); color: var(--text-primary); }
 
 .status-chip {
-  border: 1px solid color-mix(in oklab, var(--color-primary) 35%, var(--border-default));
+  border: 1px solid var(--border-default);
   border-radius: 999px;
   background: var(--color-primary-soft);
   color: var(--text-primary);
