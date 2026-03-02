@@ -28,10 +28,13 @@ const config: Config = {
         DEFAULT: "var(--border-default)",
       },
       borderRadius: {
-        sm: "var(--radius-sm)",
-        DEFAULT: "var(--radius-md)",
-        lg: "var(--radius-lg)",
-        xl: "var(--radius-xl)",
+        sm: "4px",
+        DEFAULT: "4px",
+        md: "4px",
+        lg: "4px",
+        xl: "4px",
+        "2xl": "4px",
+        full: "4px",
       },
       boxShadow: {
         xs: "var(--shadow-xs)",
