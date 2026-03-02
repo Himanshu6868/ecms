@@ -67,7 +67,11 @@ export default async function AdminPage() {
         totalUsers={userCount.count ?? 0}
         openTickets={openTicketCount.count ?? 0}
       />
-      {session.user.role === "ADMIN" ? <AdminUsersTable users={allUsers.error ? [] : allUsers.data} /> : null}
+      {session.user.role === "ADMIN" ? (
+        <div className="mt-8 md:mt-10">
+          <AdminUsersTable users={allUsers.error ? [] : allUsers.data} />
+        </div>
+      ) : null}
     </main>
   );
 }
