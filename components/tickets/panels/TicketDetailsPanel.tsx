@@ -112,9 +112,9 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
         footer={footer}
       >
         <div className="space-y-6">
-          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm ring-1 ring-panel-border/60">
+          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm border border-panel-border">
             <h3 className="text-base font-semibold text-text-primary">Metadata</h3>
-            <dl className="mt-4 divide-y divide-panel-border/60">
+            <dl className="mt-4 divide-y divide-panel-border">
               <MetaRow label="ID" value={effectiveTicket.id.slice(0, 8)} />
               <MetaRow label="Status" value={<TicketBadge tone="status">{effectiveTicket.status}</TicketBadge>} />
               <MetaRow label="Priority" value={<TicketBadge tone={priorityTone(effectiveTicket.priority)}>{effectiveTicket.priority}</TicketBadge>} />
@@ -124,14 +124,14 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
             </dl>
           </section>
 
-          <section className="rounded-xl bg-panel-elevated/95 p-6 shadow-sm ring-1 ring-panel-border/60">
+          <section className="rounded-xl bg-panel-elevated/95 p-6 shadow-sm border border-panel-border">
             <h3 className="text-base font-semibold text-text-primary">Description</h3>
             <div className="mt-4 max-h-56 overflow-auto rounded-lg bg-panel/70 p-4">
               <p className="whitespace-pre-wrap text-sm leading-7 text-text-primary">{effectiveTicket.description}</p>
             </div>
           </section>
 
-          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm ring-1 ring-panel-border/60">
+          <section className="rounded-xl bg-panel-elevated p-6 shadow-sm border border-panel-border">
             <h3 className="text-base font-semibold text-text-primary">Attachments</h3>
             <div className="mt-4 space-y-3">
               {loading ? <p className="text-sm text-text-placeholder">Loading attachments…</p> : null}
@@ -149,7 +149,7 @@ export function TicketDetailsPanel({ ticket, assignedTo }: { ticket: Ticket; ass
                       href={attachment.signed_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="group rounded-xl bg-panel p-3 shadow-sm ring-1 ring-panel-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                      className="group rounded-xl bg-panel p-3 shadow-sm border border-panel-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                     >
                       {isImage ? (
                         <div className="overflow-hidden rounded-lg bg-panel-elevated">

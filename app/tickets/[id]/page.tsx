@@ -26,7 +26,7 @@ function priorityClasses(priority: Ticket["priority"]): string {
     case "CRITICAL":
       return "border-border-default bg-rose-500/15 text-rose-200";
     default:
-      return "border-border-subtle bg-bg-surface/80 text-text-primary";
+      return "border-border-default bg-bg-surface/80 text-text-primary";
   }
 }
 

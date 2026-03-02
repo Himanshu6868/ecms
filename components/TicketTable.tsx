@@ -15,7 +15,7 @@ function priorityClasses(priority: Ticket["priority"]): string {
     case "CRITICAL":
       return "border-border-default bg-rose-500/15 text-rose-200";
     default:
-      return "border-border-subtle bg-bg-surface/80 text-text-primary";
+      return "border-border-default bg-bg-surface/80 text-text-primary";
   }
 }
 
@@ -36,7 +36,7 @@ export function TicketTable({
     <section className="space-y-4">
       <div className="grid gap-3 md:hidden">
         {tickets.map((ticket) => (
-          <div key={ticket.id} className="surface-muted border-l-4 border-l-border-default p-4">
+          <div key={ticket.id} className="surface-muted border-l border-l-border-default p-4">
             <div className="flex items-start justify-between gap-3">
               <Link href={`/tickets/${ticket.id}`} className="text-card-title text-text-primary">
                 #{ticket.id.slice(0, 8)}

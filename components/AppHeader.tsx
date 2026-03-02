@@ -22,7 +22,7 @@ export function AppHeader() {
       className={`app-header-mirror sticky top-0 z-50 border-b transition-all duration-300 ${
         isScrolled
           ? "app-header-mirror-solid border-border-default"
-          : "app-header-mirror-transparent border-border-subtle"
+          : "app-header-mirror-transparent border-border-default"
       }`}
     >
       <div className="mx-auto flex w-full max-w-[1480px] items-center justify-between px-3 py-3 md:px-6">

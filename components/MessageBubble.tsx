@@ -14,7 +14,7 @@ export const MessageBubble = memo(function MessageBubble({ content, senderLabel,
         className={[
           "max-w-[75%] rounded-2xl px-4 py-3 text-sm shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md",
           "whitespace-pre-wrap break-words",
-          isCurrentUser ? "bg-primary text-text-primary" : "border border-border-subtle bg-bg-surface/70 text-text-primary",
+          isCurrentUser ? "bg-primary text-text-primary" : "border border-border-default bg-bg-surface/70 text-text-primary",
         ].join(" ")}
       >
         <p className={`mb-1 text-[11px] font-medium ${isCurrentUser ? "text-text-primary/90" : "text-text-placeholder"}`}>{senderLabel}</p>

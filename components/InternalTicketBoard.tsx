@@ -112,7 +112,7 @@ export function InternalTicketBoard({
   return (
     <section className="min-w-0 max-w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="inline-flex items-center gap-1 rounded-xl border border-border-subtle bg-bg-surface p-1 shadow-xs">
+        <div className="inline-flex items-center gap-1 rounded-xl border border-border-default bg-bg-surface p-1 shadow-xs">
           <button
             type="button"
             onClick={() => setActiveTab("all")}
@@ -134,10 +134,10 @@ export function InternalTicketBoard({
       {!filteredTickets.length ? <EmptyState title="No tickets in this queue" description="Adjust filters or wait for new assignments." /> : null}
 
       {filteredTickets.length ? (
-        <div className="max-w-full overflow-hidden rounded-2xl border border-border-subtle bg-bg-surface shadow-xs">
+        <div className="max-w-full overflow-hidden rounded-2xl border border-border-default bg-bg-surface shadow-xs">
           <div className="theme-scrollbar h-[clamp(280px,calc(100vh-22rem),540px)] w-full max-w-full overflow-auto overscroll-contain">
             <table className="text-body w-max min-w-[1080px] border-collapse text-text-secondary">
-              <thead className="sticky top-0 z-20 border-b border-border-subtle bg-bg-surface/95 text-left backdrop-blur supports-[backdrop-filter]:bg-bg-surface/80">
+              <thead className="sticky top-0 z-20 border-b border-border-default bg-bg-surface/95 text-left backdrop-blur supports-[backdrop-filter]:bg-bg-surface/80">
                 <tr>
                   <th className="text-table-header px-4 py-3 text-text-placeholder">Ticket ID</th>
                   <th className="text-table-header px-4 py-3 text-text-placeholder">Current Status</th>
@@ -153,7 +153,7 @@ export function InternalTicketBoard({
                 {filteredTickets.map((ticket) => {
                   const canUpdate = role === "ADMIN" || role === "MANAGER" || role === "SENIOR_AGENT" || ticket.assigned_agent_id === currentUserId;
                   return (
-                    <tr key={ticket.id} className="border-t border-border-subtle bg-bg-surface hover:bg-bg-surface/60">
+                    <tr key={ticket.id} className="border-t border-border-default bg-bg-surface hover:bg-bg-surface/60">
                       <td className="text-label px-4 py-3 text-text-primary">
                         <Link href={`/tickets/${ticket.id}`} className="hover:underline">#{ticket.id.slice(0, 8)}</Link>
                       </td>
@@ -176,7 +176,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean text-body !w-52 shrink-0 border-border-subtle py-1.5"
+                              className="input-clean text-body !w-52 shrink-0 border-border-default py-1.5"
                               value={statusValues[ticket.id] ?? ""}
                               onChange={(event) => setStatusValues((prev) => ({ ...prev, [ticket.id]: event.target.value as TicketStatus }))}
                               disabled={!canUpdate}
@@ -203,7 +203,7 @@ export function InternalTicketBoard({
                         <td className="px-4 py-3">
                           <div className="flex flex-nowrap items-center gap-2">
                             <select
-                              className="input-clean text-body !w-52 shrink-0 border-border-subtle py-1.5"
+                              className="input-clean text-body !w-52 shrink-0 border-border-default py-1.5"
                               value={assignValues[ticket.id] ?? ""}
                               onChange={(event) => setAssignValues((prev) => ({ ...prev, [ticket.id]: event.target.value }))}
                             >

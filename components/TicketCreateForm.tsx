@@ -285,14 +285,14 @@ export function TicketCreateForm() {
 
           <div className="space-y-3">
             <Label htmlFor="attachments">Attachments (PNG, JPG, WEBP, PDF, DOC, DOCX up to 5MB each, max 6 files)</Label>
-            <div className="rounded-xl border border-dashed border-border-subtle bg-bg-surface/40 p-4">
+            <div className="rounded-xl border border-border-default bg-bg-surface/40 p-4">
               <input
                 id="attachments"
                 type="file"
                 multiple
                 accept=".png,.jpg,.jpeg,.webp,.pdf,.doc,.docx"
                 onChange={onFileInput}
-                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-border-subtle file:bg-bg-surface file:px-3 file:py-2 file:text-sm file:font-semibold file:text-text-primary"
+                className="block w-full text-sm text-soft file:mr-3 file:rounded-lg file:border file:border-border-default file:bg-bg-surface file:px-3 file:py-2 file:text-sm file:font-semibold file:text-text-primary"
               />
               <p className="mt-2 text-xs text-soft">Uploads stay private and are securely stored via the server.</p>
             </div>
@@ -300,9 +300,9 @@ export function TicketCreateForm() {
             {attachments.length > 0 ? (
               <ul className="grid gap-3 sm:grid-cols-2">
                 {attachments.map((attachment) => (
-                  <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-border-subtle p-3">
+                  <li key={attachment.id} className="surface-muted space-y-2 rounded-xl border border-border-default p-3">
                     {attachment.previewUrl ? (
-                      <div className="relative h-36 overflow-hidden rounded-lg border border-border-subtle bg-bg-surface">
+                      <div className="relative h-36 overflow-hidden rounded-lg border border-border-default bg-bg-surface">
                         <Image src={attachment.previewUrl} alt={attachment.file.name} fill className="object-cover" unoptimized />
                       </div>
                     ) : null}
@@ -320,7 +320,7 @@ export function TicketCreateForm() {
           </div>
 
           {isSubmitting ? (
-            <div className="space-y-2 rounded-lg border border-border-subtle bg-bg-surface p-3">
+            <div className="space-y-2 rounded-lg border border-border-default bg-bg-surface p-3">
               <div className="flex items-center justify-between text-xs text-soft">
                 <span>Upload progress</span>
                 <span>{uploadProgress}%</span>
@@ -331,7 +331,7 @@ export function TicketCreateForm() {
             </div>
           ) : null}
 
-          <div className="flex flex-wrap justify-end gap-3 border-t border-border-subtle/80 pt-4">
+          <div className="flex flex-wrap justify-end gap-3 border-t border-border-default pt-4">
             <Button variant="secondary" type="reset" onClick={clearAttachments}>
               Clear Form
             </Button>

@@ -24,6 +24,9 @@ const config: Config = {
         "panel-border": "var(--panel-border)",
         "state-error": "var(--state-error)",
       },
+      borderColor: {
+        DEFAULT: "var(--border-default)",
+      },
       borderRadius: {
         sm: "var(--radius-sm)",
         DEFAULT: "var(--radius-md)",
